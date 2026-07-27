@@ -10,57 +10,40 @@
 <body>
     <!-- صفحه ورود -->
     <div class="login-container" id="loginPage">
-        <!-- لوگو -->
-        <div class="login-logo">
-            <h1>🤫 Silent Poker</h1>
-            <p>Accountant System</p>
-        </div>
+        <div class="login-center">
+            <!-- لوگو -->
+            <div class="login-logo">
+                <div class="logo-icon">S</div>
+                <h1>Silent.poker</h1>
+                <p>Poker Intelligence</p>
+            </div>
 
-        <div class="login-form-wrapper">
+            <!-- فرم ورود -->
             <div class="login-card">
-                <h2>خوش‌آمدید</h2>
-                
                 <form onsubmit="handleLogin(event)">
                     <!-- انتخاب ادمین -->
                     <div class="form-group">
-                        <label>انتخاب ادمین</label>
+                        <label>ورود به حساب کاربری</label>
                         <div class="admin-buttons">
-                            <button type="button" class="admin-btn admin1-btn active" onclick="selectAdmin('admin1')">ادمین 1</button>
-                            <button type="button" class="admin-btn admin2-btn" onclick="selectAdmin('admin2')">ادمین 2</button>
-                            <button type="button" class="admin-btn admin3-btn" onclick="selectAdmin('admin3')">ادمین 3</button>
-                            <button type="button" class="admin-btn admin4-btn" onclick="selectAdmin('admin4')">ادمین 4</button>
+                            <button type="button" class="admin-btn active" onclick="selectAdmin('admin1')">ادمین 1</button>
+                            <button type="button" class="admin-btn" onclick="selectAdmin('admin2')">ادمین 2</button>
+                            <button type="button" class="admin-btn" onclick="selectAdmin('admin3')">ادمین 3</button>
+                            <button type="button" class="admin-btn" onclick="selectAdmin('admin4')">ادمین 4</button>
                         </div>
                         <input type="hidden" id="adminName" value="admin1">
                     </div>
 
                     <!-- رمز عبور -->
                     <div class="form-group">
-                        <label>رمز عبور</label>
                         <input type="password" id="password" placeholder="رمز خود را وارد کنید" required>
-                        <small>رمز: pass1234</small>
                     </div>
 
                     <!-- دکمه ورود -->
-                    <button type="submit" class="login-btn">ورود به سیستم</button>
+                    <button type="submit" class="login-btn">ورود</button>
                 </form>
-            </div>
-
-            <!-- رنگ‌های مختلف -->
-            <div class="color-preview">
-                <h3>انتخاب رنگ</h3>
-                <div class="color-options">
-                    <div class="color-item" onclick="applyTheme('admin1', '#00D4FF', '#00A0CC')" style="--theme-color: #00D4FF;">
-                        <span>ادمین 1</span>
-                    </div>
-                    <div class="color-item" onclick="applyTheme('admin2', '#FF6B6B', '#FF5252')" style="--theme-color: #FF6B6B;">
-                        <span>ادمین 2</span>
-                    </div>
-                    <div class="color-item" onclick="applyTheme('admin3', '#4ECDC4', '#2DD4BF')" style="--theme-color: #4ECDC4;">
-                        <span>ادمین 3</span>
-                    </div>
-                    <div class="color-item" onclick="applyTheme('admin4', '#FFD700', '#FFC700')" style="--theme-color: #FFD700;">
-                        <span>ادمین 4</span>
-                    </div>
+                
+                <div class="login-hint">
+                    رمز: pass1234
                 </div>
             </div>
         </div>
@@ -71,7 +54,7 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <div class="logo-small">🤫 Silent Poker</div>
+                <div class="logo-small">S Silent Poker</div>
             </div>
             <div class="header-right">
                 <span class="admin-name" id="adminDisplayName"></span>
@@ -143,14 +126,7 @@
                         <h2>تنظیمات سیستم</h2>
                     </div>
                     <div class="settings-container">
-                        <div class="setting-item">
-                            <label>رنگ اصلی</label>
-                            <input type="color" id="primaryColor" onchange="updateThemeColor()">
-                        </div>
-                        <div class="setting-item">
-                            <label>رنگ ثانوی</label>
-                            <input type="color" id="secondaryColor" onchange="updateThemeColor()">
-                        </div>
+                        <p>تنظیمات سیستم</p>
                     </div>
                 </section>
             </main>
