@@ -1,4 +1,3 @@
-/* ===== متغیرهای رنگ ===== */
 * {
     margin: 0;
     padding: 0;
@@ -6,14 +5,12 @@
 }
 
 :root {
-    --primary: #00D4FF;
-    --secondary: #00A0CC;
-    --dark-bg: #0a0e27;
-    --card-bg: #1a1f3a;
+    --primary: #808080;
+    --secondary: #606060;
+    --dark-bg: #0a0a0a;
+    --card-bg: #1a1a1a;
     --text-primary: #ffffff;
     --text-secondary: #a0aec0;
-    --success: #10b981;
-    --danger: #ef4444;
     --border-color: #2d3548;
 }
 
@@ -33,136 +30,134 @@ body {
 .login-container {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--dark-bg) 0%, #0f1535 100%);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(128, 128, 128, 0.08) 0%, transparent 50%);
+    background-size: 600px 600px;
+    background-position: center;
     position: relative;
     padding: 20px;
+    overflow: hidden;
 }
 
 .login-container::before {
-    content: '';
+    content: '♠ ♥ ♦ ♣';
     position: absolute;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, var(--primary), transparent);
-    opacity: 0.05;
-    border-radius: 50%;
-    top: -200px;
-    right: -200px;
+    font-size: 180px;
+    opacity: 0.08;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    letter-spacing: 40px;
 }
 
-.login-container::after {
-    content: '';
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, var(--secondary), transparent);
-    opacity: 0.05;
-    border-radius: 50%;
-    bottom: -150px;
-    left: -150px;
+.login-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    max-width: 500px;
+    width: 100%;
+    z-index: 10;
 }
 
 .login-logo {
     text-align: center;
-    margin-bottom: 50px;
-    z-index: 10;
+}
+
+.logo-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(128, 128, 128, 0.15);
+    border: 2px solid rgba(128, 128, 128, 0.5);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin: 0 auto 20px;
 }
 
 .login-logo h1 {
-    font-size: 48px;
-    margin-bottom: 10px;
+    font-size: 42px;
     font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+    letter-spacing: 2px;
 }
 
 .login-logo p {
     font-size: 14px;
     color: var(--text-secondary);
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     text-transform: uppercase;
 }
 
-.login-form-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    width: 100%;
-    max-width: 1000px;
-    z-index: 10;
-    align-items: center;
-}
-
-/* کارت لاگین */
 .login-card {
-    background: rgba(26, 31, 58, 0.8);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
+    background: rgba(26, 26, 26, 0.8);
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    border-radius: 15px;
     padding: 40px;
     backdrop-filter: blur(10px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
 }
 
-.login-card h2 {
-    font-size: 28px;
-    margin-bottom: 30px;
-    font-weight: 700;
-    text-align: center;
-}
-
-.form-group {
-    margin-bottom: 25px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-}
-
-/* دکمه‌های انتخاب ادمین */
 .admin-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .admin-btn {
     padding: 12px;
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
+    background: rgba(80, 80, 80, 0.2);
+    border: 2px solid rgba(128, 128, 128, 0.4);
     color: var(--text-primary);
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
     font-size: 12px;
     transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
 }
 
 .admin-btn:hover {
     border-color: var(--primary);
-    transform: translateY(-2px);
+    background: rgba(128, 128, 128, 0.15);
 }
 
 .admin-btn.active {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    background: rgba(128, 128, 128, 0.4);
     border-color: var(--primary);
-    color: #000;
 }
 
-/* ورودی‌های فرم */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 .form-group input {
     width: 100%;
     padding: 14px 16px;
-    background: var(--dark-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    border-radius: 8px;
     color: var(--text-primary);
     font-size: 14px;
     font-family: 'Poppins', sans-serif;
@@ -176,84 +171,42 @@ body {
 .form-group input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+    background: rgba(128, 128, 128, 0.05);
+    box-shadow: 0 0 0 3px rgba(128, 128, 128, 0.1);
 }
 
-.form-group small {
-    display: block;
-    margin-top: 8px;
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-/* دکمه ورود */
 .login-btn {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: #000;
-    border: none;
-    border-radius: 10px;
+    background: rgba(128, 128, 128, 0.4);
+    color: white;
+    border: 1px solid var(--primary);
+    border-radius: 8px;
     font-weight: 700;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-top: 10px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .login-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+    background: rgba(128, 128, 128, 0.6);
+    box-shadow: 0 5px 20px rgba(128, 128, 128, 0.2);
 }
 
 .login-btn:active {
     transform: translateY(0);
 }
 
-/* پیش‌نمایش رنگ */
-.color-preview {
-    background: rgba(26, 31, 58, 0.8);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 30px;
-    backdrop-filter: blur(10px);
-}
-
-.color-preview h3 {
-    margin-bottom: 20px;
-    font-size: 16px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.login-hint {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
+    font-size: 12px;
     color: var(--text-secondary);
-}
-
-.color-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.color-item {
-    width: 100%;
-    height: 80px;
-    background: var(--theme-color);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
-
-.color-item:hover {
-    transform: scale(1.05);
-    border-color: var(--text-primary);
 }
 
 /* ===== صفحه داشبورد ===== */
@@ -263,14 +216,13 @@ body {
     background: var(--dark-bg);
 }
 
-/* Header */
 .header {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: 70px;
-    background: rgba(26, 31, 58, 0.95);
+    background: rgba(26, 26, 26, 0.95);
     border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(10px);
     display: flex;
@@ -287,7 +239,7 @@ body {
 }
 
 .logo-small {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--primary);
 }
@@ -305,9 +257,9 @@ body {
 
 .logout-btn {
     padding: 10px 20px;
-    background: var(--danger);
-    color: white;
-    border: none;
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
@@ -316,11 +268,9 @@ body {
 }
 
 .logout-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+    background: rgba(255, 107, 107, 0.3);
 }
 
-/* Sidebar */
 .dashboard-content {
     display: flex;
     margin-top: 70px;
@@ -329,7 +279,7 @@ body {
 
 .sidebar {
     width: 250px;
-    background: rgba(26, 31, 58, 0.5);
+    background: rgba(26, 26, 26, 0.5);
     border-right: 1px solid var(--border-color);
     padding: 30px 0;
     position: fixed;
@@ -363,12 +313,12 @@ body {
 
 .nav-item:hover {
     color: var(--primary);
-    background: rgba(0, 212, 255, 0.05);
+    background: rgba(128, 128, 128, 0.05);
 }
 
 .nav-item.active {
     color: var(--primary);
-    background: rgba(0, 212, 255, 0.1);
+    background: rgba(128, 128, 128, 0.1);
     border-right: 3px solid var(--primary);
 }
 
@@ -376,7 +326,6 @@ body {
     font-size: 18px;
 }
 
-/* Main Content */
 .main-content {
     margin-left: 250px;
     flex: 1;
@@ -390,7 +339,6 @@ body {
     font-weight: 700;
 }
 
-/* بخش افزودن بازیکن */
 .add-player-section {
     display: flex;
     gap: 15px;
@@ -401,7 +349,7 @@ body {
     flex: 1;
     padding: 14px 16px;
     background: var(--card-bg);
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     color: var(--text-primary);
     font-family: 'Poppins', sans-serif;
@@ -412,27 +360,25 @@ body {
     border-color: var(--primary);
 }
 
-/* دکمه‌های عملیاتی */
 .btn-add,
 .btn-search {
     padding: 14px 30px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: #000;
-    border: none;
+    background: rgba(128, 128, 128, 0.4);
+    color: white;
+    border: 1px solid var(--primary);
     border-radius: 10px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
+    font-family: 'Poppins', sans-serif;
 }
 
 .btn-add:hover,
 .btn-search:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+    background: rgba(128, 128, 128, 0.6);
 }
 
-/* کنتینر بازیکنان */
 .players-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -450,7 +396,7 @@ body {
 
 .player-card:hover {
     border-color: var(--primary);
-    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(128, 128, 128, 0.1);
     transform: translateY(-5px);
 }
 
@@ -466,7 +412,6 @@ body {
     margin-bottom: 10px;
 }
 
-/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -484,18 +429,6 @@ body {
 
 .modal.active {
     display: flex;
-    animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
 
 .modal-content {
@@ -521,20 +454,13 @@ body {
     color: var(--text-secondary);
     font-size: 24px;
     cursor: pointer;
-    transition: color 0.3s ease;
 }
 
 .modal-close:hover {
-    color: var(--danger);
+    color: var(--text-primary);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
-    .login-form-wrapper {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-
     .sidebar {
         width: 200px;
     }
@@ -544,34 +470,11 @@ body {
         padding: 20px;
     }
 
-    .admin-buttons {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .color-options {
-        grid-template-columns: 1fr;
-    }
-
     .players-container {
         grid-template-columns: 1fr;
     }
-}
 
-@media (max-width: 600px) {
-    .sidebar {
-        width: 150px;
-    }
-
-    .main-content {
-        margin-left: 150px;
-        padding: 15px;
-    }
-
-    .login-card {
-        padding: 30px 20px;
-    }
-
-    .login-logo h1 {
-        font-size: 36px;
+    .admin-buttons {
+        grid-template-columns: 1fr 1fr;
     }
 }
