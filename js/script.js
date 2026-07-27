@@ -7,10 +7,10 @@ const admins = {
 };
 
 const adminThemes = {
-    admin1: { primary: '#00D4FF', secondary: '#00A0CC' },
-    admin2: { primary: '#FF6B6B', secondary: '#FF5252' },
-    admin3: { primary: '#4ECDC4', secondary: '#2DD4BF' },
-    admin4: { primary: '#FFD700', secondary: '#FFC700' }
+    admin1: { primary: '#808080', secondary: '#606060' },
+    admin2: { primary: '#808080', secondary: '#606060' },
+    admin3: { primary: '#808080', secondary: '#606060' },
+    admin4: { primary: '#808080', secondary: '#606060' }
 };
 
 // ===== متغیرهای جهانی =====
@@ -23,7 +23,8 @@ function selectAdmin(adminId) {
     document.querySelectorAll('.admin-btn').forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
     document.getElementById('adminName').value = adminId;
-    applyTheme(adminId, adminThemes[adminId].primary, adminThemes[adminId].secondary);
+    const theme = adminThemes[adminId];
+    applyTheme(adminId, theme.primary, theme.secondary);
 }
 
 function applyTheme(adminId, primary, secondary) {
@@ -41,11 +42,9 @@ function handleLogin(event) {
     if (admins[admin] === password) {
         currentAdmin = admin;
         
-        // تطبیق رنگ
         const theme = adminThemes[admin];
         applyTheme(admin, theme.primary, theme.secondary);
 
-        // نمایش داشبورد
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('dashboard').style.display = 'flex';
         document.getElementById('adminDisplayName').textContent = admin.replace('admin', 'ادمین ');
