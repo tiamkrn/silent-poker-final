@@ -366,6 +366,39 @@ function submitCharge(type) {
     }
 }
 
+// ===== جستجو برای شارژ =====
+function searchForCharge() {
+    const query = document.getElementById('chargeSearch').value.toLowerCase().trim();
+    const list = document.getElementById('chargeList');
+
+    if (!query) {
+        list.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px;">نام بازیکن را جستجو کنید</p>';
+        return;
+    }
+
+    const filtered = players.filter(p => p.name.toLowerCase().includes(query));
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px;">❌ بازیکنی یافت نشد</p>';
+        return;
+    }
+
+    list.innerHTML = filtered.map((player) => {
+        const idx = players.indexOf(player);
+        return `
+            <div class="player-card">
+                <h3>${player.name}</h3>
+                <p>💰 شارژ: <strong>${player.totalCharge.toLocaleString()}</strong></p>
+                <p>📊 بدهی: <strong>${player.totalDebt.toLocaleString()}</strong></p>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="viewHistory(${idx})">📋 سوابق</button>
+                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="openChargeModal(${idx})">💳 شارژ</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
 // ===== تعویض تب‌ها =====
 function switchTab(tabName) {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
