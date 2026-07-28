@@ -645,6 +645,25 @@ function openChargeModal(idx) {
     const modal = document.getElementById('chargeModal');
     const content = document.getElementById('chargeContent');
 
+    let recordsHTML = '';
+    if (currentPlayer.records.length > 0) {
+        recordsHTML = `
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(26, 26, 26, 0.5); border: 1px solid var(--border-color); border-radius: 10px;">
+                <h3 style="margin-top: 0; margin-bottom: 15px; font-size: 14px; color: var(--text-primary);">📋 سوابق اخیر</h3>
+                ${currentPlayer.records.slice(-5).reverse().map((r, recordIdx) => `
+                    <div class="record-card" style="border-right-color: ${r.adminColor};">
+                        <div class="record-info">
+                            <div class="record-amount" style="color: ${r.adminColor};">${r.displayAmount}</div>
+                            <div class="record-details">${r.details}</div>
+                            <div class="record-admin" style="color: ${r.adminColor};">👤 ${r.adminName} | 📅 ${r.date}</div>
+                        </div>
+                        <button class="btn-delete" onclick="deleteRecord(${recordIdx})" style="margin: 0; white-space: nowrap;">🗑️ حذف</button>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
     content.innerHTML = `
         <div style="margin-bottom: 20px;">
             <div style="background: var(--dark-bg); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
@@ -661,6 +680,8 @@ function openChargeModal(idx) {
             </div>
         </div>
 
+        ${recordsHTML}
+
         <div style="margin-bottom: 20px;">
             <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase;">روش شارژ:</label>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -675,6 +696,33 @@ function openChargeModal(idx) {
     `;
 
     modal.classList.add('active');
+}
+
+function deleteRecord(recordIdx) {
+    const records = currentPlayer.records;
+    const recordToDelete = records[records.length - 1 - recordIdx];
+    
+    if (confirm(`آیا می‌خواهید این سابقه را حذف کنید؟\n\n${recordToDelete.displayAmount} - ${recordToDelete.details}`)) {
+        // بازگرداندن تغییرات
+        if (recordToDelete.displayAmount.includes('+')) {
+            const amount = parseInt(recordToDelete.displayAmount.replace('+', ''));
+            currentPlayer.totalCharge -= amount;
+        } else if (recordToDelete.displayAmount.includes('-')) {
+            const amount = parseInt(recordToDelete.displayAmount.replace('-', ''));
+            if (recordToDelete.details.includes('پرداخت')) {
+                currentPlayer.totalDebt += amount;
+            } else {
+                currentPlayer.totalCharge -= amount;
+            }
+        }
+
+        // حذف سابقه
+        currentPlayer.records.splice(records.length - 1 - recordIdx, 1);
+        saveData();
+        alert('✅ سابقه با موفقیت حذف شد!');
+        openChargeModal(players.indexOf(currentPlayer));
+        displayPlayers();
+    }
 }
 
 function showChargeForm(type) {
@@ -733,7 +781,7 @@ function showChargeForm(type) {
             </div>
             <div class="form-group">
                 <label>نوع</label>
-                <select id="chargeDebtType" style="width: 100%; padding: 10px; background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary);">
+                <select id="chargeDebtType" style="width: 100%; padding: 10px; background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-family: 'Poppins', sans-serif;">
                     <option value="debt">بدهی ➖</option>
                     <option value="credit">کریدیت ➕</option>
                 </select>
