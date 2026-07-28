@@ -78,10 +78,20 @@ function saveData() {
     localStorage.setItem('silentPokerData', JSON.stringify(players));
 }
 
-// ===== تاریخ فارسی =====
+// ===== تاریخ امروز =====
+function getTodayDate() {
+    return new Date().toLocaleDateString('fa-IR');
+}
+
+// ===== تاریخ شروع =====
+function getStartDate(player) {
+    return player.startDate || getTodayDate();
+}
+
+// ===== تاریخ آخرین فعالیت =====
 function getLastActivityDate(player) {
     if (player.records.length === 0) {
-        return player.startDate;
+        return getStartDate(player);
     }
     return player.records[player.records.length - 1].date;
 }
@@ -99,7 +109,7 @@ function addPlayer() {
         return;
     }
 
-    const today = new Date().toLocaleDateString('fa-IR');
+    const today = getTodayDate();
 
     players.push({
         name: name,
@@ -123,7 +133,7 @@ function displayPlayers() {
     }
 
     list.innerHTML = players.map((player, idx) => {
-        const startDate = player.startDate || 'نامشخص';
+        const startDate = getStartDate(player);
         const lastDate = getLastActivityDate(player);
         
         return `
@@ -279,7 +289,7 @@ function showChargeForm(type) {
 }
 
 function submitCharge(type) {
-    const today = new Date().toLocaleDateString('fa-IR');
+    const today = getTodayDate();
     let record = null;
 
     if (type === 'usdt') {
@@ -402,7 +412,7 @@ function searchForCharge() {
 
     list.innerHTML = filtered.map((player) => {
         const idx = players.indexOf(player);
-        const startDate = player.startDate || 'نامشخص';
+        const startDate = getStartDate(player);
         const lastDate = getLastActivityDate(player);
         
         return `
