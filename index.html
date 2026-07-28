@@ -1,383 +1,572 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html dir="rtl" lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silent Poker Accountant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Silent Poker - حساب‌داری پوکر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <!-- صفحه ورود -->
-    <div class="login-container" id="loginPage">
-        <div class="login-center">
-            <div class="login-logo">
-                <div class="logo-icon">S</div>
-                <h1>Silent.poker</h1>
-                <p>Poker Intelligence</p>
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="logo">
+                <span class="logo-letter">S</span>
+                <div class="logo-watermark">S</div>
             </div>
-
-            <div class="login-card">
-                <form onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label>انتخاب ادمین</label>
-                        <div class="admin-buttons">
-                            <button type="button" class="admin-btn active" onclick="selectAdmin('shahab')">شهاب</button>
-                            <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">تیام</button>
-                            <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">تبسم</button>
-                            <button type="button" class="admin-btn" onclick="selectAdmin('arash')">آرش</button>
-                        </div>
-                        <input type="hidden" id="adminName" value="shahab">
+            <h1>Silent Poker</h1>
+            <p class="subtitle">سیستم حساب‌داری پوکر</p>
+            
+            <form onsubmit="handleLogin(event)">
+                <div style="margin-bottom: 20px;">
+                    <label>انتخاب ادمین:</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <button type="button" class="admin-btn" onclick="selectAdmin('shahab')">👑 شهاب</button>
+                        <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">👑 تیام</button>
+                        <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">👑 تبسم</button>
+                        <button type="button" class="admin-btn" onclick="selectAdmin('arash')">👑 آرش</button>
                     </div>
-
-                    <div class="form-group">
-                        <input type="password" id="password" placeholder="رمز خود را وارد کنید" required>
-                    </div>
-
-                    <button type="submit" class="login-btn">ورود</button>
-                </form>
-                
-                <div class="login-hint">
-                    شهاب: 1234 | تیام: 4552 | تبسم: 9825 | آرش: 4321
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label>ادمین:</label>
+                    <select id="adminName" class="form-input" required>
+                        <option value="">-- انتخاب کنید --</option>
+                        <option value="shahab">شهاب</option>
+                        <option value="tiyam">تیام</option>
+                        <option value="tabassam">تبسم</option>
+                        <option value="arash">آرش</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>رمز عبور:</label>
+                    <input type="password" id="password" class="form-input" placeholder="رمز عبور را وارد کنید" required>
+                </div>
+
+                <button type="submit" class="btn-login">ورود</button>
+            </form>
         </div>
     </div>
 
-    <!-- صفحه داشبورد -->
-    <div class="dashboard" id="dashboard" style="display: none;">
-        <header class="header">
-            <div class="header-left">
-                <div class="logo-small">S Silent Poker</div>
+    <!-- داشبورد -->
+    <div id="dashboard" class="dashboard-container" style="display: none;">
+        <div class="navbar">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="logo-small">
+                    <span class="logo-letter">S</span>
+                </div>
+                <h1 style="margin: 0;">Silent Poker</h1>
             </div>
-            <div class="header-right">
-                <span class="admin-name" id="adminDisplayName"></span>
-                <button class="logout-btn" onclick="logout()">خروج</button>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <span id="adminDisplayName" style="color: var(--admin-color); font-weight: 600;"></span>
+                <button onclick="logout()" class="btn-logout">خروج</button>
             </div>
-        </header>
+        </div>
 
-        <main class="main-content">
+        <div class="dashboard-content">
+            <div class="navigation">
+                <button class="nav-item active" onclick="switchTab('players')">👥 بازیکنان</button>
+                <button class="nav-item" onclick="switchTab('usdt')">💵 USDT</button>
+                <button class="nav-item" onclick="switchTab('trx')">💰 TRX</button>
+                <button class="nav-item" onclick="switchTab('debt')">📋 بدهی</button>
+                <button class="nav-item" onclick="switchTab('rial')">🪙 درگاه ریالی</button>
+                <button class="nav-item" onclick="switchTab('card')">🏧 کارت به کارت</button>
+                <button class="nav-item" onclick="switchTab('payment')">✅ پرداخت بدهی</button>
+                <button class="nav-item" onclick="switchTab('cashout')">💸 کشاوت</button>
+            </div>
+
             <!-- تب بازیکنان -->
-            <section id="playersTab" class="tab-section active">
-                <div class="section-header">
-                    <h2>مدیریت بازیکنان</h2>
-                </div>
-                <div class="add-player-section">
-                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end;">
-                        <input type="text" id="newPlayerName" placeholder="نام بازیکن جدید...">
-                        <label style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 13px; cursor: pointer; white-space: nowrap;">
-                            <input type="checkbox" id="playerVerified" style="width: 18px; height: 18px; cursor: pointer;">
-                            احراز درگاه
-                        </label>
-                        <button onclick="addPlayer()" class="btn-add">افزودن</button>
-                    </div>
-                </div>
-                <div class="players-container" id="playersList"></div>
-            </section>
-
-            <!-- تب تتر -->
-            <section id="usdtTab" class="tab-section">
-                <div class="section-header">
-                    <h2>💵 تتر (USDT)</h2>
-                    <button class="btn-export" onclick="openExportDialog('usdt')">📥 دریافت گزارش</button>
-                </div>
+            <div id="playersTab" class="tab-section active">
+                <h2>👥 مدیریت بازیکنان</h2>
                 
+                <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="margin-top: 0;">افزودن بازیکن جدید</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>نام بازیکن:</label>
+                            <input type="text" id="newPlayerName" class="form-input" placeholder="نام بازیکن را وارد کنید">
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px;">
+                                <input type="checkbox" id="playerVerified">
+                                احراز درگاه
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addPlayer()" style="width: 100%; margin-top: 10px;">➕ افزودن</button>
+                </div>
+
+                <h3>🔍 جستجوی بازیکنان</h3>
                 <div style="margin-bottom: 20px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <button class="export-type-btn active" onclick="switchUsdtType('bep20')" data-type="bep20">🌐 BEP20</button>
-                        <button class="export-type-btn" onclick="switchUsdtType('trc20')" data-type="trc20">⛓️ TRC20</button>
+                    <input type="text" id="playerSearchInput" class="form-input" placeholder="🔍 نام بازیکن را تایپ کنید..." oninput="displayPlayers()">
+                </div>
+
+                <div id="playersList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;"></div>
+            </div>
+
+            <!-- تب USDT -->
+            <div id="usdtTab" class="tab-section">
+                <h2>💵 USDT - تتر</h2>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button data-type="bep20" class="btn-type active" onclick="switchUsdtType('bep20')">🌉 BEP20</button>
+                    <button data-type="trc20" class="btn-type" onclick="switchUsdtType('trc20')">⛓️ TRC20</button>
+                </div>
+
+                <!-- BEP20 Section -->
+                <div id="usdtBep20Section" class="tab-section-content">
+                    <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                        <h3>افزودن تراکنش USDT (BEP20)</h3>
+                        <div class="form-group">
+                            <label>👤 نام بازیکن:</label>
+                            <input type="text" id="usdtBep20Player" class="form-input" placeholder="نام بازیکن">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>مقدار USDT:</label>
+                                <input type="number" id="usdtBep20Amount" class="form-input" placeholder="0.00" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>تعداد ژتون:</label>
+                                <input type="number" id="usdtBep20Tokens" class="form-input" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>نام والت:</label>
+                            <input type="text" id="usdtBep20Wallet" class="form-input" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label>هش تراکنش (اختیاری):</label>
+                            <input type="text" id="usdtBep20Hash" class="form-input" placeholder="">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>تاریخ:</label>
+                                <input type="date" id="usdtBep20Date" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>ساعت:</label>
+                                <input type="time" id="usdtBep20Time" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>عکس اسکین (اختیاری):</label>
+                            <div class="drag-drop-zone" id="usdtBep20DragZone" ondrop="handleDrop(event, 'usdtBep20')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                                <span style="font-size: 32px;">📸</span>
+                                <p>عکس را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtBep20File').click()">انتخاب کنید</span></p>
+                                <input type="file" id="usdtBep20File" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'usdtBep20')">
+                            </div>
+                        </div>
+                        <button class="btn-add" onclick="addTransaction('usdt-bep20')" style="width: 100%; margin-top: 10px;">✅ ثبت</button>
                     </div>
                 </div>
 
-                <!-- BEP20 -->
-                <div id="usdtBep20Section" class="transaction-form">
-                    <div class="form-row">
-                        <input type="text" id="usdtBep20Player" class="form-input" placeholder="نام بازیکن">
-                        <input type="number" id="usdtBep20Amount" class="form-input" placeholder="مقدار USDT" step="0.01">
-                        <input type="number" id="usdtBep20Tokens" class="form-input" placeholder="تعداد ژتون">
+                <!-- TRC20 Section -->
+                <div id="usdtTrc20Section" class="tab-section-content" style="display: none;">
+                    <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                        <h3>افزودن تراکنش USDT (TRC20)</h3>
+                        <div class="form-group">
+                            <label>👤 نام بازیکن:</label>
+                            <input type="text" id="usdtTrc20Player" class="form-input" placeholder="نام بازیکن">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>مقدار USDT:</label>
+                                <input type="number" id="usdtTrc20Amount" class="form-input" placeholder="0.00" step="0.01">
+                            </div>
+                            <div class="form-group">
+                                <label>تعداد ژتون:</label>
+                                <input type="number" id="usdtTrc20Tokens" class="form-input" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>نام والت:</label>
+                            <input type="text" id="usdtTrc20Wallet" class="form-input" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label>هش تراکنش (اختیاری):</label>
+                            <input type="text" id="usdtTrc20Hash" class="form-input" placeholder="">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>تاریخ:</label>
+                                <input type="date" id="usdtTrc20Date" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>ساعت:</label>
+                                <input type="time" id="usdtTrc20Time" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>عکس اسکین (اختیاری):</label>
+                            <div class="drag-drop-zone" id="usdtTrc20DragZone" ondrop="handleDrop(event, 'usdtTrc20')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                                <span style="font-size: 32px;">📸</span>
+                                <p>عکس را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtTrc20File').click()">انتخاب کنید</span></p>
+                                <input type="file" id="usdtTrc20File" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'usdtTrc20')">
+                            </div>
+                        </div>
+                        <button class="btn-add" onclick="addTransaction('usdt-trc20')" style="width: 100%; margin-top: 10px;">✅ ثبت</button>
                     </div>
-                    <div class="form-row">
-                        <input type="text" id="usdtBep20Wallet" class="form-input" placeholder="نام والت">
-                        <input type="text" id="usdtBep20Hash" class="form-input" placeholder="هش تراکنش (اختیاری)">
-                    </div>
-                    <div class="form-row">
-                        <input type="date" id="usdtBep20Date" class="form-input">
-                        <input type="time" id="usdtBep20Time" class="form-input">
-                    </div>
-                    <div class="drag-drop-zone" id="usdtBep20DragZone" ondrop="handleDrop(event, 'usdtBep20')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                        <span style="font-size: 32px;">📸</span>
-                        <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtBep20File').click()">انتخاب کنید</span></p>
-                        <input type="file" id="usdtBep20File" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'usdtBep20')">
-                    </div>
-                    <button onclick="addTransaction('usdt-bep20')" class="btn-add btn-full">افزودن تراکنش BEP20</button>
                 </div>
 
-                <!-- TRC20 -->
-                <div id="usdtTrc20Section" class="transaction-form" style="display: none;">
-                    <div class="form-row">
-                        <input type="text" id="usdtTrc20Player" class="form-input" placeholder="نام بازیکن">
-                        <input type="number" id="usdtTrc20Amount" class="form-input" placeholder="مقدار USDT" step="0.01">
-                        <input type="number" id="usdtTrc20Tokens" class="form-input" placeholder="تعداد ژتون">
-                    </div>
-                    <div class="form-row">
-                        <input type="text" id="usdtTrc20Wallet" class="form-input" placeholder="نام والت">
-                        <input type="text" id="usdtTrc20Hash" class="form-input" placeholder="هش تراکنش (اختیاری)">
-                    </div>
-                    <div class="form-row">
-                        <input type="date" id="usdtTrc20Date" class="form-input">
-                        <input type="time" id="usdtTrc20Time" class="form-input">
-                    </div>
-                    <div class="drag-drop-zone" id="usdtTrc20DragZone" ondrop="handleDrop(event, 'usdtTrc20')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                        <span style="font-size: 32px;">📸</span>
-                        <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtTrc20File').click()">انتخاب کنید</span></p>
-                        <input type="file" id="usdtTrc20File" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'usdtTrc20')">
-                    </div>
-                    <button onclick="addTransaction('usdt-trc20')" class="btn-add btn-full">افزودن تراکنش TRC20</button>
+                <h3>📊 تراکنش‌های امروز</h3>
+                <div style="overflow-x: auto;">
+                    <div id="usdtTransactions"></div>
                 </div>
+                <button class="btn-add" onclick="openExportDialog('usdt')" style="margin-top: 15px;">📥 دریافت گزارش</button>
+            </div>
 
-                <div id="usdtTransactions"></div>
-            </section>
-
-            <!-- تب ترون -->
-            <section id="trxTab" class="tab-section">
-                <div class="section-header">
-                    <h2>💰 ترون (TRX)</h2>
-                    <button class="btn-export" onclick="openExportDialog('trx')">📥 دریافت گزارش</button>
-                </div>
-                <div class="transaction-form">
-                    <div class="form-row">
+            <!-- تب TRX -->
+            <div id="trxTab" class="tab-section">
+                <h2>💰 TRX - ترون</h2>
+                
+                <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="margin-top: 0;">افزودن تراکنش TRX</h3>
+                    <div class="form-group">
+                        <label>👤 نام بازیکن:</label>
                         <input type="text" id="trxPlayer" class="form-input" placeholder="نام بازیکن">
-                        <input type="number" id="trxAmount" class="form-input" placeholder="مقدار TRX" step="0.01">
-                        <input type="number" id="trxTokens" class="form-input" placeholder="تعداد ژتون">
                     </div>
-                    <div class="form-row">
-                        <input type="text" id="trxWallet" class="form-input" placeholder="نام والت">
-                        <input type="text" id="trxHash" class="form-input" placeholder="هش تراکنش (اختیاری)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>مقدار TRX:</label>
+                            <input type="number" id="trxAmount" class="form-input" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>تعداد ژتون:</label>
+                            <input type="number" id="trxTokens" class="form-input" placeholder="0">
+                        </div>
                     </div>
-                    <div class="form-row">
-                        <input type="date" id="trxDate" class="form-input">
-                        <input type="time" id="trxTime" class="form-input">
+                    <div class="form-group">
+                        <label>نام والت:</label>
+                        <input type="text" id="trxWallet" class="form-input" placeholder="">
                     </div>
-                    <div class="drag-drop-zone" id="trxDragZone" ondrop="handleDrop(event, 'trx')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                        <span style="font-size: 32px;">📸</span>
-                        <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('trxFile').click()">انتخاب کنید</span></p>
-                        <input type="file" id="trxFile" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'trx')">
+                    <div class="form-group">
+                        <label>هش تراکنش (اختیاری):</label>
+                        <input type="text" id="trxHash" class="form-input" placeholder="">
                     </div>
-                    <button onclick="addTransaction('trx')" class="btn-add btn-full">افزودن تراکنش</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>تاریخ:</label>
+                            <input type="date" id="trxDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>ساعت:</label>
+                            <input type="time" id="trxTime" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>عکس اسکین (اختیاری):</label>
+                        <div class="drag-drop-zone" id="trxDragZone" ondrop="handleDrop(event, 'trx')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                            <span style="font-size: 32px;">📸</span>
+                            <p>عکس را بکشید یا <span class="drag-link" onclick="document.getElementById('trxFile').click()">انتخاب کنید</span></p>
+                            <input type="file" id="trxFile" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'trx')">
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addTransaction('trx')" style="width: 100%; margin-top: 10px;">✅ ثبت</button>
                 </div>
-                <div id="trxTransactions"></div>
-            </section>
+
+                <h3>📊 تراکنش‌های امروز</h3>
+                <div style="overflow-x: auto;">
+                    <div id="trxTransactions"></div>
+                </div>
+                <button class="btn-add" onclick="openExportDialog('trx')" style="margin-top: 15px;">📥 دریافت گزارش</button>
+            </div>
 
             <!-- تب بدهی -->
-            <section id="debtTab" class="tab-section">
-                <div class="section-header">
-                    <h2>🏦 بدهی</h2>
-                    <button class="btn-export" onclick="openExportDialog('debt')">📥 دریافت گزارش</button>
-                </div>
-                <div class="transaction-form">
-                    <div class="form-row">
+            <div id="debtTab" class="tab-section">
+                <h2>📋 مدیریت بدهی</h2>
+                
+                <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="margin-top: 0;">ثبت بدهی جدید</h3>
+                    <div class="form-group">
+                        <label>👤 نام بازیکن:</label>
                         <input type="text" id="debtPlayer" class="form-input" placeholder="نام بازیکن">
-                        <input type="number" id="debtAmount" class="form-input" placeholder="مقدار بدهی">
                     </div>
-                    <div class="form-row">
-                        <input type="date" id="debtDate" class="form-input">
-                        <input type="time" id="debtTime" class="form-input">
+                    <div class="form-group">
+                        <label>مقدار:</label>
+                        <input type="number" id="debtAmount" class="form-input" placeholder="0">
                     </div>
-                    <button onclick="addTransaction('debt')" class="btn-add btn-full">افزودن بدهی</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>تاریخ:</label>
+                            <input type="date" id="debtDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>ساعت:</label>
+                            <input type="time" id="debtTime" class="form-input">
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addTransaction('debt')" style="width: 100%; margin-top: 10px;">✅ ثبت</button>
                 </div>
-                <div id="debtTransactions"></div>
-            </section>
+
+                <h3>📊 تراکنش‌های امروز</h3>
+                <div style="overflow-x: auto;">
+                    <div id="debtTransactions"></div>
+                </div>
+                <button class="btn-add" onclick="openExportDialog('debt')" style="margin-top: 15px;">📥 دریافت گزارش</button>
+            </div>
 
             <!-- تب درگاه ریالی -->
-            <section id="rialTab" class="tab-section">
-                <div class="section-header">
-                    <h2>💳 درگاه ریالی</h2>
-                    <button class="btn-export" onclick="openExportDialog('rial')">📥 دریافت گزارش</button>
-                </div>
-                <div class="transaction-form">
-                    <div class="form-row">
+            <div id="rialTab" class="tab-section">
+                <h2>🪙 درگاه ریالی</h2>
+                
+                <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="margin-top: 0;">ثبت پرداخت ریالی</h3>
+                    <div class="form-group">
+                        <label>👤 نام بازیکن:</label>
                         <input type="text" id="rialPlayer" class="form-input" placeholder="نام بازیکن">
-                        <input type="text" id="rialOrder" class="form-input" placeholder="شماره سفارش">
-                        <input type="number" id="rialAmount" class="form-input" placeholder="مقدار (ریال)">
                     </div>
-                    <div class="form-row">
-                        <input type="date" id="rialDate" class="form-input">
-                        <input type="time" id="rialTime" class="form-input">
+                    <div class="form-group">
+                        <label>شماره سفارش:</label>
+                        <input type="text" id="rialOrder" class="form-input" placeholder="">
                     </div>
-                    <button onclick="addTransaction('rial')" class="btn-add btn-full">افزودن تراکنش</button>
+                    <div class="form-group">
+                        <label>مقدار (ریال):</label>
+                        <input type="number" id="rialAmount" class="form-input" placeholder="0">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>تاریخ:</label>
+                            <input type="date" id="rialDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>ساعت:</label>
+                            <input type="time" id="rialTime" class="form-input">
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addTransaction('rial')" style="width: 100%; margin-top: 10px;">✅ ثبت</button>
                 </div>
-                <div id="rialTransactions"></div>
-            </section>
+
+                <h3>📊 تراکنش‌های امروز</h3>
+                <div style="overflow-x: auto;">
+                    <div id="rialTransactions"></div>
+                </div>
+                <button class="btn-add" onclick="openExportDialog('rial')" style="margin-top: 15px;">📥 دریافت گزارش</button>
+            </div>
 
             <!-- تب کارت به کارت -->
-            <section id="cardTab" class="tab-section">
-                <div class="section-header">
-                    <h2>🔄 کارت به کارت</h2>
-                    <button class="btn-export" onclick="openExportDialog('card')">📥 دریافت گزارش</button>
-                </div>
-                <div class="transaction-form">
-                    <div class="form-row">
+            <div id="cardTab" class="tab-section">
+                <h2>🏧 کارت به کارت</h2>
+                
+                <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="margin-top: 0;">ثبت تراکنش کارت به کارت</h3>
+                    <div class="form-group">
+                        <label>👤 نام بازیکن:</label>
                         <input type="text" id="cardPlayer" class="form-input" placeholder="نام بازیکن">
-                        <input type="number" id="cardAmount" class="form-input" placeholder="مقدار">
-                        <input type="number" id="cardTokens" class="form-input" placeholder="تعداد ژتون">
                     </div>
-                    <div class="form-row">
-                        <input type="date" id="cardDate" class="form-input">
-                        <input type="time" id="cardTime" class="form-input">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>مقدار (ریال):</label>
+                            <input type="number" id="cardAmount" class="form-input" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>تعداد ژتون:</label>
+                            <input type="number" id="cardTokens" class="form-input" placeholder="0">
+                        </div>
                     </div>
-                    <button onclick="addTransaction('card')" class="btn-add btn-full">افزودن تراکنش</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>تاریخ:</label>
+                            <input type="date" id="cardDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>ساعت:</label>
+                            <input type="time" id="cardTime" class="form-input">
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addTransaction('card')" style="width: 100%; margin-top: 10px;">✅ ثبت</button>
                 </div>
-                <div id="cardTransactions"></div>
-            </section>
+
+                <h3>📊 تراکنش‌های امروز</h3>
+                <div style="overflow-x: auto;">
+                    <div id="cardTransactions"></div>
+                </div>
+                <button class="btn-add" onclick="openExportDialog('card')" style="margin-top: 15px;">📥 دریافت گزارش</button>
+            </div>
 
             <!-- تب پرداخت بدهی -->
-            <section id="paymentTab" class="tab-section">
-                <div class="section-header">
-                    <h2>✅ پرداخت بدهی</h2>
-                    <button class="btn-export" onclick="openExportDialog('payment')">📥 دریافت گزارش</button>
-                </div>
-                <div class="transaction-form">
-                    <div class="form-row">
+            <div id="paymentTab" class="tab-section">
+                <h2>✅ پرداخت بدهی</h2>
+                
+                <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <h3 style="margin-top: 0;">ثبت پرداخت بدهی</h3>
+                    <div class="form-group">
+                        <label>👤 نام بازیکن:</label>
                         <input type="text" id="paymentPlayer" class="form-input" placeholder="نام بازیکن">
-                        <input type="number" id="paymentAmount" class="form-input" placeholder="مقدار پرداخت">
                     </div>
-                    <div class="form-row">
-                        <input type="date" id="paymentDate" class="form-input">
-                        <input type="time" id="paymentTime" class="form-input">
+                    <div class="form-group">
+                        <label>مقدار پرداختی:</label>
+                        <input type="number" id="paymentAmount" class="form-input" placeholder="0">
                     </div>
-                    <button onclick="addTransaction('payment')" class="btn-add btn-full">افزودن پرداخت</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>تاریخ:</label>
+                            <input type="date" id="paymentDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>ساعت:</label>
+                            <input type="time" id="paymentTime" class="form-input">
+                        </div>
+                    </div>
+                    <button class="btn-add" onclick="addTransaction('payment')" style="width: 100%; margin-top: 10px;">✅ ثبت</button>
                 </div>
-                <div id="paymentTransactions"></div>
-            </section>
+
+                <h3>📊 تراکنش‌های امروز</h3>
+                <div style="overflow-x: auto;">
+                    <div id="paymentTransactions"></div>
+                </div>
+                <button class="btn-add" onclick="openExportDialog('payment')" style="margin-top: 15px;">📥 دریافت گزارش</button>
+            </div>
 
             <!-- تب کشاوت -->
-            <section id="cashoutTab" class="tab-section">
-                <div class="section-header">
-                    <h2>💸 کشاوت</h2>
-                    <button class="btn-export" onclick="openExportDialog('cashout')">📥 دریافت گزارش</button>
-                </div>
+            <div id="cashoutTab" class="tab-section">
+                <h2>💸 کشاوت</h2>
                 
-                <div style="margin-bottom: 20px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <button class="export-type-btn active" onclick="switchCashoutType('rial')" data-type="rial">💳 کشاوت ریالی</button>
-                        <button class="export-type-btn" onclick="switchCashoutType('wallet')" data-type="wallet">💰 کشاوت والت</button>
-                    </div>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button data-type="rial" class="btn-type active" onclick="switchCashoutType('rial')">💳 ریالی</button>
+                    <button data-type="wallet" class="btn-type" onclick="switchCashoutType('wallet')">💰 والت</button>
                 </div>
 
                 <!-- کشاوت ریالی -->
-                <div id="cashoutRialSection" class="transaction-form">
-                    <div class="form-row">
-                        <input type="text" id="rialCashoutPlayer" class="form-input" placeholder="نام بازیکن">
-                        <input type="number" id="rialCashoutAmount" class="form-input" placeholder="مقدار (ریال)">
-                        <input type="text" id="rialCashoutCard" class="form-input" placeholder="شماره کارت">
+                <div id="cashoutRialSection" class="tab-section-content">
+                    <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                        <h3>کشاوت ریالی</h3>
+                        <div class="form-group">
+                            <label>👤 نام بازیکن:</label>
+                            <input type="text" id="rialCashoutPlayer" class="form-input" placeholder="نام بازیکن">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>مقدار (ریال):</label>
+                                <input type="number" id="rialCashoutAmount" class="form-input" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>شماره کارت:</label>
+                                <input type="text" id="rialCashoutCard" class="form-input" placeholder="">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>تاریخ:</label>
+                                <input type="date" id="rialCashoutDate" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>ساعت:</label>
+                                <input type="time" id="rialCashoutTime" class="form-input">
+                            </div>
+                        </div>
+                        <button class="btn-add" onclick="addTransaction('cashout-rial')" style="width: 100%; margin-top: 10px;">✅ ثبت</button>
                     </div>
-                    <div class="form-row">
-                        <input type="date" id="rialCashoutDate" class="form-input">
-                        <input type="time" id="rialCashoutTime" class="form-input">
-                    </div>
-                    <button onclick="addTransaction('cashout-rial')" class="btn-add btn-full">افزودن کشاوت ریالی</button>
                 </div>
 
                 <!-- کشاوت والت -->
-                <div id="cashoutWalletSection" class="transaction-form" style="display: none;">
-                    <div class="form-row">
-                        <input type="text" id="walletCashoutPlayer" class="form-input" placeholder="نام بازیکن">
-                        <input type="number" id="walletCashoutAmount" class="form-input" placeholder="مقدار">
-                        <input type="text" id="walletCashoutAddress" class="form-input" placeholder="آدرس والت">
+                <div id="cashoutWalletSection" class="tab-section-content" style="display: none;">
+                    <div style="background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                        <h3>کشاوت والت</h3>
+                        <div class="form-group">
+                            <label>👤 نام بازیکن:</label>
+                            <input type="text" id="walletCashoutPlayer" class="form-input" placeholder="نام بازیکن">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>مقدار:</label>
+                                <input type="number" id="walletCashoutAmount" class="form-input" placeholder="0">
+                            </div>
+                            <div class="form-group">
+                                <label>آدرس والت:</label>
+                                <input type="text" id="walletCashoutAddress" class="form-input" placeholder="">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>تاریخ:</label>
+                                <input type="date" id="walletCashoutDate" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>ساعت:</label>
+                                <input type="time" id="walletCashoutTime" class="form-input">
+                            </div>
+                        </div>
+                        <button class="btn-add" onclick="addTransaction('cashout-wallet')" style="width: 100%; margin-top: 10px;">✅ ثبت</button>
                     </div>
-                    <div class="form-row">
-                        <input type="date" id="walletCashoutDate" class="form-input">
-                        <input type="time" id="walletCashoutTime" class="form-input">
-                    </div>
-                    <button onclick="addTransaction('cashout-wallet')" class="btn-add btn-full">افزودن کشاوت والت</button>
                 </div>
 
-                <div id="cashoutTransactions"></div>
-            </section>
-        </main>
-
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <nav class="nav-menu">
-                <button class="nav-item active" onclick="switchTab('players')"><span>👥</span><span>بازیکنان</span></button>
-                <button class="nav-item" onclick="switchTab('usdt')"><span>💵</span><span>تتر</span></button>
-                <button class="nav-item" onclick="switchTab('trx')"><span>💰</span><span>ترون</span></button>
-                <button class="nav-item" onclick="switchTab('debt')"><span>🏦</span><span>بدهی</span></button>
-                <button class="nav-item" onclick="switchTab('rial')"><span>💳</span><span>درگاه</span></button>
-                <button class="nav-item" onclick="switchTab('card')"><span>🔄</span><span>کارت</span></button>
-                <button class="nav-item" onclick="switchTab('payment')"><span>✅</span><span>پرداخت</span></button>
-                <button class="nav-item" onclick="switchTab('cashout')"><span>💸</span><span>کشاوت</span></button>
-            </nav>
-        </aside>
+                <h3>📊 تراکنش‌های امروز</h3>
+                <div style="overflow-x: auto;">
+                    <div id="cashoutTransactions"></div>
+                </div>
+                <button class="btn-add" onclick="openExportDialog('cashout')" style="margin-top: 15px;">📥 دریافت گزارش</button>
+            </div>
+        </div>
     </div>
 
-    <!-- مودال سوابق -->
+    <!-- مودال های -->
     <div id="historyModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>سوابق بازیکن</h2>
-                <button class="modal-close" onclick="closeModal('historyModal')">&times;</button>
+                <h2>📋 سوابق</h2>
+                <button class="close-btn" onclick="closeModal('historyModal')">✕</button>
             </div>
-            <div id="historyContent"></div>
+            <div id="historyContent" style="max-height: 500px; overflow-y: auto;"></div>
         </div>
     </div>
 
-    <!-- مودال شارژ -->
     <div id="chargeModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>شارژ و پرداخت</h2>
-                <button class="modal-close" onclick="closeModal('chargeModal')">&times;</button>
+                <h2>💳 شارژ</h2>
+                <button class="close-btn" onclick="closeModal('chargeModal')">✕</button>
             </div>
-            <div id="chargeContent"></div>
+            <div id="chargeContent" style="max-height: 600px; overflow-y: auto;"></div>
         </div>
     </div>
 
-    <!-- مودال Export -->
     <div id="exportModal" class="modal">
-        <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-content">
             <div class="modal-header">
-                <h2>دریافت گزارش <span id="exportType"></span></h2>
-                <button class="modal-close" onclick="closeModal('exportModal')">&times;</button>
+                <h2>📥 دریافت گزارش <span id="exportType"></span></h2>
+                <button class="close-btn" onclick="closeModal('exportModal')">✕</button>
             </div>
-            
             <div style="padding: 20px;">
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; color: var(--text-secondary);">نوع گزارش</label>
+                <div class="form-group">
+                    <label>نوع گزارش:</label>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                        <button class="export-type-btn active" onclick="selectExportType('daily')" data-type="daily">📅 روزانه</button>
-                        <button class="export-type-btn" onclick="selectExportType('weekly')" data-type="weekly">📊 هفتگی</button>
-                        <button class="export-type-btn" onclick="selectExportType('monthly')" data-type="monthly">📈 ماهانه</button>
+                        <button data-type="daily" class="export-type-btn active" onclick="selectExportType('daily')">📅 روزانه</button>
+                        <button data-type="weekly" class="export-type-btn" onclick="selectExportType('weekly')">📆 هفتگی</button>
+                        <button data-type="monthly" class="export-type-btn" onclick="selectExportType('monthly')">📊 ماهانه</button>
                     </div>
-                    <input type="hidden" id="selectedExportType" value="daily">
                 </div>
 
-                <div id="dateRangeControls" style="margin-bottom: 20px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; color: var(--text-secondary);">محدوده تاریخ</label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>تاریخ شروع:</label>
                         <input type="date" id="exportStartDate" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>تاریخ پایان:</label>
                         <input type="date" id="exportEndDate" class="form-input">
                     </div>
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; color: var(--text-secondary);">محدوده ساعت (اختیاری)</label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-secondary);">از ساعت</label>
-                            <input type="time" id="exportStartTime" class="form-input">
-                        </div>
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-secondary);">تا ساعت</label>
-                            <input type="time" id="exportEndTime" class="form-input">
-                        </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>ساعت شروع (اختیاری):</label>
+                        <input type="time" id="exportStartTime" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label>ساعت پایان (اختیاری):</label>
+                        <input type="time" id="exportEndTime" class="form-input">
                     </div>
                 </div>
 
-                <button onclick="executeExport()" class="btn-add" style="width: 100%;">📥 دریافت گزارش</button>
+                <button class="btn-add" onclick="executeExport()" style="width: 100%; margin-top: 15px;">✅ دریافت</button>
             </div>
         </div>
     </div>
+
+    <input type="hidden" id="selectedExportType" value="daily">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
     <script src="js/script.js"></script>
