@@ -29,24 +29,33 @@ function filterPlayers(inputId, listId) {
     const filtered = players.filter(p => p.name.toLowerCase().includes(searchTerm));
 
     if (filtered.length === 0) {
-        listDiv.innerHTML = '<div style="padding: 10px; color: var(--text-secondary);">بازیکنی یافت نشد</div>';
+        listDiv.innerHTML = '<div style="padding: 10px; color: var(--text-secondary); text-align: center;">❌ بازیکنی یافت نشد</div>';
         listDiv.style.display = 'block';
         return;
     }
 
     listDiv.innerHTML = filtered.map(p => `
-        <div class="player-search-item" onclick="selectPlayer('${inputId}', '${listId}', '${p.name}')" style="padding: 10px; cursor: pointer; border-bottom: 1px solid var(--border-color); color: var(--text-primary);">
-            ${p.name}
+        <div onclick="selectPlayerName('${inputId}', '${listId}', '${p.name}')" style="padding: 12px 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; transition: all 0.2s;">
+            👤 ${p.name}
         </div>
     `).join('');
     
     listDiv.style.display = 'block';
 }
 
-function selectPlayer(inputId, listId, playerName) {
-    document.getElementById(inputId).value = playerName;
+function selectPlayerName(inputId, listId, name) {
+    document.getElementById(inputId).value = name;
     document.getElementById(listId).style.display = 'none';
 }
+
+// بستن dropdown با کلیک بیرون
+document.addEventListener('click', function(e) {
+    if (!e.target.classList.contains('form-input')) {
+        document.querySelectorAll('.player-search-dropdown').forEach(div => {
+            div.style.display = 'none';
+        });
+    }
+});
 
 // ===== مدیریت رنگ‌ها =====
 function selectAdmin(adminId) {
@@ -760,10 +769,10 @@ function showChargeForm(type) {
 
     if (type === 'usdt') {
         form = `
-            <div class="form-group" style="position: relative;">
-                <label>جستجوی بازیکن</label>
-                <input type="text" id="chargeUsdtPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." autocomplete="off" oninput="filterPlayers('chargeUsdtPlayer', 'usdtPlayerList')">
-                <div id="usdtPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 1000; margin-top: 5px;"></div>
+            <div class="form-group" style="position: relative; z-index: 10;">
+                <label>🔍 جستجوی بازیکن</label>
+                <input type="text" id="chargeUsdtPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargeUsdtPlayer', 'chargeUsdtPlayerList')">
+                <div id="chargeUsdtPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
             </div>
             <div class="form-group">
                 <label>مقدار USDT</label>
@@ -799,14 +808,14 @@ function showChargeForm(type) {
                     <input type="file" id="chargeUsdtFile" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'chargeUsdt')">
                 </div>
             </div>
-            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('usdt')">ثبت</button>
+            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('usdt')">✅ ثبت</button>
         `;
     } else if (type === 'trx') {
         form = `
-            <div class="form-group" style="position: relative;">
-                <label>جستجوی بازیکن</label>
-                <input type="text" id="chargeTrxPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." autocomplete="off" oninput="filterPlayers('chargeTrxPlayer', 'trxPlayerList')">
-                <div id="trxPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 1000; margin-top: 5px;"></div>
+            <div class="form-group" style="position: relative; z-index: 10;">
+                <label>🔍 جستجوی بازیکن</label>
+                <input type="text" id="chargeTrxPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargeTrxPlayer', 'chargeTrxPlayerList')">
+                <div id="chargeTrxPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
             </div>
             <div class="form-group">
                 <label>مقدار TRX</label>
@@ -842,14 +851,14 @@ function showChargeForm(type) {
                     <input type="file" id="chargeTrxFile" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'chargeTrx')">
                 </div>
             </div>
-            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('trx')">ثبت</button>
+            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('trx')">✅ ثبت</button>
         `;
     } else if (type === 'rial') {
         form = `
-            <div class="form-group" style="position: relative;">
-                <label>جستجوی بازیکن</label>
-                <input type="text" id="chargeRialPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." autocomplete="off" oninput="filterPlayers('chargeRialPlayer', 'rialPlayerList')">
-                <div id="rialPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 1000; margin-top: 5px;"></div>
+            <div class="form-group" style="position: relative; z-index: 10;">
+                <label>🔍 جستجوی بازیکن</label>
+                <input type="text" id="chargeRialPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargeRialPlayer', 'chargeRialPlayerList')">
+                <div id="chargeRialPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
             </div>
             <div class="form-group">
                 <label>شماره سفارش</label>
@@ -869,14 +878,14 @@ function showChargeForm(type) {
                     <input type="time" id="chargeRialTime" class="form-input" value="${timeStr}">
                 </div>
             </div>
-            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('rial')">ثبت</button>
+            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('rial')">✅ ثبت</button>
         `;
     } else if (type === 'debt') {
         form = `
-            <div class="form-group" style="position: relative;">
-                <label>جستجوی بازیکن</label>
-                <input type="text" id="chargeDebtPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." autocomplete="off" oninput="filterPlayers('chargeDebtPlayer', 'debtPlayerList')">
-                <div id="debtPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 1000; margin-top: 5px;"></div>
+            <div class="form-group" style="position: relative; z-index: 10;">
+                <label>🔍 جستجوی بازیکن</label>
+                <input type="text" id="chargeDebtPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargeDebtPlayer', 'chargeDebtPlayerList')">
+                <div id="chargeDebtPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
             </div>
             <div class="form-group">
                 <label>مقدار ژتون</label>
@@ -899,14 +908,14 @@ function showChargeForm(type) {
                     <input type="time" id="chargeDebtTime" class="form-input" value="${timeStr}">
                 </div>
             </div>
-            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('debt')">ثبت</button>
+            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('debt')">✅ ثبت</button>
         `;
     } else if (type === 'payment') {
         form = `
-            <div class="form-group" style="position: relative;">
-                <label>جستجوی بازیکن</label>
-                <input type="text" id="chargePaymentPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." autocomplete="off" oninput="filterPlayers('chargePaymentPlayer', 'paymentPlayerList')">
-                <div id="paymentPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 1000; margin-top: 5px;"></div>
+            <div class="form-group" style="position: relative; z-index: 10;">
+                <label>🔍 جستجوی بازیکن</label>
+                <input type="text" id="chargePaymentPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargePaymentPlayer', 'chargePaymentPlayerList')">
+                <div id="chargePaymentPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
             </div>
             <div class="form-group">
                 <label>مقدار پرداختی</label>
@@ -922,7 +931,7 @@ function showChargeForm(type) {
                     <input type="time" id="chargePaymentTime" class="form-input" value="${timeStr}">
                 </div>
             </div>
-            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('payment')">ثبت</button>
+            <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('payment')">✅ ثبت</button>
         `;
     }
 
