@@ -308,6 +308,7 @@ body {
     display: flex;
     gap: 20px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .nav-item {
@@ -338,8 +339,8 @@ body {
     border-color: var(--admin-color);
 }
 
-.nav-item .icon {
-    font-size: 18px;
+.nav-item span {
+    font-size: 16px;
 }
 
 /* Main Content */
@@ -377,13 +378,10 @@ body {
 }
 
 .add-player-section {
-    display: flex;
-    gap: 15px;
     margin-bottom: 30px;
 }
 
 .add-player-section input {
-    flex: 1;
     padding: 14px 16px;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -397,29 +395,7 @@ body {
     border-color: var(--admin-color);
 }
 
-.search-section {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.search-section input {
-    flex: 1;
-    padding: 14px 16px;
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    color: var(--text-primary);
-    font-family: 'Poppins', sans-serif;
-}
-
-.search-section input:focus {
-    outline: none;
-    border-color: var(--admin-color);
-}
-
-.btn-add,
-.btn-search {
+.btn-add {
     padding: 14px 30px;
     background: var(--admin-color);
     color: #000;
@@ -432,158 +408,29 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
-.btn-add:hover,
-.btn-search:hover {
+.btn-add:hover {
     background: #FFC700;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
 }
 
-.players-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.player-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 15px;
-    padding: 20px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.player-card:hover {
-    border-color: var(--admin-color);
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
-    transform: translateY(-5px);
-}
-
-.player-card h3 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    font-weight: 700;
-}
-
-.player-card p {
-    font-size: 14px;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-}
-
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.modal.active {
-    display: flex;
-}
-
-.modal-content {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 15px;
-    padding: 30px;
-    max-width: 500px;
-    width: 100%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    position: sticky;
-    top: 0;
-    background: var(--card-bg);
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.modal-close {
-    background: none;
+.btn-export {
+    padding: 10px 20px;
+    background: var(--admin-color);
+    color: #000;
     border: none;
-    color: var(--text-secondary);
-    font-size: 24px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.3s ease;
 }
 
-.modal-close:hover {
-    color: var(--text-primary);
+.btn-export:hover {
+    background: #FFC700;
+    transform: translateY(-2px);
 }
 
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    background: var(--dark-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-family: 'Poppins', sans-serif;
-    margin-bottom: 12px;
-}
-
-.form-group input:focus {
-    outline: none;
-    border-color: var(--admin-color);
-}
-
-.form-group select {
-    width: 100%;
-    padding: 10px;
-    background: var(--dark-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-family: 'Poppins', sans-serif;
-    margin-bottom: 12px;
-}
-
-.form-group select:focus {
-    outline: none;
-    border-color: var(--admin-color);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .main-content {
-        padding: 20px;
-    }
-
-    .players-container {
-        grid-template-columns: 1fr;
-    }
-
-    .sidebar {
-        padding: 10px 15px;
-    }
-
-    .nav-menu {
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .nav-item {
-        padding: 8px 15px;
-        font-size: 12px;
-    }
-}
 /* ===== Transaction Form ===== */
 .transaction-form {
     background: rgba(26, 26, 26, 0.5);
@@ -663,23 +510,6 @@ body {
     width: 100%;
 }
 
-.btn-export {
-    padding: 10px 20px;
-    background: var(--admin-color);
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 12px;
-    transition: all 0.3s ease;
-}
-
-.btn-export:hover {
-    background: #FFC700;
-    transform: translateY(-2px);
-}
-
 .btn-small {
     padding: 6px 12px;
     background: rgba(255, 215, 0, 0.1);
@@ -694,6 +524,60 @@ body {
 
 .btn-small:hover {
     background: rgba(255, 215, 0, 0.2);
+}
+
+/* ===== Player Cards ===== */
+.players-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.player-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.player-card:hover {
+    border-color: var(--admin-color);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
+    transform: translateY(-5px);
+}
+
+.player-card h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.player-card p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+/* ===== Verification Badge ===== */
+.verification-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 6px;
+    font-size: 11px;
+    color: #4CAF50;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.verification-badge::before {
+    content: '✅';
+    font-size: 12px;
 }
 
 /* ===== Transactions Table ===== */
@@ -734,4 +618,110 @@ body {
 .transaction-table td:first-child {
     color: var(--text-primary);
     font-weight: 500;
+}
+
+/* ===== Modal ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+}
+
+/* ===== Export Type Buttons ===== */
+.export-type-btn {
+    padding: 12px;
+    background: rgba(80, 80, 80, 0.2);
+    border: 2px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.export-type-btn:hover {
+    border-color: var(--admin-color);
+    background: rgba(255, 215, 0, 0.05);
+    color: var(--text-primary);
+}
+
+.export-type-btn.active {
+    background: var(--admin-color);
+    border-color: var(--admin-color);
+    color: #000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 20px;
+    }
+
+    .players-container {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        padding: 10px 15px;
+    }
+
+    .nav-menu {
+        gap: 10px;
+    }
+
+    .nav-item {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
 }
