@@ -12,6 +12,7 @@
     --text-primary: #ffffff;
     --text-secondary: #a0aec0;
     --border-color: #2d3548;
+    --admin-color: #FFD700;
 }
 
 html {
@@ -33,25 +34,26 @@ body {
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-    background-image: 
-        radial-gradient(circle at 50% 50%, rgba(128, 128, 128, 0.08) 0%, transparent 50%);
-    background-size: 600px 600px;
-    background-position: center;
+    background-attachment: fixed;
     position: relative;
     padding: 20px;
     overflow: hidden;
 }
 
 .login-container::before {
-    content: '♠ ♥ ♦ ♣';
+    content: '';
     position: absolute;
-    font-size: 180px;
-    opacity: 0.08;
+    width: 600px;
+    height: 600px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="100" y="120" font-size="100" fill="white" opacity="0.08" text-anchor="middle" font-weight="bold">S</text></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
-    letter-spacing: 40px;
 }
 
 .login-center {
@@ -99,7 +101,7 @@ body {
 }
 
 .login-card {
-    background: rgba(26, 26, 26, 0.8);
+    background: rgba(26, 26, 26, 0.9);
     border: 1px solid rgba(128, 128, 128, 0.3);
     border-radius: 15px;
     padding: 40px;
@@ -129,13 +131,13 @@ body {
 }
 
 .admin-btn:hover {
-    border-color: var(--primary);
-    background: rgba(128, 128, 128, 0.15);
+    transform: translateY(-2px);
 }
 
 .admin-btn.active {
-    background: rgba(128, 128, 128, 0.4);
-    border-color: var(--primary);
+    border-width: 2px;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    color: #000;
 }
 
 .form-group {
@@ -170,17 +172,17 @@ body {
 
 .form-group input:focus {
     outline: none;
-    border-color: var(--primary);
-    background: rgba(128, 128, 128, 0.05);
-    box-shadow: 0 0 0 3px rgba(128, 128, 128, 0.1);
+    border-color: var(--admin-color);
+    background: rgba(255, 215, 0, 0.05);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
 }
 
 .login-btn {
     width: 100%;
     padding: 14px;
-    background: rgba(128, 128, 128, 0.4);
-    color: white;
-    border: 1px solid var(--primary);
+    background: var(--admin-color);
+    color: #000;
+    border: none;
     border-radius: 8px;
     font-weight: 700;
     font-size: 14px;
@@ -192,8 +194,9 @@ body {
 }
 
 .login-btn:hover {
-    background: rgba(128, 128, 128, 0.6);
-    box-shadow: 0 5px 20px rgba(128, 128, 128, 0.2);
+    background: #FFC700;
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+    transform: translateY(-2px);
 }
 
 .login-hint {
@@ -201,8 +204,9 @@ body {
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px solid rgba(128, 128, 128, 0.2);
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-secondary);
+    line-height: 1.8;
 }
 
 /* ===== صفحه داشبورد ===== */
@@ -210,7 +214,26 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background: var(--dark-bg);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    background-attachment: fixed;
+    position: relative;
+}
+
+.dashboard::before {
+    content: '';
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><text x="100" y="120" font-size="100" fill="white" opacity="0.03" text-anchor="middle" font-weight="bold">S</text></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .header {
@@ -234,7 +257,7 @@ body {
 .logo-small {
     font-size: 18px;
     font-weight: 700;
-    color: var(--primary);
+    color: var(--admin-color);
 }
 
 .header-right {
@@ -244,8 +267,12 @@ body {
 }
 
 .admin-name {
-    font-weight: 600;
-    color: var(--primary);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 8px 16px;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 8px;
 }
 
 .logout-btn {
@@ -300,15 +327,15 @@ body {
 }
 
 .nav-item:hover {
-    color: var(--primary);
-    border-color: var(--primary);
-    background: rgba(128, 128, 128, 0.1);
+    color: var(--admin-color);
+    border-color: var(--admin-color);
+    background: rgba(255, 215, 0, 0.05);
 }
 
 .nav-item.active {
-    color: var(--primary);
-    background: rgba(128, 128, 128, 0.2);
-    border-color: var(--primary);
+    color: var(--admin-color);
+    background: rgba(255, 215, 0, 0.1);
+    border-color: var(--admin-color);
 }
 
 .nav-item .icon {
@@ -324,6 +351,8 @@ body {
     margin-left: auto;
     margin-right: auto;
     width: 100%;
+    position: relative;
+    z-index: 1;
 }
 
 .main-content h2 {
@@ -365,7 +394,7 @@ body {
 
 .add-player-section input:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: var(--admin-color);
 }
 
 .search-section {
@@ -386,15 +415,15 @@ body {
 
 .search-section input:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: var(--admin-color);
 }
 
 .btn-add,
 .btn-search {
     padding: 14px 30px;
-    background: rgba(128, 128, 128, 0.4);
-    color: white;
-    border: 1px solid var(--primary);
+    background: var(--admin-color);
+    color: #000;
+    border: none;
     border-radius: 10px;
     font-weight: 700;
     cursor: pointer;
@@ -405,7 +434,9 @@ body {
 
 .btn-add:hover,
 .btn-search:hover {
-    background: rgba(128, 128, 128, 0.6);
+    background: #FFC700;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
 }
 
 .players-container {
@@ -424,8 +455,8 @@ body {
 }
 
 .player-card:hover {
-    border-color: var(--primary);
-    box-shadow: 0 10px 30px rgba(128, 128, 128, 0.1);
+    border-color: var(--admin-color);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
     transform: translateY(-5px);
 }
 
@@ -455,7 +486,6 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    overflow-y: auto;
 }
 
 .modal.active {
@@ -498,23 +528,36 @@ body {
     color: var(--text-primary);
 }
 
-/* Scrollbar Style */
-.modal-content::-webkit-scrollbar {
-    width: 8px;
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    background: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 12px;
 }
 
-.modal-content::-webkit-scrollbar-track {
-    background: rgba(128, 128, 128, 0.1);
-    border-radius: 10px;
+.form-group input:focus {
+    outline: none;
+    border-color: var(--admin-color);
 }
 
-.modal-content::-webkit-scrollbar-thumb {
-    background: rgba(128, 128, 128, 0.4);
-    border-radius: 10px;
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    background: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 12px;
 }
 
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(128, 128, 128, 0.6);
+.form-group select:focus {
+    outline: none;
+    border-color: var(--admin-color);
 }
 
 /* Responsive */
@@ -539,9 +582,5 @@ body {
     .nav-item {
         padding: 8px 15px;
         font-size: 12px;
-    }
-
-    .modal-content {
-        max-height: 85vh;
     }
 }
