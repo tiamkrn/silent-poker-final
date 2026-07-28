@@ -69,39 +69,30 @@ function setCurrentDateTime() {
     const todayStr = today.toISOString().split('T')[0];
     const timeStr = today.toTimeString().slice(0, 5);
 
-    // تتر BEP20
     document.getElementById('usdtBep20Date').value = todayStr;
     document.getElementById('usdtBep20Time').value = timeStr;
 
-    // تتر TRC20
     document.getElementById('usdtTrc20Date').value = todayStr;
     document.getElementById('usdtTrc20Time').value = timeStr;
 
-    // ترون
     document.getElementById('trxDate').value = todayStr;
     document.getElementById('trxTime').value = timeStr;
 
-    // بدهی
     document.getElementById('debtDate').value = todayStr;
     document.getElementById('debtTime').value = timeStr;
 
-    // درگاه ریالی
     document.getElementById('rialDate').value = todayStr;
     document.getElementById('rialTime').value = timeStr;
 
-    // کارت به کارت
     document.getElementById('cardDate').value = todayStr;
     document.getElementById('cardTime').value = timeStr;
 
-    // پرداخت
     document.getElementById('paymentDate').value = todayStr;
     document.getElementById('paymentTime').value = timeStr;
 
-    // کشاوت ریالی
     document.getElementById('rialCashoutDate').value = todayStr;
     document.getElementById('rialCashoutTime').value = timeStr;
 
-    // کشاوت والت
     document.getElementById('walletCashoutDate').value = todayStr;
     document.getElementById('walletCashoutTime').value = timeStr;
 }
@@ -238,10 +229,13 @@ function handleFileSelect(e, type) {
         const reader = new FileReader();
         reader.onload = function(event) {
             window[type + 'Screenshot'] = event.target.result;
-            document.getElementById(type + 'DragZone').innerHTML = `
-                <span style="font-size: 32px;">✅</span>
-                <p style="color: var(--admin-color);">عکس آپلود شد</p>
-            `;
+            const dragZone = document.getElementById(type + 'DragZone');
+            if (dragZone) {
+                dragZone.innerHTML = `
+                    <span style="font-size: 32px;">✅</span>
+                    <p style="color: var(--admin-color);">عکس آپلود شد</p>
+                `;
+            }
         };
         reader.readAsDataURL(file);
     }
@@ -627,7 +621,7 @@ function viewHistory(idx) {
         content.innerHTML = currentPlayer.records.map(r => `
             <div style="background: var(--dark-bg); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-right: 3px solid ${r.adminColor};">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                    <span style="font-weight: 600;">📅 ${r.date}</span>
+                    <span style="font-weight: 600;">📅 ${r.date} - ${r.time || 'بدون ساعت'}</span>
                     <span style="color: ${r.adminColor}; font-weight: 600;">${r.displayAmount}</span>
                 </div>
                 <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">${r.details}</div>
@@ -655,7 +649,7 @@ function openChargeModal(idx) {
                         <div class="record-info">
                             <div class="record-amount" style="color: ${r.adminColor};">${r.displayAmount}</div>
                             <div class="record-details">${r.details}</div>
-                            <div class="record-admin" style="color: ${r.adminColor};">👤 ${r.adminName} | 📅 ${r.date}</div>
+                            <div class="record-admin" style="color: ${r.adminColor};">👤 ${r.adminName} | 📅 ${r.date}${r.time ? ' - ' + r.time : ''}</div>
                         </div>
                         <button class="btn-delete" onclick="deleteRecord(${recordIdx})" style="margin: 0; white-space: nowrap;">🗑️ حذف</button>
                     </div>
@@ -703,7 +697,6 @@ function deleteRecord(recordIdx) {
     const recordToDelete = records[records.length - 1 - recordIdx];
     
     if (confirm(`آیا می‌خواهید این سابقه را حذف کنید؟\n\n${recordToDelete.displayAmount} - ${recordToDelete.details}`)) {
-        // بازگرداندن تغییرات
         if (recordToDelete.displayAmount.includes('+')) {
             const amount = parseInt(recordToDelete.displayAmount.replace('+', ''));
             currentPlayer.totalCharge -= amount;
@@ -716,7 +709,6 @@ function deleteRecord(recordIdx) {
             }
         }
 
-        // حذف سابقه
         currentPlayer.records.splice(records.length - 1 - recordIdx, 1);
         saveData();
         alert('✅ سابقه با موفقیت حذف شد!');
@@ -726,6 +718,10 @@ function deleteRecord(recordIdx) {
 }
 
 function showChargeForm(type) {
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const timeStr = today.toTimeString().slice(0, 5);
+
     const container = document.getElementById('chargeFormContainer');
     let form = '';
 
@@ -733,15 +729,37 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>مقدار USDT</label>
-                <input type="number" id="chargeUsdtAmount" placeholder="0.00" step="0.01">
+                <input type="number" id="chargeUsdtAmount" class="form-input" placeholder="0.00" step="0.01">
             </div>
             <div class="form-group">
                 <label>تعداد ژتون</label>
-                <input type="number" id="chargeUsdtTokens" placeholder="0">
+                <input type="number" id="chargeUsdtTokens" class="form-input" placeholder="0">
             </div>
             <div class="form-group">
                 <label>نام والت</label>
-                <input type="text" id="chargeUsdtWallet" placeholder="">
+                <input type="text" id="chargeUsdtWallet" class="form-input" placeholder="">
+            </div>
+            <div class="form-group">
+                <label>هش تراکنش (اختیاری)</label>
+                <input type="text" id="chargeUsdtHash" class="form-input" placeholder="">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                    <label>تاریخ</label>
+                    <input type="date" id="chargeUsdtDate" class="form-input" value="${todayStr}">
+                </div>
+                <div class="form-group">
+                    <label>ساعت</label>
+                    <input type="time" id="chargeUsdtTime" class="form-input" value="${timeStr}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>عکس (اختیاری)</label>
+                <div class="drag-drop-zone" id="chargeUsdtDragZone" ondrop="handleDrop(event, 'chargeUsdt')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <span style="font-size: 24px;">📸</span>
+                    <p style="font-size: 12px;">عکس را بکشید یا <span class="drag-link" onclick="document.getElementById('chargeUsdtFile').click()">انتخاب کنید</span></p>
+                    <input type="file" id="chargeUsdtFile" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'chargeUsdt')">
+                </div>
             </div>
             <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('usdt')">ثبت</button>
         `;
@@ -749,15 +767,37 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>مقدار TRX</label>
-                <input type="number" id="chargeTrxAmount" placeholder="0.00" step="0.01">
+                <input type="number" id="chargeTrxAmount" class="form-input" placeholder="0.00" step="0.01">
             </div>
             <div class="form-group">
                 <label>تعداد ژتون</label>
-                <input type="number" id="chargeTrxTokens" placeholder="0">
+                <input type="number" id="chargeTrxTokens" class="form-input" placeholder="0">
             </div>
             <div class="form-group">
                 <label>نام والت</label>
-                <input type="text" id="chargeTrxWallet" placeholder="">
+                <input type="text" id="chargeTrxWallet" class="form-input" placeholder="">
+            </div>
+            <div class="form-group">
+                <label>هش تراکنش (اختیاری)</label>
+                <input type="text" id="chargeTrxHash" class="form-input" placeholder="">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                    <label>تاریخ</label>
+                    <input type="date" id="chargeTrxDate" class="form-input" value="${todayStr}">
+                </div>
+                <div class="form-group">
+                    <label>ساعت</label>
+                    <input type="time" id="chargeTrxTime" class="form-input" value="${timeStr}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>عکس (اختیاری)</label>
+                <div class="drag-drop-zone" id="chargeTrxDragZone" ondrop="handleDrop(event, 'chargeTrx')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                    <span style="font-size: 24px;">📸</span>
+                    <p style="font-size: 12px;">عکس را بکشید یا <span class="drag-link" onclick="document.getElementById('chargeTrxFile').click()">انتخاب کنید</span></p>
+                    <input type="file" id="chargeTrxFile" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'chargeTrx')">
+                </div>
             </div>
             <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('trx')">ثبت</button>
         `;
@@ -765,11 +805,21 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>شماره سفارش</label>
-                <input type="text" id="chargeRialOrder" placeholder="">
+                <input type="text" id="chargeRialOrder" class="form-input" placeholder="">
             </div>
             <div class="form-group">
                 <label>مقدار (ریال)</label>
-                <input type="number" id="chargeRialAmount" placeholder="0">
+                <input type="number" id="chargeRialAmount" class="form-input" placeholder="0">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                    <label>تاریخ</label>
+                    <input type="date" id="chargeRialDate" class="form-input" value="${todayStr}">
+                </div>
+                <div class="form-group">
+                    <label>ساعت</label>
+                    <input type="time" id="chargeRialTime" class="form-input" value="${timeStr}">
+                </div>
             </div>
             <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('rial')">ثبت</button>
         `;
@@ -777,14 +827,24 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>مقدار ژتون</label>
-                <input type="number" id="chargeDebtAmount" placeholder="0">
+                <input type="number" id="chargeDebtAmount" class="form-input" placeholder="0">
             </div>
             <div class="form-group">
                 <label>نوع</label>
-                <select id="chargeDebtType" style="width: 100%; padding: 10px; background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-family: 'Poppins', sans-serif;">
+                <select id="chargeDebtType" class="form-input" style="padding: 12px 16px;">
                     <option value="debt">بدهی ➖</option>
                     <option value="credit">کریدیت ➕</option>
                 </select>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                    <label>تاریخ</label>
+                    <input type="date" id="chargeDebtDate" class="form-input" value="${todayStr}">
+                </div>
+                <div class="form-group">
+                    <label>ساعت</label>
+                    <input type="time" id="chargeDebtTime" class="form-input" value="${timeStr}">
+                </div>
             </div>
             <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('debt')">ثبت</button>
         `;
@@ -792,7 +852,17 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>مقدار پرداختی</label>
-                <input type="number" id="chargePaymentAmount" placeholder="0">
+                <input type="number" id="chargePaymentAmount" class="form-input" placeholder="0">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                    <label>تاریخ</label>
+                    <input type="date" id="chargePaymentDate" class="form-input" value="${todayStr}">
+                </div>
+                <div class="form-group">
+                    <label>ساعت</label>
+                    <input type="time" id="chargePaymentTime" class="form-input" value="${timeStr}">
+                </div>
             </div>
             <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('payment')">ثبت</button>
         `;
@@ -802,7 +872,6 @@ function showChargeForm(type) {
 }
 
 function submitCharge(type) {
-    const today = getTodayDate();
     const admin = admins[currentAdmin];
     let record = null;
 
@@ -810,43 +879,60 @@ function submitCharge(type) {
         const amount = parseFloat(document.getElementById('chargeUsdtAmount').value);
         const tokens = parseInt(document.getElementById('chargeUsdtTokens').value);
         const wallet = document.getElementById('chargeUsdtWallet').value;
+        const hash = document.getElementById('chargeUsdtHash').value || '';
+        const screenshot = window.chargeUsdtScreenshot || null;
+        const date = document.getElementById('chargeUsdtDate').value;
+        const time = document.getElementById('chargeUsdtTime').value;
+        const farsiDate = convertToFarsiDate(date);
 
         if (!amount || !tokens || !wallet) {
-            alert('❌ تمام فیلدها را پر کنید!');
+            alert('❌ تمام فیلدهای ضروری را پر کنید!');
             return;
         }
 
         currentPlayer.totalCharge += tokens;
         record = {
-            date: today,
+            date: farsiDate,
+            time: time,
             displayAmount: `+${tokens}`,
-            details: `USDT: ${amount} | والت: ${wallet}`,
+            details: `USDT: ${amount} | والت: ${wallet}${hash ? ' | هش: ' + hash.substring(0, 8) : ''}`,
             adminName: admin.name,
             adminColor: admin.color,
             adminId: currentAdmin
         };
+        window.chargeUsdtScreenshot = null;
     } else if (type === 'trx') {
         const amount = parseFloat(document.getElementById('chargeTrxAmount').value);
         const tokens = parseInt(document.getElementById('chargeTrxTokens').value);
         const wallet = document.getElementById('chargeTrxWallet').value;
+        const hash = document.getElementById('chargeTrxHash').value || '';
+        const screenshot = window.chargeTrxScreenshot || null;
+        const date = document.getElementById('chargeTrxDate').value;
+        const time = document.getElementById('chargeTrxTime').value;
+        const farsiDate = convertToFarsiDate(date);
 
         if (!amount || !tokens || !wallet) {
-            alert('❌ تمام فیلدها را پر کنید!');
+            alert('❌ تمام فیلدهای ضروری را پر کنید!');
             return;
         }
 
         currentPlayer.totalCharge += tokens;
         record = {
-            date: today,
+            date: farsiDate,
+            time: time,
             displayAmount: `+${tokens}`,
-            details: `TRX: ${amount} | والت: ${wallet}`,
+            details: `TRX: ${amount} | والت: ${wallet}${hash ? ' | هش: ' + hash.substring(0, 8) : ''}`,
             adminName: admin.name,
             adminColor: admin.color,
             adminId: currentAdmin
         };
+        window.chargeTrxScreenshot = null;
     } else if (type === 'rial') {
         const order = document.getElementById('chargeRialOrder').value;
         const amount = parseInt(document.getElementById('chargeRialAmount').value);
+        const date = document.getElementById('chargeRialDate').value;
+        const time = document.getElementById('chargeRialTime').value;
+        const farsiDate = convertToFarsiDate(date);
 
         if (!order || !amount) {
             alert('❌ تمام فیلدها را پر کنید!');
@@ -855,7 +941,8 @@ function submitCharge(type) {
 
         currentPlayer.totalCharge += amount;
         record = {
-            date: today,
+            date: farsiDate,
+            time: time,
             displayAmount: `+${amount} ریال`,
             details: `سفارش: ${order}`,
             adminName: admin.name,
@@ -865,6 +952,9 @@ function submitCharge(type) {
     } else if (type === 'debt') {
         const amount = parseInt(document.getElementById('chargeDebtAmount').value);
         const debtType = document.getElementById('chargeDebtType').value;
+        const date = document.getElementById('chargeDebtDate').value;
+        const time = document.getElementById('chargeDebtTime').value;
+        const farsiDate = convertToFarsiDate(date);
 
         if (!amount) {
             alert('❌ مقدار را وارد کنید!');
@@ -874,7 +964,8 @@ function submitCharge(type) {
         if (debtType === 'debt') {
             currentPlayer.totalDebt += amount;
             record = {
-                date: today,
+                date: farsiDate,
+                time: time,
                 displayAmount: `-${amount}`,
                 details: `بدهی جدید`,
                 adminName: admin.name,
@@ -884,7 +975,8 @@ function submitCharge(type) {
         } else {
             currentPlayer.totalCharge += amount;
             record = {
-                date: today,
+                date: farsiDate,
+                time: time,
                 displayAmount: `+${amount}`,
                 details: `کریدیت اضافی`,
                 adminName: admin.name,
@@ -894,6 +986,9 @@ function submitCharge(type) {
         }
     } else if (type === 'payment') {
         const amount = parseInt(document.getElementById('chargePaymentAmount').value);
+        const date = document.getElementById('chargePaymentDate').value;
+        const time = document.getElementById('chargePaymentTime').value;
+        const farsiDate = convertToFarsiDate(date);
 
         if (!amount) {
             alert('❌ مقدار را وارد کنید!');
@@ -907,7 +1002,8 @@ function submitCharge(type) {
 
         currentPlayer.totalDebt -= amount;
         record = {
-            date: today,
+            date: farsiDate,
+            time: time,
             displayAmount: `-${amount}`,
             details: `پرداخت بدهی`,
             adminName: admin.name,
