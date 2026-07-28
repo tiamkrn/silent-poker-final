@@ -15,48 +15,6 @@ let currentExportType = null;
 let currentCashoutType = 'rial';
 let currentUsdtType = 'bep20';
 
-// ===== جستجوی بازیکن =====
-function filterPlayers(inputId, listId) {
-    const input = document.getElementById(inputId);
-    const listDiv = document.getElementById(listId);
-    const searchTerm = input.value.toLowerCase().trim();
-
-    if (!searchTerm) {
-        listDiv.style.display = 'none';
-        return;
-    }
-
-    const filtered = players.filter(p => p.name.toLowerCase().includes(searchTerm));
-
-    if (filtered.length === 0) {
-        listDiv.innerHTML = '<div style="padding: 10px; color: var(--text-secondary); text-align: center;">❌ بازیکنی یافت نشد</div>';
-        listDiv.style.display = 'block';
-        return;
-    }
-
-    listDiv.innerHTML = filtered.map(p => `
-        <div onclick="selectPlayerName('${inputId}', '${listId}', '${p.name}')" style="padding: 12px 15px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer; transition: all 0.2s;">
-            👤 ${p.name}
-        </div>
-    `).join('');
-    
-    listDiv.style.display = 'block';
-}
-
-function selectPlayerName(inputId, listId, name) {
-    document.getElementById(inputId).value = name;
-    document.getElementById(listId).style.display = 'none';
-}
-
-// بستن dropdown با کلیک بیرون
-document.addEventListener('click', function(e) {
-    if (!e.target.classList.contains('form-input')) {
-        document.querySelectorAll('.player-search-dropdown').forEach(div => {
-            div.style.display = 'none';
-        });
-    }
-});
-
 // ===== مدیریت رنگ‌ها =====
 function selectAdmin(adminId) {
     document.querySelectorAll('.admin-btn').forEach(btn => btn.classList.remove('active'));
@@ -208,18 +166,26 @@ function addPlayer() {
     saveData();
     document.getElementById('newPlayerName').value = '';
     document.getElementById('playerVerified').checked = false;
+    document.getElementById('playerSearchInput').value = '';
     displayPlayers();
     alert('✅ بازیکن با موفقیت اضافه شد!');
 }
 
 function displayPlayers() {
     const list = document.getElementById('playersList');
-    if (players.length === 0) {
+    
+    // گرفتن متن جستجو
+    const searchInput = document.getElementById('playerSearchInput');
+    const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const filteredPlayers = players.filter(p => p.name.toLowerCase().includes(searchTerm));
+    
+    if (filteredPlayers.length === 0) {
         list.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">هنوز بازیکنی اضافه نشده است</p>';
         return;
     }
 
-    list.innerHTML = players.map((player, idx) => {
+    list.innerHTML = filteredPlayers.map((player, idx) => {
+        const originalIdx = players.indexOf(player);
         const startDate = getStartDate(player);
         const lastDate = getLastActivityDate(player);
         const adminColor = player.adminColor || '#808080';
@@ -233,8 +199,8 @@ function displayPlayers() {
                 <p>💰 شارژ: <strong>${player.totalCharge.toLocaleString()}</strong></p>
                 <p>📊 بدهی: <strong>${player.totalDebt.toLocaleString()}</strong></p>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="viewHistory(${idx})">📋 سوابق</button>
-                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="openChargeModal(${idx})">💳 شارژ</button>
+                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="viewHistory(${originalIdx})">📋 سوابق</button>
+                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="openChargeModal(${originalIdx})">💳 شارژ</button>
                 </div>
             </div>
         `;
@@ -767,12 +733,16 @@ function showChargeForm(type) {
     const container = document.getElementById('chargeFormContainer');
     let form = '';
 
+    const playerOptions = players.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+
     if (type === 'usdt') {
         form = `
-            <div class="form-group" style="position: relative; z-index: 10;">
-                <label>🔍 جستجوی بازیکن</label>
-                <input type="text" id="chargeUsdtPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargeUsdtPlayer', 'chargeUsdtPlayerList')">
-                <div id="chargeUsdtPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
+            <div class="form-group">
+                <label>👤 انتخاب بازیکن:</label>
+                <select id="chargeUsdtPlayer" class="form-input">
+                    <option value="">-- انتخاب کنید --</option>
+                    ${playerOptions}
+                </select>
             </div>
             <div class="form-group">
                 <label>مقدار USDT</label>
@@ -812,10 +782,12 @@ function showChargeForm(type) {
         `;
     } else if (type === 'trx') {
         form = `
-            <div class="form-group" style="position: relative; z-index: 10;">
-                <label>🔍 جستجوی بازیکن</label>
-                <input type="text" id="chargeTrxPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargeTrxPlayer', 'chargeTrxPlayerList')">
-                <div id="chargeTrxPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
+            <div class="form-group">
+                <label>👤 انتخاب بازیکن:</label>
+                <select id="chargeTrxPlayer" class="form-input">
+                    <option value="">-- انتخاب کنید --</option>
+                    ${playerOptions}
+                </select>
             </div>
             <div class="form-group">
                 <label>مقدار TRX</label>
@@ -855,10 +827,12 @@ function showChargeForm(type) {
         `;
     } else if (type === 'rial') {
         form = `
-            <div class="form-group" style="position: relative; z-index: 10;">
-                <label>🔍 جستجوی بازیکن</label>
-                <input type="text" id="chargeRialPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargeRialPlayer', 'chargeRialPlayerList')">
-                <div id="chargeRialPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
+            <div class="form-group">
+                <label>👤 انتخاب بازیکن:</label>
+                <select id="chargeRialPlayer" class="form-input">
+                    <option value="">-- انتخاب کنید --</option>
+                    ${playerOptions}
+                </select>
             </div>
             <div class="form-group">
                 <label>شماره سفارش</label>
@@ -882,10 +856,12 @@ function showChargeForm(type) {
         `;
     } else if (type === 'debt') {
         form = `
-            <div class="form-group" style="position: relative; z-index: 10;">
-                <label>🔍 جستجوی بازیکن</label>
-                <input type="text" id="chargeDebtPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargeDebtPlayer', 'chargeDebtPlayerList')">
-                <div id="chargeDebtPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
+            <div class="form-group">
+                <label>👤 انتخاب بازیکن:</label>
+                <select id="chargeDebtPlayer" class="form-input">
+                    <option value="">-- انتخاب کنید --</option>
+                    ${playerOptions}
+                </select>
             </div>
             <div class="form-group">
                 <label>مقدار ژتون</label>
@@ -912,10 +888,12 @@ function showChargeForm(type) {
         `;
     } else if (type === 'payment') {
         form = `
-            <div class="form-group" style="position: relative; z-index: 10;">
-                <label>🔍 جستجوی بازیکن</label>
-                <input type="text" id="chargePaymentPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." oninput="filterPlayers('chargePaymentPlayer', 'chargePaymentPlayerList')">
-                <div id="chargePaymentPlayerList" class="player-search-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000;"></div>
+            <div class="form-group">
+                <label>👤 انتخاب بازیکن:</label>
+                <select id="chargePaymentPlayer" class="form-input">
+                    <option value="">-- انتخاب کنید --</option>
+                    ${playerOptions}
+                </select>
             </div>
             <div class="form-group">
                 <label>مقدار پرداختی</label>
