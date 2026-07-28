@@ -1,131 +1,49 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silent Poker Accountant</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <!-- صفحه ورود -->
-    <div class="login-container" id="loginPage">
-        <div class="login-center">
-            <!-- لوگو -->
-            <div class="login-logo">
-                <div class="logo-icon">S</div>
-                <h1>Silent.poker</h1>
-                <p>Poker Intelligence</p>
-            </div>
-
-            <!-- فرم ورود -->
-            <div class="login-card">
-                <form onsubmit="handleLogin(event)">
-                    <!-- انتخاب ادمین -->
-                    <div class="form-group">
-                        <label>انتخاب ادمین</label>
-                        <div class="admin-buttons">
-                            <button type="button" class="admin-btn active" onclick="selectAdmin('shahab')" style="background: rgba(255, 215, 0, 0.2); border-color: #FFD700;">شهاب</button>
-                            <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')" style="background: rgba(192, 192, 192, 0.2); border-color: #C0C0C0;">تیام</button>
-                            <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')" style="background: rgba(255, 182, 193, 0.2); border-color: #FFB6C1;">تبسم</button>
-                            <button type="button" class="admin-btn" onclick="selectAdmin('arash')" style="background: rgba(184, 115, 51, 0.2); border-color: #B87333;">آرش</button>
-                        </div>
-                        <input type="hidden" id="adminName" value="shahab">
-                    </div>
-
-                    <!-- رمز عبور -->
-                    <div class="form-group">
-                        <input type="password" id="password" placeholder="رمز خود را وارد کنید" required>
-                    </div>
-
-                    <!-- دکمه ورود -->
-                    <button type="submit" class="login-btn">ورود</button>
-                </form>
-                
-                <div class="login-hint">
-                    شهاب: 1234 | تیام: 4552 | تبسم: 9825 | آرش: 4321
-                </div>
-            </div>
+<!-- تب تتر -->
+<section id="usdtTab" class="tab-section">
+    <div class="section-header">
+        <h2>💵 تتر (USDT)</h2>
+        <button class="btn-export" onclick="exportToExcel('usdt')">📥 دریافت اکسل امروز</button>
+    </div>
+    <div class="transaction-form">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <input type="text" id="usdtPlayer" placeholder="نام بازیکن" required>
+            <input type="number" id="usdtAmount" placeholder="مقدار USDT" step="0.01" required>
+            <input type="number" id="usdtTokens" placeholder="تعداد ژتون" required>
         </div>
-    </div>
-
-    <!-- صفحه داشبورد -->
-    <div class="dashboard" id="dashboard" style="display: none;">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <div class="logo-small">S Silent Poker</div>
-            </div>
-            <div class="header-right">
-                <span class="admin-name" id="adminDisplayName"></span>
-                <button class="logout-btn" onclick="logout()">خروج</button>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- تب بازیکنان -->
-            <section id="playersTab" class="tab-section active">
-                <div class="section-header">
-                    <h2>مدیریت بازیکنان</h2>
-                </div>
-                <div class="add-player-section">
-                    <input type="text" id="newPlayerName" placeholder="نام بازیکن جدید...">
-                    <button onclick="addPlayer()" class="btn-add">افزودن</button>
-                </div>
-                <div class="players-container" id="playersList"></div>
-            </section>
-
-            <!-- تب شارژ و پرداخت -->
-            <section id="chargeTab" class="tab-section">
-                <div class="section-header">
-                    <h2>شارژ و پرداخت</h2>
-                </div>
-                <div class="search-section">
-                    <input type="text" id="chargeSearch" placeholder="جستجو بازیکن...">
-                    <button onclick="searchForCharge()" class="btn-search">جستجو</button>
-                </div>
-                <div class="players-container" id="chargeList"></div>
-            </section>
-        </main>
-
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <nav class="nav-menu">
-                <button class="nav-item active" onclick="switchTab('players')">
-                    <span class="icon">👥</span>
-                    <span>بازیکنان</span>
-                </button>
-                <button class="nav-item" onclick="switchTab('charge')">
-                    <span class="icon">💳</span>
-                    <span>شارژ و پرداخت</span>
-                </button>
-            </nav>
-        </aside>
-    </div>
-
-    <!-- مودال سوابق -->
-    <div id="historyModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>سوابق بازیکن</h2>
-                <button class="modal-close" onclick="closeModal('historyModal')">&times;</button>
-            </div>
-            <div id="historyContent"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <input type="text" id="usdtWallet" placeholder="نام والت" required>
+            <input type="text" id="usdtHash" placeholder="هش تراکنش (Tx Hash)" required>
         </div>
-    </div>
-
-    <!-- مودال شارژ -->
-    <div id="chargeModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>شارژ و پرداخت</h2>
-                <button class="modal-close" onclick="closeModal('chargeModal')">&times;</button>
-            </div>
-            <div id="chargeContent"></div>
+        <div style="margin-top: 10px;">
+            <label style="display: block; font-size: 12px; margin-bottom: 8px; color: var(--text-secondary);">📸 عکس اسکین عملیات (اختیاری)</label>
+            <input type="file" id="usdtScreenshot" accept="image/*" style="width: 100%; padding: 8px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary);">
         </div>
+        <button onclick="addTransaction('usdt')" class="btn-add" style="width: 100%; margin-top: 10px;">افزودن تراکنش</button>
     </div>
+    <div id="usdtTransactions" class="transactions-table"></div>
+</section>
 
-    <script src="js/script.js"></script>
-</body>
-</html>
+<!-- تب ترون -->
+<section id="trxTab" class="tab-section">
+    <div class="section-header">
+        <h2>💰 ترون (TRX)</h2>
+        <button class="btn-export" onclick="exportToExcel('trx')">📥 دریافت اکسل امروز</button>
+    </div>
+    <div class="transaction-form">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <input type="text" id="trxPlayer" placeholder="نام بازیکن" required>
+            <input type="number" id="trxAmount" placeholder="مقدار TRX" step="0.01" required>
+            <input type="number" id="trxTokens" placeholder="تعداد ژتون" required>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <input type="text" id="trxWallet" placeholder="نام والت" required>
+            <input type="text" id="trxHash" placeholder="هش تراکنش (Tx Hash)" required>
+        </div>
+        <div style="margin-top: 10px;">
+            <label style="display: block; font-size: 12px; margin-bottom: 8px; color: var(--text-secondary);">📸 عکس اسکین عملیات (اختیاری)</label>
+            <input type="file" id="trxScreenshot" accept="image/*" style="width: 100%; padding: 8px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary);">
+        </div>
+        <button onclick="addTransaction('trx')" class="btn-add" style="width: 100%; margin-top: 10px;">افزودن تراکنش</button>
+    </div>
+    <div id="trxTransactions" class="transactions-table"></div>
+</section>
