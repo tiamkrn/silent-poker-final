@@ -91,6 +91,10 @@
                         <input type="text" id="usdtWallet" class="form-input" placeholder="نام والت">
                         <input type="text" id="usdtHash" class="form-input" placeholder="هش تراکنش (اختیاری)">
                     </div>
+                    <div class="form-row">
+                        <input type="date" id="usdtDate" class="form-input">
+                        <input type="time" id="usdtTime" class="form-input">
+                    </div>
                     <div class="drag-drop-zone" id="usdtDragZone" ondrop="handleDrop(event, 'usdt')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
                         <span style="font-size: 32px;">📸</span>
                         <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtFile').click()">انتخاب کنید</span></p>
@@ -117,6 +121,10 @@
                         <input type="text" id="trxWallet" class="form-input" placeholder="نام والت">
                         <input type="text" id="trxHash" class="form-input" placeholder="هش تراکنش (اختیاری)">
                     </div>
+                    <div class="form-row">
+                        <input type="date" id="trxDate" class="form-input">
+                        <input type="time" id="trxTime" class="form-input">
+                    </div>
                     <div class="drag-drop-zone" id="trxDragZone" ondrop="handleDrop(event, 'trx')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
                         <span style="font-size: 32px;">📸</span>
                         <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('trxFile').click()">انتخاب کنید</span></p>
@@ -138,6 +146,10 @@
                         <input type="text" id="debtPlayer" class="form-input" placeholder="نام بازیکن">
                         <input type="number" id="debtAmount" class="form-input" placeholder="مقدار بدهی">
                     </div>
+                    <div class="form-row">
+                        <input type="date" id="debtDate" class="form-input">
+                        <input type="time" id="debtTime" class="form-input">
+                    </div>
                     <button onclick="addTransaction('debt')" class="btn-add btn-full">افزودن بدهی</button>
                 </div>
                 <div id="debtTransactions"></div>
@@ -154,6 +166,10 @@
                         <input type="text" id="rialPlayer" class="form-input" placeholder="نام بازیکن">
                         <input type="text" id="rialOrder" class="form-input" placeholder="شماره سفارش">
                         <input type="number" id="rialAmount" class="form-input" placeholder="مقدار (ریال)">
+                    </div>
+                    <div class="form-row">
+                        <input type="date" id="rialDate" class="form-input">
+                        <input type="time" id="rialTime" class="form-input">
                     </div>
                     <button onclick="addTransaction('rial')" class="btn-add btn-full">افزودن تراکنش</button>
                 </div>
@@ -172,6 +188,10 @@
                         <input type="number" id="cardAmount" class="form-input" placeholder="مقدار">
                         <input type="number" id="cardTokens" class="form-input" placeholder="تعداد ژتون">
                     </div>
+                    <div class="form-row">
+                        <input type="date" id="cardDate" class="form-input">
+                        <input type="time" id="cardTime" class="form-input">
+                    </div>
                     <button onclick="addTransaction('card')" class="btn-add btn-full">افزودن تراکنش</button>
                 </div>
                 <div id="cardTransactions"></div>
@@ -188,9 +208,58 @@
                         <input type="text" id="paymentPlayer" class="form-input" placeholder="نام بازیکن">
                         <input type="number" id="paymentAmount" class="form-input" placeholder="مقدار پرداخت">
                     </div>
+                    <div class="form-row">
+                        <input type="date" id="paymentDate" class="form-input">
+                        <input type="time" id="paymentTime" class="form-input">
+                    </div>
                     <button onclick="addTransaction('payment')" class="btn-add btn-full">افزودن پرداخت</button>
                 </div>
                 <div id="paymentTransactions"></div>
+            </section>
+
+            <!-- تب کشاوت -->
+            <section id="cashoutTab" class="tab-section">
+                <div class="section-header">
+                    <h2>💸 کشاوت</h2>
+                    <button class="btn-export" onclick="openExportDialog('cashout')">📥 دریافت گزارش</button>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button class="export-type-btn active" onclick="switchCashoutType('rial')" data-type="rial">💳 کشاوت ریالی</button>
+                        <button class="export-type-btn" onclick="switchCashoutType('wallet')" data-type="wallet">💰 کشاوت والت</button>
+                    </div>
+                </div>
+
+                <!-- کشاوت ریالی -->
+                <div id="cashoutRialSection" class="transaction-form">
+                    <div class="form-row">
+                        <input type="text" id="rialCashoutPlayer" class="form-input" placeholder="نام بازیکن">
+                        <input type="number" id="rialCashoutAmount" class="form-input" placeholder="مقدار (ریال)">
+                        <input type="text" id="rialCashoutCard" class="form-input" placeholder="شماره کارت">
+                    </div>
+                    <div class="form-row">
+                        <input type="date" id="rialCashoutDate" class="form-input">
+                        <input type="time" id="rialCashoutTime" class="form-input">
+                    </div>
+                    <button onclick="addTransaction('cashout-rial')" class="btn-add btn-full">افزودن کشاوت ریالی</button>
+                </div>
+
+                <!-- کشاوت والت -->
+                <div id="cashoutWalletSection" class="transaction-form" style="display: none;">
+                    <div class="form-row">
+                        <input type="text" id="walletCashoutPlayer" class="form-input" placeholder="نام بازیکن">
+                        <input type="number" id="walletCashoutAmount" class="form-input" placeholder="مقدار">
+                        <input type="text" id="walletCashoutAddress" class="form-input" placeholder="آدرس والت">
+                    </div>
+                    <div class="form-row">
+                        <input type="date" id="walletCashoutDate" class="form-input">
+                        <input type="time" id="walletCashoutTime" class="form-input">
+                    </div>
+                    <button onclick="addTransaction('cashout-wallet')" class="btn-add btn-full">افزودن کشاوت والت</button>
+                </div>
+
+                <div id="cashoutTransactions"></div>
             </section>
         </main>
 
@@ -204,6 +273,7 @@
                 <button class="nav-item" onclick="switchTab('rial')"><span>💳</span><span>درگاه</span></button>
                 <button class="nav-item" onclick="switchTab('card')"><span>🔄</span><span>کارت</span></button>
                 <button class="nav-item" onclick="switchTab('payment')"><span>✅</span><span>پرداخت</span></button>
+                <button class="nav-item" onclick="switchTab('cashout')"><span>💸</span><span>کشاوت</span></button>
             </nav>
         </aside>
     </div>
