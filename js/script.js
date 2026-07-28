@@ -1,16 +1,9 @@
-// ===== تنظیمات =====
+// ===== تنظیمات ادمین‌ها =====
 const admins = {
-    admin1: 'pass1234',
-    admin2: 'pass1234',
-    admin3: 'pass1234',
-    admin4: 'pass1234'
-};
-
-const adminThemes = {
-    admin1: { primary: '#808080', secondary: '#606060' },
-    admin2: { primary: '#808080', secondary: '#606060' },
-    admin3: { primary: '#808080', secondary: '#606060' },
-    admin4: { primary: '#808080', secondary: '#606060' }
+    shahab: { password: '1234', name: 'شهاب', color: '#FFD700' },
+    tiyam: { password: '4552', name: 'تیام', color: '#C0C0C0' },
+    tabassam: { password: '9825', name: 'تبسم', color: '#FFB6C1' },
+    arash: { password: '4321', name: 'آرش', color: '#B87333' }
 };
 
 // ===== متغیرهای جهانی =====
@@ -23,31 +16,30 @@ function selectAdmin(adminId) {
     document.querySelectorAll('.admin-btn').forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
     document.getElementById('adminName').value = adminId;
-    const theme = adminThemes[adminId];
-    applyTheme(adminId, theme.primary, theme.secondary);
+    applyAdminTheme(adminId);
 }
 
-function applyTheme(adminId, primary, secondary) {
-    document.documentElement.style.setProperty('--primary', primary);
-    document.documentElement.style.setProperty('--secondary', secondary);
+function applyAdminTheme(adminId) {
+    const admin = admins[adminId];
+    document.documentElement.style.setProperty('--admin-color', admin.color);
 }
 
 // ===== احراز هویت =====
 function handleLogin(event) {
     event.preventDefault();
     
-    const admin = document.getElementById('adminName').value;
+    const adminId = document.getElementById('adminName').value;
     const password = document.getElementById('password').value;
+    const admin = admins[adminId];
 
-    if (admins[admin] === password) {
-        currentAdmin = admin;
-        
-        const theme = adminThemes[admin];
-        applyTheme(admin, theme.primary, theme.secondary);
+    if (admin && admin.password === password) {
+        currentAdmin = adminId;
+        applyAdminTheme(adminId);
 
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('dashboard').style.display = 'flex';
-        document.getElementById('adminDisplayName').textContent = admin.replace('admin', 'ادمین ');
+        document.getElementById('adminDisplayName').textContent = admin.name;
+        document.getElementById('adminDisplayName').style.color = admin.color;
 
         loadData();
         displayPlayers();
@@ -110,10 +102,14 @@ function addPlayer() {
     }
 
     const today = getTodayDate();
+    const admin = admins[currentAdmin];
 
     players.push({
         name: name,
         startDate: today,
+        addedByAdmin: currentAdmin,
+        adminName: admin.name,
+        adminColor: admin.color,
         totalCharge: 0,
         totalDebt: 0,
         records: []
@@ -135,10 +131,12 @@ function displayPlayers() {
     list.innerHTML = players.map((player, idx) => {
         const startDate = getStartDate(player);
         const lastDate = getLastActivityDate(player);
+        const adminColor = player.adminColor || '#808080';
         
         return `
             <div class="player-card">
                 <h3>${player.name}</h3>
+                <p style="font-size: 11px; color: ${adminColor}; margin-bottom: 8px; font-weight: 600;">👤 ${player.adminName}</p>
                 <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">📅 از ${startDate} تا ${lastDate}</p>
                 <p>💰 شارژ: <strong>${player.totalCharge.toLocaleString()}</strong></p>
                 <p>📊 بدهی: <strong>${player.totalDebt.toLocaleString()}</strong></p>
@@ -161,12 +159,13 @@ function viewHistory(idx) {
         content.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">سابقه‌ای وجود ندارد</p>';
     } else {
         content.innerHTML = currentPlayer.records.map(r => `
-            <div style="background: var(--dark-bg); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-right: 3px solid var(--primary);">
+            <div style="background: var(--dark-bg); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-right: 3px solid ${r.adminColor};">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
                     <span style="font-weight: 600;">📅 ${r.date}</span>
-                    <span style="color: var(--primary);">${r.displayAmount}</span>
+                    <span style="color: ${r.adminColor}; font-weight: 600;">${r.displayAmount}</span>
                 </div>
-                <div style="font-size: 13px; color: var(--text-secondary);">${r.details}</div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">${r.details}</div>
+                <div style="font-size: 11px; color: ${r.adminColor};">👤 ${r.adminName}</div>
             </div>
         `).join('');
     }
@@ -185,7 +184,7 @@ function openChargeModal(idx) {
             <div style="background: var(--dark-bg); padding: 15px; border-radius: 10px; margin-bottom: 10px;">
                 <div style="display: flex; justify-content: space-between;">
                     <span>💰 کل شارژ:</span>
-                    <strong style="color: var(--primary);">${currentPlayer.totalCharge.toLocaleString()}</strong>
+                    <strong style="color: var(--admin-color);">${currentPlayer.totalCharge.toLocaleString()}</strong>
                 </div>
             </div>
             <div style="background: var(--dark-bg); padding: 15px; border-radius: 10px;">
@@ -290,6 +289,7 @@ function showChargeForm(type) {
 
 function submitCharge(type) {
     const today = getTodayDate();
+    const admin = admins[currentAdmin];
     let record = null;
 
     if (type === 'usdt') {
@@ -306,7 +306,10 @@ function submitCharge(type) {
         record = {
             date: today,
             displayAmount: `+${tokens}`,
-            details: `USDT: ${amount} | والت: ${wallet}`
+            details: `USDT: ${amount} | والت: ${wallet}`,
+            adminName: admin.name,
+            adminColor: admin.color,
+            adminId: currentAdmin
         };
     } else if (type === 'trx') {
         const amount = parseFloat(document.getElementById('trxAmount').value);
@@ -322,7 +325,10 @@ function submitCharge(type) {
         record = {
             date: today,
             displayAmount: `+${tokens}`,
-            details: `TRX: ${amount} | والت: ${wallet}`
+            details: `TRX: ${amount} | والت: ${wallet}`,
+            adminName: admin.name,
+            adminColor: admin.color,
+            adminId: currentAdmin
         };
     } else if (type === 'rial') {
         const order = document.getElementById('rialOrder').value;
@@ -337,7 +343,10 @@ function submitCharge(type) {
         record = {
             date: today,
             displayAmount: `+${amount} ریال`,
-            details: `سفارش: ${order}`
+            details: `سفارش: ${order}`,
+            adminName: admin.name,
+            adminColor: admin.color,
+            adminId: currentAdmin
         };
     } else if (type === 'debt') {
         const amount = parseInt(document.getElementById('debtAmount').value);
@@ -353,14 +362,20 @@ function submitCharge(type) {
             record = {
                 date: today,
                 displayAmount: `-${amount}`,
-                details: `بدهی جدید`
+                details: `بدهی جدید`,
+                adminName: admin.name,
+                adminColor: admin.color,
+                adminId: currentAdmin
             };
         } else {
             currentPlayer.totalCharge += amount;
             record = {
                 date: today,
                 displayAmount: `+${amount}`,
-                details: `کریدیت اضافی`
+                details: `کریدیت اضافی`,
+                adminName: admin.name,
+                adminColor: admin.color,
+                adminId: currentAdmin
             };
         }
     } else if (type === 'payment') {
@@ -380,7 +395,10 @@ function submitCharge(type) {
         record = {
             date: today,
             displayAmount: `-${amount}`,
-            details: `پرداخت بدهی`
+            details: `پرداخت بدهی`,
+            adminName: admin.name,
+            adminColor: admin.color,
+            adminId: currentAdmin
         };
     }
 
@@ -414,10 +432,12 @@ function searchForCharge() {
         const idx = players.indexOf(player);
         const startDate = getStartDate(player);
         const lastDate = getLastActivityDate(player);
+        const adminColor = player.adminColor || '#808080';
         
         return `
             <div class="player-card">
                 <h3>${player.name}</h3>
+                <p style="font-size: 11px; color: ${adminColor}; margin-bottom: 8px; font-weight: 600;">👤 ${player.adminName}</p>
                 <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">📅 از ${startDate} تا ${lastDate}</p>
                 <p>💰 شارژ: <strong>${player.totalCharge.toLocaleString()}</strong></p>
                 <p>📊 بدهی: <strong>${player.totalDebt.toLocaleString()}</strong></p>
