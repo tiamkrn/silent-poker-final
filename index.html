@@ -23,14 +23,14 @@
                 <form onsubmit="handleLogin(event)">
                     <!-- انتخاب ادمین -->
                     <div class="form-group">
-                        <label>ورود به حساب کاربری</label>
+                        <label>انتخاب ادمین</label>
                         <div class="admin-buttons">
-                            <button type="button" class="admin-btn active" onclick="selectAdmin('admin1')">ادمین 1</button>
-                            <button type="button" class="admin-btn" onclick="selectAdmin('admin2')">ادمین 2</button>
-                            <button type="button" class="admin-btn" onclick="selectAdmin('admin3')">ادمین 3</button>
-                            <button type="button" class="admin-btn" onclick="selectAdmin('admin4')">ادمین 4</button>
+                            <button type="button" class="admin-btn active" onclick="selectAdmin('shahab')" style="background: rgba(255, 215, 0, 0.2); border-color: #FFD700;">شهاب</button>
+                            <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')" style="background: rgba(192, 192, 192, 0.2); border-color: #C0C0C0;">تیام</button>
+                            <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')" style="background: rgba(255, 182, 193, 0.2); border-color: #FFB6C1;">تبسم</button>
+                            <button type="button" class="admin-btn" onclick="selectAdmin('arash')" style="background: rgba(184, 115, 51, 0.2); border-color: #B87333;">آرش</button>
                         </div>
-                        <input type="hidden" id="adminName" value="admin1">
+                        <input type="hidden" id="adminName" value="shahab">
                     </div>
 
                     <!-- رمز عبور -->
@@ -43,7 +43,7 @@
                 </form>
                 
                 <div class="login-hint">
-                    رمز: pass1234
+                    شهاب: 1234 | تیام: 4552 | تبسم: 9825 | آرش: 4321
                 </div>
             </div>
         </div>
@@ -62,75 +62,46 @@
             </div>
         </header>
 
-        <!-- Content -->
-        <div class="dashboard-content">
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <nav class="nav-menu">
-                    <button class="nav-item active" onclick="switchTab('players')">
-                        <span class="icon">👥</span>
-                        <span>بازیکنان</span>
-                    </button>
-                    <button class="nav-item" onclick="switchTab('charge')">
-                        <span class="icon">💳</span>
-                        <span>شارژ و پرداخت</span>
-                    </button>
-                    <button class="nav-item" onclick="switchTab('reports')">
-                        <span class="icon">📊</span>
-                        <span>گزارشات</span>
-                    </button>
-                    <button class="nav-item" onclick="switchTab('settings')">
-                        <span class="icon">⚙️</span>
-                        <span>تنظیمات</span>
-                    </button>
-                </nav>
-            </aside>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- تب بازیکنان -->
+            <section id="playersTab" class="tab-section active">
+                <div class="section-header">
+                    <h2>مدیریت بازیکنان</h2>
+                </div>
+                <div class="add-player-section">
+                    <input type="text" id="newPlayerName" placeholder="نام بازیکن جدید...">
+                    <button onclick="addPlayer()" class="btn-add">افزودن</button>
+                </div>
+                <div class="players-container" id="playersList"></div>
+            </section>
 
-            <!-- Main Content -->
-            <main class="main-content">
-                <!-- تب بازیکنان -->
-                <section id="playersTab" class="tab-section active">
-                    <div class="section-header">
-                        <h2>مدیریت بازیکنان</h2>
-                    </div>
-                    <div class="add-player-section">
-                        <input type="text" id="newPlayerName" placeholder="نام بازیکن جدید...">
-                        <button onclick="addPlayer()" class="btn-add">افزودن</button>
-                    </div>
-                    <div class="players-container" id="playersList"></div>
-                </section>
+            <!-- تب شارژ و پرداخت -->
+            <section id="chargeTab" class="tab-section">
+                <div class="section-header">
+                    <h2>شارژ و پرداخت</h2>
+                </div>
+                <div class="search-section">
+                    <input type="text" id="chargeSearch" placeholder="جستجو بازیکن...">
+                    <button onclick="searchForCharge()" class="btn-search">جستجو</button>
+                </div>
+                <div class="players-container" id="chargeList"></div>
+            </section>
+        </main>
 
-                <!-- تب شارژ و پرداخت -->
-                <section id="chargeTab" class="tab-section">
-                    <div class="section-header">
-                        <h2>شارژ و پرداخت</h2>
-                    </div>
-                    <div class="search-section">
-                        <input type="text" id="chargeSearch" placeholder="جستجو بازیکن...">
-                        <button onclick="searchForCharge()" class="btn-search">جستجو</button>
-                    </div>
-                    <div class="players-container" id="chargeList"></div>
-                </section>
-
-                <!-- تب گزارشات -->
-                <section id="reportsTab" class="tab-section">
-                    <div class="section-header">
-                        <h2>گزارشات</h2>
-                    </div>
-                    <div id="reportContent"></div>
-                </section>
-
-                <!-- تب تنظیمات -->
-                <section id="settingsTab" class="tab-section">
-                    <div class="section-header">
-                        <h2>تنظیمات سیستم</h2>
-                    </div>
-                    <div class="settings-container">
-                        <p>تنظیمات سیستم</p>
-                    </div>
-                </section>
-            </main>
-        </div>
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <nav class="nav-menu">
+                <button class="nav-item active" onclick="switchTab('players')">
+                    <span class="icon">👥</span>
+                    <span>بازیکنان</span>
+                </button>
+                <button class="nav-item" onclick="switchTab('charge')">
+                    <span class="icon">💳</span>
+                    <span>شارژ و پرداخت</span>
+                </button>
+            </nav>
+        </aside>
     </div>
 
     <!-- مودال سوابق -->
