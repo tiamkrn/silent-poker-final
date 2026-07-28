@@ -9,6 +9,7 @@ const admins = {
 // ===== متغیرهای جهانی =====
 let currentAdmin = null;
 let players = [];
+let transactions = [];
 let currentPlayer = null;
 
 // ===== مدیریت رنگ‌ها =====
@@ -60,14 +61,20 @@ function logout() {
 
 // ===== مدیریت داده‌ها =====
 function loadData() {
-    const saved = localStorage.getItem('silentPokerData');
-    if (saved) {
-        players = JSON.parse(saved);
+    const savedPlayers = localStorage.getItem('silentPokerData');
+    const savedTransactions = localStorage.getItem('silentPokerTransactions');
+    
+    if (savedPlayers) {
+        players = JSON.parse(savedPlayers);
+    }
+    if (savedTransactions) {
+        transactions = JSON.parse(savedTransactions);
     }
 }
 
 function saveData() {
     localStorage.setItem('silentPokerData', JSON.stringify(players));
+    localStorage.setItem('silentPokerTransactions', JSON.stringify(transactions));
 }
 
 // ===== تاریخ امروز =====
@@ -149,6 +156,296 @@ function displayPlayers() {
     }).join('');
 }
 
+// ===== تراکنش‌های جدید =====
+function addTransaction(type) {
+    const today = getTodayDate();
+    const admin = admins[currentAdmin];
+    
+    if (type === 'usdt') {
+        const player = document.getElementById('usdtPlayer').value.trim();
+        const amount = parseFloat(document.getElementById('usdtAmount').value);
+        const tokens = parseInt(document.getElementById('usdtTokens').value);
+        const wallet = document.getElementById('usdtWallet').value.trim();
+        const hash = document.getElementById('usdtHash').value.trim();
+        const screenshot = document.getElementById('usdtScreenshot').files[0];
+
+        if (!player || !amount || !tokens || !wallet || !hash) {
+            alert('❌ تمام فیلدهای ضروری را پر کنید!');
+            return;
+        }
+
+        if (screenshot) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                saveTransaction('usdt', player, amount, tokens, wallet, hash, e.target.result, admin);
+            };
+            reader.readAsDataURL(screenshot);
+        } else {
+            saveTransaction('usdt', player, amount, tokens, wallet, hash, null, admin);
+        }
+    }
+    
+    if (type === 'trx') {
+        const player = document.getElementById('trxPlayer').value.trim();
+        const amount = parseFloat(document.getElementById('trxAmount').value);
+        const tokens = parseInt(document.getElementById('trxTokens').value);
+        const wallet = document.getElementById('trxWallet').value.trim();
+        const hash = document.getElementById('trxHash').value.trim();
+        const screenshot = document.getElementById('trxScreenshot').files[0];
+
+        if (!player || !amount || !tokens || !wallet || !hash) {
+            alert('❌ تمام فیلدهای ضروری را پر کنید!');
+            return;
+        }
+
+        if (screenshot) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                saveTransaction('trx', player, amount, tokens, wallet, hash, e.target.result, admin);
+            };
+            reader.readAsDataURL(screenshot);
+        } else {
+            saveTransaction('trx', player, amount, tokens, wallet, hash, null, admin);
+        }
+    }
+
+    if (type === 'rial') {
+        const player = document.getElementById('rialPlayer').value.trim();
+        const order = document.getElementById('rialOrder').value.trim();
+        const amount = parseInt(document.getElementById('rialAmount').value);
+
+        if (!player || !order || !amount) {
+            alert('❌ تمام فیلدها را پر کنید!');
+            return;
+        }
+
+        saveTransaction('rial', player, amount, 0, order, '', null, admin);
+    }
+
+    if (type === 'debt') {
+        const player = document.getElementById('debtPlayer').value.trim();
+        const amount = parseInt(document.getElementById('debtAmount').value);
+
+        if (!player || !amount) {
+            alert('❌ تمام فیلدها را پر کنید!');
+            return;
+        }
+
+        saveTransaction('debt', player, amount, 0, '', '', null, admin);
+    }
+
+    if (type === 'card') {
+        const player = document.getElementById('cardPlayer').value.trim();
+        const amount = parseInt(document.getElementById('cardAmount').value);
+        const tokens = parseInt(document.getElementById('cardTokens').value);
+
+        if (!player || !amount || !tokens) {
+            alert('❌ تمام فیلدها را پر کنید!');
+            return;
+        }
+
+        saveTransaction('card', player, amount, tokens, '', '', null, admin);
+    }
+
+    if (type === 'payment') {
+        const player = document.getElementById('paymentPlayer').value.trim();
+        const amount = parseInt(document.getElementById('paymentAmount').value);
+
+        if (!player || !amount) {
+            alert('❌ تمام فیلدها را پر کنید!');
+            return;
+        }
+
+        saveTransaction('payment', player, amount, 0, '', '', null, admin);
+    }
+}
+
+function saveTransaction(type, player, amount, tokens, wallet, hash, screenshot, admin) {
+    const today = getTodayDate();
+    const time = new Date().toLocaleTimeString('fa-IR');
+    
+    const transaction = {
+        id: Date.now(),
+        type: type,
+        date: today,
+        time: time,
+        player: player,
+        amount: amount,
+        tokens: tokens,
+        wallet: wallet,
+        hash: hash,
+        screenshot: screenshot,
+        adminName: admin.name,
+        adminColor: admin.color,
+        adminId: currentAdmin
+    };
+
+    transactions.push(transaction);
+    saveData();
+    
+    alert('✅ تراکنش با موفقیت ثبت شد!');
+    
+    // پاک کردن فیلدها
+    clearTransactionForm(type);
+    displayTransactions(type);
+}
+
+function clearTransactionForm(type) {
+    if (type === 'usdt') {
+        document.getElementById('usdtPlayer').value = '';
+        document.getElementById('usdtAmount').value = '';
+        document.getElementById('usdtTokens').value = '';
+        document.getElementById('usdtWallet').value = '';
+        document.getElementById('usdtHash').value = '';
+        document.getElementById('usdtScreenshot').value = '';
+    } else if (type === 'trx') {
+        document.getElementById('trxPlayer').value = '';
+        document.getElementById('trxAmount').value = '';
+        document.getElementById('trxTokens').value = '';
+        document.getElementById('trxWallet').value = '';
+        document.getElementById('trxHash').value = '';
+        document.getElementById('trxScreenshot').value = '';
+    } else if (type === 'rial') {
+        document.getElementById('rialPlayer').value = '';
+        document.getElementById('rialOrder').value = '';
+        document.getElementById('rialAmount').value = '';
+    } else if (type === 'debt') {
+        document.getElementById('debtPlayer').value = '';
+        document.getElementById('debtAmount').value = '';
+    } else if (type === 'card') {
+        document.getElementById('cardPlayer').value = '';
+        document.getElementById('cardAmount').value = '';
+        document.getElementById('cardTokens').value = '';
+    } else if (type === 'payment') {
+        document.getElementById('paymentPlayer').value = '';
+        document.getElementById('paymentAmount').value = '';
+    }
+}
+
+function displayTransactions(type) {
+    const today = getTodayDate();
+    const filtered = transactions.filter(t => t.type === type && t.date === today);
+    const container = document.getElementById(type + 'Transactions');
+    
+    if (filtered.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 40px;">هیچ تراکنشی ثبت نشده است</p>';
+        return;
+    }
+
+    let html = `
+        <table class="transaction-table">
+            <tr>
+                <th>زمان</th>
+                <th>بازیکن</th>
+                <th>مقدار</th>
+                ${type === 'usdt' || type === 'trx' || type === 'card' ? '<th>ژتون</th>' : ''}
+                ${type === 'usdt' || type === 'trx' ? '<th>والت</th><th>هش</th>' : ''}
+                ${type === 'rial' ? '<th>سفارش</th>' : ''}
+                <th>ادمین</th>
+                <th>عملیات</th>
+            </tr>
+    `;
+    
+    filtered.forEach((t) => {
+        html += `<tr>
+            <td>${t.time}</td>
+            <td>${t.player}</td>
+            <td>${t.amount.toLocaleString()}</td>
+            ${t.type === 'usdt' || t.type === 'trx' || t.type === 'card' ? `<td>${t.tokens}</td>` : ''}
+            ${t.type === 'usdt' || t.type === 'trx' ? `<td>${t.wallet}</td><td><span style="font-size: 10px;">${t.hash.substring(0, 8)}...</span></td>` : ''}
+            ${t.type === 'rial' ? `<td>${t.wallet}</td>` : ''}
+            <td style="color: ${t.adminColor}; font-weight: 600;">${t.adminName}</td>
+            <td>
+                ${t.screenshot ? `<button class="btn-small" onclick="viewScreenshot('${t.screenshot.replace(/'/g, "\\'")}')">📸</button>` : ''}
+                <button class="btn-small" onclick="deleteTransaction('${t.type}', ${t.id})">🗑️</button>
+            </td>
+        </tr>`;
+    });
+    
+    html += '</table>';
+    container.innerHTML = html;
+}
+
+function viewScreenshot(data) {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 3000; cursor: pointer;';
+    modal.innerHTML = `<img src="${data}" style="max-width: 90%; max-height: 90%; border-radius: 10px;">`;
+    modal.onclick = () => modal.remove();
+    document.body.appendChild(modal);
+}
+
+function deleteTransaction(type, id) {
+    if (confirm('آیا مطمئن هستید؟')) {
+        transactions = transactions.filter(t => t.id !== id);
+        saveData();
+        displayTransactions(type);
+    }
+}
+
+// ===== Export Excel =====
+function exportToExcel(type) {
+    const today = getTodayDate();
+    const filtered = transactions.filter(t => t.type === type && t.date === today);
+
+    if (filtered.length === 0) {
+        alert('❌ هیچ تراکنشی برای صادر کردن وجود ندارد');
+        return;
+    }
+
+    const data = [];
+    data.push(['Silent Poker Accountant']);
+    data.push(['گزارش تراکنش‌های ' + getTypeLabel(type)]);
+    data.push(['تاریخ: ' + today]);
+    data.push(['ساعت صادر: ' + new Date().toLocaleTimeString('fa-IR')]);
+    data.push(['']);
+
+    const headers = ['ردیف', 'زمان', 'بازیکن', 'مقدار', 'ادمین'];
+    if (type === 'usdt' || type === 'trx' || type === 'card') headers.push('ژتون');
+    if (type === 'usdt' || type === 'trx') {
+        headers.push('والت');
+        headers.push('هش تراکنش');
+    }
+    if (type === 'rial') headers.push('سفارش');
+
+    data.push(headers);
+
+    filtered.forEach((t, idx) => {
+        const row = [idx + 1, t.time, t.player, t.amount, t.adminName];
+        if (type === 'usdt' || type === 'trx' || type === 'card') row.push(t.tokens);
+        if (type === 'usdt' || type === 'trx') {
+            row.push(t.wallet);
+            row.push(t.hash);
+        }
+        if (type === 'rial') row.push(t.wallet);
+        data.push(row);
+    });
+
+    data.push(['']);
+    data.push(['خلاصه:']);
+    data.push(['کل تراکنش‌ها', filtered.length]);
+    data.push(['کل مقدار', filtered.reduce((sum, t) => sum + t.amount, 0)]);
+    if (type === 'usdt' || type === 'trx' || type === 'card') {
+        data.push(['کل ژتون', filtered.reduce((sum, t) => sum + t.tokens, 0)]);
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, getTypeLabel(type));
+    XLSX.writeFile(wb, `Silent_Poker_${getTypeLabel(type)}_${today}.xlsx`);
+}
+
+function getTypeLabel(type) {
+    const labels = {
+        usdt: 'USDT',
+        trx: 'TRX',
+        debt: 'Debt',
+        rial: 'Rial',
+        card: 'Card',
+        payment: 'Payment'
+    };
+    return labels[type] || type;
+}
+
 // ===== مشاهده سوابق =====
 function viewHistory(idx) {
     currentPlayer = players[idx];
@@ -219,15 +516,15 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>مقدار USDT</label>
-                <input type="number" id="usdtAmount" placeholder="0.00" step="0.01">
+                <input type="number" id="chargeUsdtAmount" placeholder="0.00" step="0.01">
             </div>
             <div class="form-group">
                 <label>تعداد ژتون</label>
-                <input type="number" id="usdtTokens" placeholder="0">
+                <input type="number" id="chargeUsdtTokens" placeholder="0">
             </div>
             <div class="form-group">
                 <label>نام والت</label>
-                <input type="text" id="usdtWallet" placeholder="">
+                <input type="text" id="chargeUsdtWallet" placeholder="">
             </div>
             <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('usdt')">ثبت</button>
         `;
@@ -235,15 +532,15 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>مقدار TRX</label>
-                <input type="number" id="trxAmount" placeholder="0.00" step="0.01">
+                <input type="number" id="chargeTrxAmount" placeholder="0.00" step="0.01">
             </div>
             <div class="form-group">
                 <label>تعداد ژتون</label>
-                <input type="number" id="trxTokens" placeholder="0">
+                <input type="number" id="chargeTrxTokens" placeholder="0">
             </div>
             <div class="form-group">
                 <label>نام والت</label>
-                <input type="text" id="trxWallet" placeholder="">
+                <input type="text" id="chargeTrxWallet" placeholder="">
             </div>
             <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('trx')">ثبت</button>
         `;
@@ -251,11 +548,11 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>شماره سفارش</label>
-                <input type="text" id="rialOrder" placeholder="">
+                <input type="text" id="chargeRialOrder" placeholder="">
             </div>
             <div class="form-group">
                 <label>مقدار (ریال)</label>
-                <input type="number" id="rialAmount" placeholder="0">
+                <input type="number" id="chargeRialAmount" placeholder="0">
             </div>
             <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('rial')">ثبت</button>
         `;
@@ -263,11 +560,11 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>مقدار ژتون</label>
-                <input type="number" id="debtAmount" placeholder="0">
+                <input type="number" id="chargeDebtAmount" placeholder="0">
             </div>
             <div class="form-group">
                 <label>نوع</label>
-                <select id="debtType" style="width: 100%; padding: 10px; background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary);">
+                <select id="chargeDebtType" style="width: 100%; padding: 10px; background: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary);">
                     <option value="debt">بدهی ➖</option>
                     <option value="credit">کریدیت ➕</option>
                 </select>
@@ -278,7 +575,7 @@ function showChargeForm(type) {
         form = `
             <div class="form-group">
                 <label>مقدار پرداختی</label>
-                <input type="number" id="paymentAmount" placeholder="0">
+                <input type="number" id="chargePaymentAmount" placeholder="0">
             </div>
             <button class="btn-add" style="width: 100%; margin-top: 10px;" onclick="submitCharge('payment')">ثبت</button>
         `;
@@ -293,9 +590,9 @@ function submitCharge(type) {
     let record = null;
 
     if (type === 'usdt') {
-        const amount = parseFloat(document.getElementById('usdtAmount').value);
-        const tokens = parseInt(document.getElementById('usdtTokens').value);
-        const wallet = document.getElementById('usdtWallet').value;
+        const amount = parseFloat(document.getElementById('chargeUsdtAmount').value);
+        const tokens = parseInt(document.getElementById('chargeUsdtTokens').value);
+        const wallet = document.getElementById('chargeUsdtWallet').value;
 
         if (!amount || !tokens || !wallet) {
             alert('❌ تمام فیلدها را پر کنید!');
@@ -312,9 +609,9 @@ function submitCharge(type) {
             adminId: currentAdmin
         };
     } else if (type === 'trx') {
-        const amount = parseFloat(document.getElementById('trxAmount').value);
-        const tokens = parseInt(document.getElementById('trxTokens').value);
-        const wallet = document.getElementById('trxWallet').value;
+        const amount = parseFloat(document.getElementById('chargeTrxAmount').value);
+        const tokens = parseInt(document.getElementById('chargeTrxTokens').value);
+        const wallet = document.getElementById('chargeTrxWallet').value;
 
         if (!amount || !tokens || !wallet) {
             alert('❌ تمام فیلدها را پر کنید!');
@@ -331,8 +628,8 @@ function submitCharge(type) {
             adminId: currentAdmin
         };
     } else if (type === 'rial') {
-        const order = document.getElementById('rialOrder').value;
-        const amount = parseInt(document.getElementById('rialAmount').value);
+        const order = document.getElementById('chargeRialOrder').value;
+        const amount = parseInt(document.getElementById('chargeRialAmount').value);
 
         if (!order || !amount) {
             alert('❌ تمام فیلدها را پر کنید!');
@@ -349,8 +646,8 @@ function submitCharge(type) {
             adminId: currentAdmin
         };
     } else if (type === 'debt') {
-        const amount = parseInt(document.getElementById('debtAmount').value);
-        const debtType = document.getElementById('debtType').value;
+        const amount = parseInt(document.getElementById('chargeDebtAmount').value);
+        const debtType = document.getElementById('chargeDebtType').value;
 
         if (!amount) {
             alert('❌ مقدار را وارد کنید!');
@@ -379,7 +676,7 @@ function submitCharge(type) {
             };
         }
     } else if (type === 'payment') {
-        const amount = parseInt(document.getElementById('paymentAmount').value);
+        const amount = parseInt(document.getElementById('chargePaymentAmount').value);
 
         if (!amount) {
             alert('❌ مقدار را وارد کنید!');
@@ -411,45 +708,6 @@ function submitCharge(type) {
     }
 }
 
-// ===== جستجو برای شارژ =====
-function searchForCharge() {
-    const query = document.getElementById('chargeSearch').value.toLowerCase().trim();
-    const list = document.getElementById('chargeList');
-
-    if (!query) {
-        list.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px;">نام بازیکن را جستجو کنید</p>';
-        return;
-    }
-
-    const filtered = players.filter(p => p.name.toLowerCase().includes(query));
-
-    if (filtered.length === 0) {
-        list.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px;">❌ بازیکنی یافت نشد</p>';
-        return;
-    }
-
-    list.innerHTML = filtered.map((player) => {
-        const idx = players.indexOf(player);
-        const startDate = getStartDate(player);
-        const lastDate = getLastActivityDate(player);
-        const adminColor = player.adminColor || '#808080';
-        
-        return `
-            <div class="player-card">
-                <h3>${player.name}</h3>
-                <p style="font-size: 11px; color: ${adminColor}; margin-bottom: 8px; font-weight: 600;">👤 ${player.adminName}</p>
-                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">📅 از ${startDate} تا ${lastDate}</p>
-                <p>💰 شارژ: <strong>${player.totalCharge.toLocaleString()}</strong></p>
-                <p>📊 بدهی: <strong>${player.totalDebt.toLocaleString()}</strong></p>
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="viewHistory(${idx})">📋 سوابق</button>
-                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="openChargeModal(${idx})">💳 شارژ</button>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
 // ===== تعویض تب‌ها =====
 function switchTab(tabName) {
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -457,6 +715,10 @@ function switchTab(tabName) {
 
     event.target.closest('.nav-item').classList.add('active');
     document.getElementById(tabName + 'Tab').classList.add('active');
+    
+    if (tabName !== 'players') {
+        displayTransactions(tabName);
+    }
 }
 
 // ===== مودال =====
