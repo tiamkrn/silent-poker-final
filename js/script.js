@@ -78,6 +78,14 @@ function saveData() {
     localStorage.setItem('silentPokerData', JSON.stringify(players));
 }
 
+// ===== تاریخ فارسی =====
+function getLastActivityDate(player) {
+    if (player.records.length === 0) {
+        return player.startDate;
+    }
+    return player.records[player.records.length - 1].date;
+}
+
 // ===== مدیریت بازیکنان =====
 function addPlayer() {
     const name = document.getElementById('newPlayerName').value.trim();
@@ -91,8 +99,11 @@ function addPlayer() {
         return;
     }
 
+    const today = new Date().toLocaleDateString('fa-IR');
+
     players.push({
         name: name,
+        startDate: today,
         totalCharge: 0,
         totalDebt: 0,
         records: []
@@ -111,17 +122,23 @@ function displayPlayers() {
         return;
     }
 
-    list.innerHTML = players.map((player, idx) => `
-        <div class="player-card">
-            <h3>${player.name}</h3>
-            <p>💰 شارژ: <strong>${player.totalCharge.toLocaleString()}</strong></p>
-            <p>📊 بدهی: <strong>${player.totalDebt.toLocaleString()}</strong></p>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="viewHistory(${idx})">📋 سوابق</button>
-                <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="openChargeModal(${idx})">💳 شارژ</button>
+    list.innerHTML = players.map((player, idx) => {
+        const startDate = player.startDate || 'نامشخص';
+        const lastDate = getLastActivityDate(player);
+        
+        return `
+            <div class="player-card">
+                <h3>${player.name}</h3>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">📅 از ${startDate} تا ${lastDate}</p>
+                <p>💰 شارژ: <strong>${player.totalCharge.toLocaleString()}</strong></p>
+                <p>📊 بدهی: <strong>${player.totalDebt.toLocaleString()}</strong></p>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="viewHistory(${idx})">📋 سوابق</button>
+                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="openChargeModal(${idx})">💳 شارژ</button>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // ===== مشاهده سوابق =====
@@ -385,9 +402,13 @@ function searchForCharge() {
 
     list.innerHTML = filtered.map((player) => {
         const idx = players.indexOf(player);
+        const startDate = player.startDate || 'نامشخص';
+        const lastDate = getLastActivityDate(player);
+        
         return `
             <div class="player-card">
                 <h3>${player.name}</h3>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">📅 از ${startDate} تا ${lastDate}</p>
                 <p>💰 شارژ: <strong>${player.totalCharge.toLocaleString()}</strong></p>
                 <p>📊 بدهی: <strong>${player.totalDebt.toLocaleString()}</strong></p>
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
