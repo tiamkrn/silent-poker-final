@@ -81,27 +81,60 @@
                     <h2>💵 تتر (USDT)</h2>
                     <button class="btn-export" onclick="openExportDialog('usdt')">📥 دریافت گزارش</button>
                 </div>
-                <div class="transaction-form">
-                    <div class="form-row">
-                        <input type="text" id="usdtPlayer" class="form-input" placeholder="نام بازیکن">
-                        <input type="number" id="usdtAmount" class="form-input" placeholder="مقدار USDT" step="0.01">
-                        <input type="number" id="usdtTokens" class="form-input" placeholder="تعداد ژتون">
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button class="export-type-btn active" onclick="switchUsdtType('bep20')" data-type="bep20">🌐 BEP20</button>
+                        <button class="export-type-btn" onclick="switchUsdtType('trc20')" data-type="trc20">⛓️ TRC20</button>
                     </div>
-                    <div class="form-row">
-                        <input type="text" id="usdtWallet" class="form-input" placeholder="نام والت">
-                        <input type="text" id="usdtHash" class="form-input" placeholder="هش تراکنش (اختیاری)">
-                    </div>
-                    <div class="form-row">
-                        <input type="date" id="usdtDate" class="form-input">
-                        <input type="time" id="usdtTime" class="form-input">
-                    </div>
-                    <div class="drag-drop-zone" id="usdtDragZone" ondrop="handleDrop(event, 'usdt')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-                        <span style="font-size: 32px;">📸</span>
-                        <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtFile').click()">انتخاب کنید</span></p>
-                        <input type="file" id="usdtFile" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'usdt')">
-                    </div>
-                    <button onclick="addTransaction('usdt')" class="btn-add btn-full">افزودن تراکنش</button>
                 </div>
+
+                <!-- BEP20 -->
+                <div id="usdtBep20Section" class="transaction-form">
+                    <div class="form-row">
+                        <input type="text" id="usdtBep20Player" class="form-input" placeholder="نام بازیکن">
+                        <input type="number" id="usdtBep20Amount" class="form-input" placeholder="مقدار USDT" step="0.01">
+                        <input type="number" id="usdtBep20Tokens" class="form-input" placeholder="تعداد ژتون">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="usdtBep20Wallet" class="form-input" placeholder="نام والت">
+                        <input type="text" id="usdtBep20Hash" class="form-input" placeholder="هش تراکنش (اختیاری)">
+                    </div>
+                    <div class="form-row">
+                        <input type="date" id="usdtBep20Date" class="form-input">
+                        <input type="time" id="usdtBep20Time" class="form-input">
+                    </div>
+                    <div class="drag-drop-zone" id="usdtBep20DragZone" ondrop="handleDrop(event, 'usdtBep20')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                        <span style="font-size: 32px;">📸</span>
+                        <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtBep20File').click()">انتخاب کنید</span></p>
+                        <input type="file" id="usdtBep20File" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'usdtBep20')">
+                    </div>
+                    <button onclick="addTransaction('usdt-bep20')" class="btn-add btn-full">افزودن تراکنش BEP20</button>
+                </div>
+
+                <!-- TRC20 -->
+                <div id="usdtTrc20Section" class="transaction-form" style="display: none;">
+                    <div class="form-row">
+                        <input type="text" id="usdtTrc20Player" class="form-input" placeholder="نام بازیکن">
+                        <input type="number" id="usdtTrc20Amount" class="form-input" placeholder="مقدار USDT" step="0.01">
+                        <input type="number" id="usdtTrc20Tokens" class="form-input" placeholder="تعداد ژتون">
+                    </div>
+                    <div class="form-row">
+                        <input type="text" id="usdtTrc20Wallet" class="form-input" placeholder="نام والت">
+                        <input type="text" id="usdtTrc20Hash" class="form-input" placeholder="هش تراکنش (اختیاری)">
+                    </div>
+                    <div class="form-row">
+                        <input type="date" id="usdtTrc20Date" class="form-input">
+                        <input type="time" id="usdtTrc20Time" class="form-input">
+                    </div>
+                    <div class="drag-drop-zone" id="usdtTrc20DragZone" ondrop="handleDrop(event, 'usdtTrc20')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                        <span style="font-size: 32px;">📸</span>
+                        <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtTrc20File').click()">انتخاب کنید</span></p>
+                        <input type="file" id="usdtTrc20File" accept="image/*" style="display: none;" onchange="handleFileSelect(event, 'usdtTrc20')">
+                    </div>
+                    <button onclick="addTransaction('usdt-trc20')" class="btn-add btn-full">افزودن تراکنش TRC20</button>
+                </div>
+
                 <div id="usdtTransactions"></div>
             </section>
 
