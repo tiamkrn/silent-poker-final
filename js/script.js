@@ -11,6 +11,7 @@ let currentAdmin = null;
 let players = [];
 let transactions = [];
 let currentPlayer = null;
+let currentExportType = null;
 
 // ===== مدیریت رنگ‌ها =====
 function selectAdmin(adminId) {
@@ -98,6 +99,8 @@ function getLastActivityDate(player) {
 // ===== مدیریت بازیکنان =====
 function addPlayer() {
     const name = document.getElementById('newPlayerName').value.trim();
+    const verified = document.getElementById('playerVerified').checked;
+    
     if (!name) {
         alert('❌ نام بازیکن را وارد کنید!');
         return;
@@ -113,6 +116,7 @@ function addPlayer() {
 
     players.push({
         name: name,
+        verified: verified,
         startDate: today,
         addedByAdmin: currentAdmin,
         adminName: admin.name,
@@ -124,6 +128,7 @@ function addPlayer() {
 
     saveData();
     document.getElementById('newPlayerName').value = '';
+    document.getElementById('playerVerified').checked = false;
     displayPlayers();
     alert('✅ بازیکن با موفقیت اضافه شد!');
 }
@@ -143,6 +148,7 @@ function displayPlayers() {
         return `
             <div class="player-card">
                 <h3>${player.name}</h3>
+                ${player.verified ? '<div class="verification-badge">احراز درگاه</div>' : ''}
                 <p style="font-size: 11px; color: ${adminColor}; margin-bottom: 8px; font-weight: 600;">👤 ${player.adminName}</p>
                 <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">📅 از ${startDate} تا ${lastDate}</p>
                 <p>💰 شارژ: <strong>${player.totalCharge.toLocaleString()}</strong></p>
@@ -156,9 +162,47 @@ function displayPlayers() {
     }).join('');
 }
 
+// ===== Drag & Drop Functions =====
+function handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('drag-over');
+}
+
+function handleDrop(e, type) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove('drag-over');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        handleFileSelect({ target: { files: files } }, type);
+    }
+}
+
+function handleFileSelect(e, type) {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            window[type + 'Screenshot'] = event.target.result;
+            document.getElementById(type + 'DragZone').innerHTML = `
+                <span style="font-size: 32px;">✅</span>
+                <p style="color: var(--admin-color);">عکس آپلود شد</p>
+            `;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
 // ===== تراکنش‌های جدید =====
 function addTransaction(type) {
-    const today = getTodayDate();
     const admin = admins[currentAdmin];
     
     if (type === 'usdt') {
@@ -166,23 +210,31 @@ function addTransaction(type) {
         const amount = parseFloat(document.getElementById('usdtAmount').value);
         const tokens = parseInt(document.getElementById('usdtTokens').value);
         const wallet = document.getElementById('usdtWallet').value.trim();
-        const hash = document.getElementById('usdtHash').value.trim();
-        const screenshot = document.getElementById('usdtScreenshot').files[0];
+        let hash = document.getElementById('usdtHash').value.trim();
+        let screenshot = window.usdtScreenshot || null;
 
-        if (!player || !amount || !tokens || !wallet || !hash) {
-            alert('❌ تمام فیلدهای ضروری را پر کنید!');
+        if (!player || !amount || !tokens || !wallet) {
+            alert('❌ نام بازیکن، مقدار، ژتون و والت ضروری هستند!');
             return;
         }
 
-        if (screenshot) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                saveTransaction('usdt', player, amount, tokens, wallet, hash, e.target.result, admin);
-            };
-            reader.readAsDataURL(screenshot);
-        } else {
-            saveTransaction('usdt', player, amount, tokens, wallet, hash, null, admin);
+        if (!hash && !screenshot) {
+            alert('❌ حداقل یکی از هش تراکنش یا عکس ضروری است!');
+            return;
         }
+
+        saveTransaction('usdt', player, amount, tokens, wallet, hash, screenshot, admin);
+        window.usdtScreenshot = null;
+        document.getElementById('usdtPlayer').value = '';
+        document.getElementById('usdtAmount').value = '';
+        document.getElementById('usdtTokens').value = '';
+        document.getElementById('usdtWallet').value = '';
+        document.getElementById('usdtHash').value = '';
+        document.getElementById('usdtDragZone').innerHTML = `
+            <span style="font-size: 32px;">📸</span>
+            <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtFile').click()">انتخاب کنید</span></p>
+        `;
+        displayTransactions('usdt');
     }
     
     if (type === 'trx') {
@@ -190,23 +242,31 @@ function addTransaction(type) {
         const amount = parseFloat(document.getElementById('trxAmount').value);
         const tokens = parseInt(document.getElementById('trxTokens').value);
         const wallet = document.getElementById('trxWallet').value.trim();
-        const hash = document.getElementById('trxHash').value.trim();
-        const screenshot = document.getElementById('trxScreenshot').files[0];
+        let hash = document.getElementById('trxHash').value.trim();
+        let screenshot = window.trxScreenshot || null;
 
-        if (!player || !amount || !tokens || !wallet || !hash) {
-            alert('❌ تمام فیلدهای ضروری را پر کنید!');
+        if (!player || !amount || !tokens || !wallet) {
+            alert('❌ نام بازیکن، مقدار، ژتون و والت ضروری هستند!');
             return;
         }
 
-        if (screenshot) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                saveTransaction('trx', player, amount, tokens, wallet, hash, e.target.result, admin);
-            };
-            reader.readAsDataURL(screenshot);
-        } else {
-            saveTransaction('trx', player, amount, tokens, wallet, hash, null, admin);
+        if (!hash && !screenshot) {
+            alert('❌ حداقل یکی از هش تراکنش یا عکس ضروری است!');
+            return;
         }
+
+        saveTransaction('trx', player, amount, tokens, wallet, hash, screenshot, admin);
+        window.trxScreenshot = null;
+        document.getElementById('trxPlayer').value = '';
+        document.getElementById('trxAmount').value = '';
+        document.getElementById('trxTokens').value = '';
+        document.getElementById('trxWallet').value = '';
+        document.getElementById('trxHash').value = '';
+        document.getElementById('trxDragZone').innerHTML = `
+            <span style="font-size: 32px;">📸</span>
+            <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('trxFile').click()">انتخاب کنید</span></p>
+        `;
+        displayTransactions('trx');
     }
 
     if (type === 'rial') {
@@ -220,6 +280,10 @@ function addTransaction(type) {
         }
 
         saveTransaction('rial', player, amount, 0, order, '', null, admin);
+        document.getElementById('rialPlayer').value = '';
+        document.getElementById('rialOrder').value = '';
+        document.getElementById('rialAmount').value = '';
+        displayTransactions('rial');
     }
 
     if (type === 'debt') {
@@ -232,6 +296,9 @@ function addTransaction(type) {
         }
 
         saveTransaction('debt', player, amount, 0, '', '', null, admin);
+        document.getElementById('debtPlayer').value = '';
+        document.getElementById('debtAmount').value = '';
+        displayTransactions('debt');
     }
 
     if (type === 'card') {
@@ -245,6 +312,10 @@ function addTransaction(type) {
         }
 
         saveTransaction('card', player, amount, tokens, '', '', null, admin);
+        document.getElementById('cardPlayer').value = '';
+        document.getElementById('cardAmount').value = '';
+        document.getElementById('cardTokens').value = '';
+        displayTransactions('card');
     }
 
     if (type === 'payment') {
@@ -257,6 +328,9 @@ function addTransaction(type) {
         }
 
         saveTransaction('payment', player, amount, 0, '', '', null, admin);
+        document.getElementById('paymentPlayer').value = '';
+        document.getElementById('paymentAmount').value = '';
+        displayTransactions('payment');
     }
 }
 
@@ -282,44 +356,7 @@ function saveTransaction(type, player, amount, tokens, wallet, hash, screenshot,
 
     transactions.push(transaction);
     saveData();
-    
     alert('✅ تراکنش با موفقیت ثبت شد!');
-    
-    // پاک کردن فیلدها
-    clearTransactionForm(type);
-    displayTransactions(type);
-}
-
-function clearTransactionForm(type) {
-    if (type === 'usdt') {
-        document.getElementById('usdtPlayer').value = '';
-        document.getElementById('usdtAmount').value = '';
-        document.getElementById('usdtTokens').value = '';
-        document.getElementById('usdtWallet').value = '';
-        document.getElementById('usdtHash').value = '';
-        document.getElementById('usdtScreenshot').value = '';
-    } else if (type === 'trx') {
-        document.getElementById('trxPlayer').value = '';
-        document.getElementById('trxAmount').value = '';
-        document.getElementById('trxTokens').value = '';
-        document.getElementById('trxWallet').value = '';
-        document.getElementById('trxHash').value = '';
-        document.getElementById('trxScreenshot').value = '';
-    } else if (type === 'rial') {
-        document.getElementById('rialPlayer').value = '';
-        document.getElementById('rialOrder').value = '';
-        document.getElementById('rialAmount').value = '';
-    } else if (type === 'debt') {
-        document.getElementById('debtPlayer').value = '';
-        document.getElementById('debtAmount').value = '';
-    } else if (type === 'card') {
-        document.getElementById('cardPlayer').value = '';
-        document.getElementById('cardAmount').value = '';
-        document.getElementById('cardTokens').value = '';
-    } else if (type === 'payment') {
-        document.getElementById('paymentPlayer').value = '';
-        document.getElementById('paymentAmount').value = '';
-    }
 }
 
 function displayTransactions(type) {
@@ -335,6 +372,7 @@ function displayTransactions(type) {
     let html = `
         <table class="transaction-table">
             <tr>
+                <th>ردیف</th>
                 <th>زمان</th>
                 <th>بازیکن</th>
                 <th>مقدار</th>
@@ -346,8 +384,9 @@ function displayTransactions(type) {
             </tr>
     `;
     
-    filtered.forEach((t) => {
+    filtered.forEach((t, idx) => {
         html += `<tr>
+            <td>${idx + 1}</td>
             <td>${t.time}</td>
             <td>${t.player}</td>
             <td>${t.amount.toLocaleString()}</td>
@@ -380,70 +419,6 @@ function deleteTransaction(type, id) {
         saveData();
         displayTransactions(type);
     }
-}
-
-// ===== Export Excel =====
-function exportToExcel(type) {
-    const today = getTodayDate();
-    const filtered = transactions.filter(t => t.type === type && t.date === today);
-
-    if (filtered.length === 0) {
-        alert('❌ هیچ تراکنشی برای صادر کردن وجود ندارد');
-        return;
-    }
-
-    const data = [];
-    data.push(['Silent Poker Accountant']);
-    data.push(['گزارش تراکنش‌های ' + getTypeLabel(type)]);
-    data.push(['تاریخ: ' + today]);
-    data.push(['ساعت صادر: ' + new Date().toLocaleTimeString('fa-IR')]);
-    data.push(['']);
-
-    const headers = ['ردیف', 'زمان', 'بازیکن', 'مقدار', 'ادمین'];
-    if (type === 'usdt' || type === 'trx' || type === 'card') headers.push('ژتون');
-    if (type === 'usdt' || type === 'trx') {
-        headers.push('والت');
-        headers.push('هش تراکنش');
-    }
-    if (type === 'rial') headers.push('سفارش');
-
-    data.push(headers);
-
-    filtered.forEach((t, idx) => {
-        const row = [idx + 1, t.time, t.player, t.amount, t.adminName];
-        if (type === 'usdt' || type === 'trx' || type === 'card') row.push(t.tokens);
-        if (type === 'usdt' || type === 'trx') {
-            row.push(t.wallet);
-            row.push(t.hash);
-        }
-        if (type === 'rial') row.push(t.wallet);
-        data.push(row);
-    });
-
-    data.push(['']);
-    data.push(['خلاصه:']);
-    data.push(['کل تراکنش‌ها', filtered.length]);
-    data.push(['کل مقدار', filtered.reduce((sum, t) => sum + t.amount, 0)]);
-    if (type === 'usdt' || type === 'trx' || type === 'card') {
-        data.push(['کل ژتون', filtered.reduce((sum, t) => sum + t.tokens, 0)]);
-    }
-
-    const ws = XLSX.utils.aoa_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, getTypeLabel(type));
-    XLSX.writeFile(wb, `Silent_Poker_${getTypeLabel(type)}_${today}.xlsx`);
-}
-
-function getTypeLabel(type) {
-    const labels = {
-        usdt: 'USDT',
-        trx: 'TRX',
-        debt: 'Debt',
-        rial: 'Rial',
-        card: 'Card',
-        payment: 'Payment'
-    };
-    return labels[type] || type;
 }
 
 // ===== مشاهده سوابق =====
@@ -706,6 +681,176 @@ function submitCharge(type) {
         closeModal('chargeModal');
         displayPlayers();
     }
+}
+
+// ===== Export Dialog =====
+function openExportDialog(type) {
+    currentExportType = type;
+    document.getElementById('exportType').textContent = getTypeLabel(type);
+    document.getElementById('selectedExportType').value = 'daily';
+    
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    document.getElementById('exportStartDate').value = todayStr;
+    document.getElementById('exportEndDate').value = todayStr;
+    document.getElementById('exportStartTime').value = '';
+    document.getElementById('exportEndTime').value = '';
+    
+    document.querySelectorAll('.export-type-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('[data-type="daily"]').classList.add('active');
+    
+    document.getElementById('exportModal').classList.add('active');
+}
+
+function selectExportType(type) {
+    document.getElementById('selectedExportType').value = type;
+    document.querySelectorAll('.export-type-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-type="${type}"]`).classList.add('active');
+}
+
+function executeExport() {
+    const type = currentExportType;
+    const exportType = document.getElementById('selectedExportType').value;
+    
+    let startDate, endDate;
+    
+    if (exportType === 'daily') {
+        const dateStr = document.getElementById('exportStartDate').value;
+        startDate = convertToFarsiDate(dateStr);
+        endDate = startDate;
+    } else if (exportType === 'weekly') {
+        const dateStr = document.getElementById('exportStartDate').value;
+        const date = new Date(dateStr);
+        const day = date.getDay();
+        const diff = date.getDate() - day;
+        const weekStart = new Date(date.setDate(diff));
+        startDate = convertToFarsiDate(weekStart.toISOString().split('T')[0]);
+        
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        endDate = convertToFarsiDate(weekEnd.toISOString().split('T')[0]);
+    } else if (exportType === 'monthly') {
+        const dateStr = document.getElementById('exportStartDate').value;
+        const date = new Date(dateStr);
+        startDate = convertToFarsiDate(new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0]);
+        endDate = convertToFarsiDate(new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().split('T')[0]);
+    }
+    
+    const startTime = document.getElementById('exportStartTime').value || '00:00';
+    const endTime = document.getElementById('exportEndTime').value || '23:59';
+    
+    generateExcelReport(type, startDate, endDate, startTime, endTime, exportType);
+    closeModal('exportModal');
+}
+
+function convertToFarsiDate(dateStr) {
+    const date = new Date(dateStr + 'T00:00:00');
+    return date.toLocaleDateString('fa-IR');
+}
+
+function generateExcelReport(type, startDate, endDate, startTime, endTime, exportType) {
+    let filtered = transactions.filter(t => t.type === type);
+    
+    const compareDates = (dateStr) => {
+        const parts = dateStr.split('/');
+        return parts[0] + pad(parts[1]) + pad(parts[2]);
+    };
+    
+    const startDateNum = compareDates(startDate);
+    const endDateNum = compareDates(endDate);
+    
+    filtered = filtered.filter(t => {
+        const tDateNum = compareDates(t.date);
+        if (tDateNum < startDateNum || tDateNum > endDateNum) return false;
+        
+        if (startTime || endTime) {
+            const tTime = t.time.split(':');
+            const tTimeNum = tTime[0] + pad(tTime[1]);
+            const startTimeNum = startTime.replace(':', '');
+            const endTimeNum = endTime.replace(':', '');
+            
+            if (tTimeNum < startTimeNum || tTimeNum > endTimeNum) return false;
+        }
+        
+        return true;
+    });
+
+    if (filtered.length === 0) {
+        alert('❌ هیچ تراکنشی برای این محدوده وجود ندارد');
+        return;
+    }
+
+    const data = [];
+    data.push(['Silent Poker Accountant']);
+    data.push(['گزارش تراکنش‌های ' + getTypeLabel(type)]);
+    data.push(['نوع گزارش: ' + getExportTypeLabel(exportType)]);
+    data.push(['محدوده: ' + startDate + ' تا ' + endDate]);
+    if (startTime || endTime) {
+        data.push(['ساعت: ' + startTime + ' تا ' + endTime]);
+    }
+    data.push(['ساعت صادر: ' + new Date().toLocaleTimeString('fa-IR')]);
+    data.push(['']);
+
+    const headers = ['ردیف', 'تاریخ', 'ساعت', 'بازیکن', 'مقدار', 'ادمین'];
+    if (type === 'usdt' || type === 'trx' || type === 'card') headers.push('ژتون');
+    if (type === 'usdt' || type === 'trx') {
+        headers.push('والت');
+        headers.push('هش تراکنش');
+    }
+    if (type === 'rial') headers.push('سفارش');
+
+    data.push(headers);
+
+    filtered.forEach((t, idx) => {
+        const row = [idx + 1, t.date, t.time, t.player, t.amount, t.adminName];
+        if (type === 'usdt' || type === 'trx' || type === 'card') row.push(t.tokens);
+        if (type === 'usdt' || type === 'trx') {
+            row.push(t.wallet);
+            row.push(t.hash);
+        }
+        if (type === 'rial') row.push(t.wallet);
+        data.push(row);
+    });
+
+    data.push(['']);
+    data.push(['خلاصه:']);
+    data.push(['کل تراکنش‌ها', filtered.length]);
+    data.push(['کل مقدار', filtered.reduce((sum, t) => sum + t.amount, 0)]);
+    if (type === 'usdt' || type === 'trx' || type === 'card') {
+        data.push(['کل ژتون', filtered.reduce((sum, t) => sum + t.tokens, 0)]);
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, getTypeLabel(type));
+    
+    const fileName = `Silent_Poker_${getTypeLabel(type)}_${startDate}_${exportType}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+}
+
+function pad(num) {
+    return String(num).padStart(2, '0');
+}
+
+function getExportTypeLabel(type) {
+    const labels = {
+        daily: 'روزانه',
+        weekly: 'هفتگی',
+        monthly: 'ماهانه'
+    };
+    return labels[type] || type;
+}
+
+function getTypeLabel(type) {
+    const labels = {
+        usdt: 'USDT',
+        trx: 'TRX',
+        debt: 'Debt',
+        rial: 'Rial',
+        card: 'Card',
+        payment: 'Payment'
+    };
+    return labels[type] || type;
 }
 
 // ===== تعویض تب‌ها =====
