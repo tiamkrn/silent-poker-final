@@ -13,6 +13,7 @@ let transactions = [];
 let currentPlayer = null;
 let currentExportType = null;
 let currentCashoutType = 'rial';
+let currentUsdtType = 'bep20';
 
 // ===== مدیریت رنگ‌ها =====
 function selectAdmin(adminId) {
@@ -68,9 +69,13 @@ function setCurrentDateTime() {
     const todayStr = today.toISOString().split('T')[0];
     const timeStr = today.toTimeString().slice(0, 5);
 
-    // تتر
-    document.getElementById('usdtDate').value = todayStr;
-    document.getElementById('usdtTime').value = timeStr;
+    // تتر BEP20
+    document.getElementById('usdtBep20Date').value = todayStr;
+    document.getElementById('usdtBep20Time').value = timeStr;
+
+    // تتر TRC20
+    document.getElementById('usdtTrc20Date').value = todayStr;
+    document.getElementById('usdtTrc20Time').value = timeStr;
 
     // ترون
     document.getElementById('trxDate').value = todayStr;
@@ -242,10 +247,33 @@ function handleFileSelect(e, type) {
     }
 }
 
+// ===== Switch USDT Type =====
+function switchUsdtType(type) {
+    currentUsdtType = type;
+    document.querySelectorAll('[data-type]').forEach(btn => {
+        if (btn.dataset.type === 'bep20' || btn.dataset.type === 'trc20') {
+            btn.classList.remove('active');
+        }
+    });
+    document.querySelector(`[data-type="${type}"]`).classList.add('active');
+
+    if (type === 'bep20') {
+        document.getElementById('usdtBep20Section').style.display = 'block';
+        document.getElementById('usdtTrc20Section').style.display = 'none';
+    } else {
+        document.getElementById('usdtBep20Section').style.display = 'none';
+        document.getElementById('usdtTrc20Section').style.display = 'block';
+    }
+}
+
 // ===== Switch Cashout Type =====
 function switchCashoutType(type) {
     currentCashoutType = type;
-    document.querySelectorAll('[data-type]').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('[data-type]').forEach(btn => {
+        if (btn.dataset.type === 'rial' || btn.dataset.type === 'wallet') {
+            btn.classList.remove('active');
+        }
+    });
     document.querySelector(`[data-type="${type}"]`).classList.add('active');
 
     if (type === 'rial') {
@@ -261,15 +289,15 @@ function switchCashoutType(type) {
 function addTransaction(type) {
     const admin = admins[currentAdmin];
     
-    if (type === 'usdt') {
-        const player = document.getElementById('usdtPlayer').value.trim();
-        const amount = parseFloat(document.getElementById('usdtAmount').value);
-        const tokens = parseInt(document.getElementById('usdtTokens').value);
-        const wallet = document.getElementById('usdtWallet').value.trim();
-        let hash = document.getElementById('usdtHash').value.trim();
-        let screenshot = window.usdtScreenshot || null;
-        const date = document.getElementById('usdtDate').value;
-        const time = document.getElementById('usdtTime').value;
+    if (type === 'usdt-bep20') {
+        const player = document.getElementById('usdtBep20Player').value.trim();
+        const amount = parseFloat(document.getElementById('usdtBep20Amount').value);
+        const tokens = parseInt(document.getElementById('usdtBep20Tokens').value);
+        const wallet = document.getElementById('usdtBep20Wallet').value.trim();
+        let hash = document.getElementById('usdtBep20Hash').value.trim();
+        let screenshot = window.usdtBep20Screenshot || null;
+        const date = document.getElementById('usdtBep20Date').value;
+        const time = document.getElementById('usdtBep20Time').value;
 
         if (!player || !amount || !tokens || !wallet) {
             alert('❌ نام بازیکن، مقدار، ژتون و والت ضروری هستند!');
@@ -281,21 +309,56 @@ function addTransaction(type) {
             return;
         }
 
-        saveTransaction('usdt', player, amount, tokens, wallet, hash, screenshot, admin, date, time);
-        window.usdtScreenshot = null;
-        document.getElementById('usdtPlayer').value = '';
-        document.getElementById('usdtAmount').value = '';
-        document.getElementById('usdtTokens').value = '';
-        document.getElementById('usdtWallet').value = '';
-        document.getElementById('usdtHash').value = '';
-        document.getElementById('usdtDragZone').innerHTML = `
+        saveTransaction('usdt-bep20', player, amount, tokens, wallet, hash, screenshot, admin, date, time);
+        window.usdtBep20Screenshot = null;
+        document.getElementById('usdtBep20Player').value = '';
+        document.getElementById('usdtBep20Amount').value = '';
+        document.getElementById('usdtBep20Tokens').value = '';
+        document.getElementById('usdtBep20Wallet').value = '';
+        document.getElementById('usdtBep20Hash').value = '';
+        document.getElementById('usdtBep20DragZone').innerHTML = `
             <span style="font-size: 32px;">📸</span>
-            <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtFile').click()">انتخاب کنید</span></p>
+            <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtBep20File').click()">انتخاب کنید</span></p>
         `;
         setCurrentDateTime();
         displayTransactions('usdt');
     }
-    
+
+    if (type === 'usdt-trc20') {
+        const player = document.getElementById('usdtTrc20Player').value.trim();
+        const amount = parseFloat(document.getElementById('usdtTrc20Amount').value);
+        const tokens = parseInt(document.getElementById('usdtTrc20Tokens').value);
+        const wallet = document.getElementById('usdtTrc20Wallet').value.trim();
+        let hash = document.getElementById('usdtTrc20Hash').value.trim();
+        let screenshot = window.usdtTrc20Screenshot || null;
+        const date = document.getElementById('usdtTrc20Date').value;
+        const time = document.getElementById('usdtTrc20Time').value;
+
+        if (!player || !amount || !tokens || !wallet) {
+            alert('❌ نام بازیکن، مقدار، ژتون و والت ضروری هستند!');
+            return;
+        }
+
+        if (!hash && !screenshot) {
+            alert('❌ حداقل یکی از هش تراکنش یا عکس ضروری است!');
+            return;
+        }
+
+        saveTransaction('usdt-trc20', player, amount, tokens, wallet, hash, screenshot, admin, date, time);
+        window.usdtTrc20Screenshot = null;
+        document.getElementById('usdtTrc20Player').value = '';
+        document.getElementById('usdtTrc20Amount').value = '';
+        document.getElementById('usdtTrc20Tokens').value = '';
+        document.getElementById('usdtTrc20Wallet').value = '';
+        document.getElementById('usdtTrc20Hash').value = '';
+        document.getElementById('usdtTrc20DragZone').innerHTML = `
+            <span style="font-size: 32px;">📸</span>
+            <p>عکس اسکین را بکشید یا <span class="drag-link" onclick="document.getElementById('usdtTrc20File').click()">انتخاب کنید</span></p>
+        `;
+        setCurrentDateTime();
+        displayTransactions('usdt');
+    }
+
     if (type === 'trx') {
         const player = document.getElementById('trxPlayer').value.trim();
         const amount = parseFloat(document.getElementById('trxAmount').value);
@@ -481,7 +544,9 @@ function displayTransactions(type) {
     const today = getTodayDate();
     let filtered;
     
-    if (type === 'cashout') {
+    if (type === 'usdt') {
+        filtered = transactions.filter(t => (t.type === 'usdt-bep20' || t.type === 'usdt-trc20') && t.date === today);
+    } else if (type === 'cashout') {
         filtered = transactions.filter(t => (t.type === 'cashout-rial' || t.type === 'cashout-wallet') && t.date === today);
     } else {
         filtered = transactions.filter(t => t.type === type && t.date === today);
@@ -518,8 +583,8 @@ function displayTransactions(type) {
             <td>${t.time}</td>
             <td>${t.player}</td>
             <td>${t.amount.toLocaleString()}</td>
-            ${t.type === 'usdt' || t.type === 'trx' || t.type === 'card' ? `<td>${t.tokens}</td>` : ''}
-            ${t.type === 'usdt' || t.type === 'trx' ? `<td>${t.wallet}</td><td><span style="font-size: 10px;">${t.hash.substring(0, 8)}...</span></td>` : ''}
+            ${t.type === 'usdt-bep20' || t.type === 'usdt-trc20' || t.type === 'trx' || t.type === 'card' ? `<td>${t.tokens}</td>` : ''}
+            ${t.type === 'usdt-bep20' || t.type === 'usdt-trc20' || t.type === 'trx' ? `<td>${t.wallet}</td><td><span style="font-size: 10px;">${t.hash.substring(0, 8)}...</span></td>` : ''}
             ${t.type === 'rial' ? `<td>${t.wallet}</td>` : ''}
             ${type === 'cashout' ? `<td>${t.type === 'cashout-rial' ? '💳 ریالی' : '💰 والت'}</td><td>${t.wallet}</td>` : ''}
             <td style="color: ${t.adminColor}; font-weight: 600;">${t.adminName}</td>
@@ -874,7 +939,9 @@ function executeExport() {
 
 function generateExcelReport(type, startDate, endDate, startTime, endTime, exportType) {
     let filtered = transactions.filter(t => {
-        if (type === 'cashout') {
+        if (type === 'usdt') {
+            return t.type === 'usdt-bep20' || t.type === 'usdt-trc20';
+        } else if (type === 'cashout') {
             return t.type === 'cashout-rial' || t.type === 'cashout-wallet';
         }
         return t.type === type;
@@ -980,6 +1047,8 @@ function getExportTypeLabel(type) {
 
 function getTypeLabel(type) {
     const labels = {
+        'usdt-bep20': 'USDT-BEP20',
+        'usdt-trc20': 'USDT-TRC20',
         usdt: 'USDT',
         trx: 'TRX',
         debt: 'Debt',
