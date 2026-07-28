@@ -294,22 +294,6 @@
 
                 <div id="cashoutTransactions"></div>
             </section>
-
-            <!-- تب مدیریت حذف گزارش -->
-            <section id="manageTab" class="tab-section">
-                <div class="section-header">
-                    <h2>🗑️ حذف گزارش</h2>
-                </div>
-                <div style="background: rgba(26, 26, 26, 0.5); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 30px;">
-                    <p style="color: var(--text-secondary); margin-bottom: 20px;">انتخاب بازه تاریخی برای مشاهده و حذف گزارش‌ها:</p>
-                    <div class="form-row">
-                        <input type="date" id="deleteStartDate" class="form-input" placeholder="از تاریخ">
-                        <input type="date" id="deleteEndDate" class="form-input" placeholder="تا تاریخ">
-                        <button onclick="loadReportsToDelete()" class="btn-add">🔍 جستجو</button>
-                    </div>
-                </div>
-                <div id="deleteReportsContainer"></div>
-            </section>
         </main>
 
         <!-- Sidebar -->
@@ -323,7 +307,6 @@
                 <button class="nav-item" onclick="switchTab('card')"><span>🔄</span><span>کارت</span></button>
                 <button class="nav-item" onclick="switchTab('payment')"><span>✅</span><span>پرداخت</span></button>
                 <button class="nav-item" onclick="switchTab('cashout')"><span>💸</span><span>کشاوت</span></button>
-                <button class="nav-item" onclick="switchTab('manage')"><span>🗑️</span><span>حذف</span></button>
             </nav>
         </aside>
     </div>
