@@ -725,8 +725,18 @@ function showChargeForm(type) {
     const container = document.getElementById('chargeFormContainer');
     let form = '';
 
+    // لیست پلیرها برای datalist
+    const playersList = players.map(p => `<option value="${p.name}">`).join('');
+
     if (type === 'usdt') {
         form = `
+            <div class="form-group">
+                <label>جستجوی بازیکن</label>
+                <input type="text" id="chargeUsdtPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." list="playersDatalist">
+                <datalist id="playersDatalist">
+                    ${playersList}
+                </datalist>
+            </div>
             <div class="form-group">
                 <label>مقدار USDT</label>
                 <input type="number" id="chargeUsdtAmount" class="form-input" placeholder="0.00" step="0.01">
@@ -766,6 +776,13 @@ function showChargeForm(type) {
     } else if (type === 'trx') {
         form = `
             <div class="form-group">
+                <label>جستجوی بازیکن</label>
+                <input type="text" id="chargeTrxPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." list="playersDatalist">
+                <datalist id="playersDatalist">
+                    ${playersList}
+                </datalist>
+            </div>
+            <div class="form-group">
                 <label>مقدار TRX</label>
                 <input type="number" id="chargeTrxAmount" class="form-input" placeholder="0.00" step="0.01">
             </div>
@@ -804,6 +821,13 @@ function showChargeForm(type) {
     } else if (type === 'rial') {
         form = `
             <div class="form-group">
+                <label>جستجوی بازیکن</label>
+                <input type="text" id="chargeRialPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." list="playersDatalist">
+                <datalist id="playersDatalist">
+                    ${playersList}
+                </datalist>
+            </div>
+            <div class="form-group">
                 <label>شماره سفارش</label>
                 <input type="text" id="chargeRialOrder" class="form-input" placeholder="">
             </div>
@@ -825,6 +849,13 @@ function showChargeForm(type) {
         `;
     } else if (type === 'debt') {
         form = `
+            <div class="form-group">
+                <label>جستجوی بازیکن</label>
+                <input type="text" id="chargeDebtPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." list="playersDatalist">
+                <datalist id="playersDatalist">
+                    ${playersList}
+                </datalist>
+            </div>
             <div class="form-group">
                 <label>مقدار ژتون</label>
                 <input type="number" id="chargeDebtAmount" class="form-input" placeholder="0">
@@ -851,6 +882,13 @@ function showChargeForm(type) {
     } else if (type === 'payment') {
         form = `
             <div class="form-group">
+                <label>جستجوی بازیکن</label>
+                <input type="text" id="chargePaymentPlayer" class="form-input" placeholder="نام بازیکن را تایپ کنید..." list="playersDatalist">
+                <datalist id="playersDatalist">
+                    ${playersList}
+                </datalist>
+            </div>
+            <div class="form-group">
                 <label>مقدار پرداختی</label>
                 <input type="number" id="chargePaymentAmount" class="form-input" placeholder="0">
             </div>
@@ -874,8 +912,10 @@ function showChargeForm(type) {
 function submitCharge(type) {
     const admin = admins[currentAdmin];
     let record = null;
+    let playerName = '';
 
     if (type === 'usdt') {
+        playerName = document.getElementById('chargeUsdtPlayer').value;
         const amount = parseFloat(document.getElementById('chargeUsdtAmount').value);
         const tokens = parseInt(document.getElementById('chargeUsdtTokens').value);
         const wallet = document.getElementById('chargeUsdtWallet').value;
@@ -884,6 +924,11 @@ function submitCharge(type) {
         const date = document.getElementById('chargeUsdtDate').value;
         const time = document.getElementById('chargeUsdtTime').value;
         const farsiDate = convertToFarsiDate(date);
+
+        if (!playerName) {
+            alert('❌ بازیکن را انتخاب کنید!');
+            return;
+        }
 
         if (!amount || !tokens || !wallet) {
             alert('❌ تمام فیلدهای ضروری را پر کنید!');
@@ -902,6 +947,7 @@ function submitCharge(type) {
         };
         window.chargeUsdtScreenshot = null;
     } else if (type === 'trx') {
+        playerName = document.getElementById('chargeTrxPlayer').value;
         const amount = parseFloat(document.getElementById('chargeTrxAmount').value);
         const tokens = parseInt(document.getElementById('chargeTrxTokens').value);
         const wallet = document.getElementById('chargeTrxWallet').value;
@@ -910,6 +956,11 @@ function submitCharge(type) {
         const date = document.getElementById('chargeTrxDate').value;
         const time = document.getElementById('chargeTrxTime').value;
         const farsiDate = convertToFarsiDate(date);
+
+        if (!playerName) {
+            alert('❌ بازیکن را انتخاب کنید!');
+            return;
+        }
 
         if (!amount || !tokens || !wallet) {
             alert('❌ تمام فیلدهای ضروری را پر کنید!');
@@ -928,11 +979,17 @@ function submitCharge(type) {
         };
         window.chargeTrxScreenshot = null;
     } else if (type === 'rial') {
+        playerName = document.getElementById('chargeRialPlayer').value;
         const order = document.getElementById('chargeRialOrder').value;
         const amount = parseInt(document.getElementById('chargeRialAmount').value);
         const date = document.getElementById('chargeRialDate').value;
         const time = document.getElementById('chargeRialTime').value;
         const farsiDate = convertToFarsiDate(date);
+
+        if (!playerName) {
+            alert('❌ بازیکن را انتخاب کنید!');
+            return;
+        }
 
         if (!order || !amount) {
             alert('❌ تمام فیلدها را پر کنید!');
@@ -950,11 +1007,17 @@ function submitCharge(type) {
             adminId: currentAdmin
         };
     } else if (type === 'debt') {
+        playerName = document.getElementById('chargeDebtPlayer').value;
         const amount = parseInt(document.getElementById('chargeDebtAmount').value);
         const debtType = document.getElementById('chargeDebtType').value;
         const date = document.getElementById('chargeDebtDate').value;
         const time = document.getElementById('chargeDebtTime').value;
         const farsiDate = convertToFarsiDate(date);
+
+        if (!playerName) {
+            alert('❌ بازیکن را انتخاب کنید!');
+            return;
+        }
 
         if (!amount) {
             alert('❌ مقدار را وارد کنید!');
@@ -985,10 +1048,16 @@ function submitCharge(type) {
             };
         }
     } else if (type === 'payment') {
+        playerName = document.getElementById('chargePaymentPlayer').value;
         const amount = parseInt(document.getElementById('chargePaymentAmount').value);
         const date = document.getElementById('chargePaymentDate').value;
         const time = document.getElementById('chargePaymentTime').value;
         const farsiDate = convertToFarsiDate(date);
+
+        if (!playerName) {
+            alert('❌ بازیکن را انتخاب کنید!');
+            return;
+        }
 
         if (!amount) {
             alert('❌ مقدار را وارد کنید!');
