@@ -733,16 +733,10 @@ function showChargeForm(type) {
     const container = document.getElementById('chargeFormContainer');
     let form = '';
 
-    const playerOptions = players.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
-
     if (type === 'usdt') {
         form = `
-            <div class="form-group">
-                <label>👤 انتخاب بازیکن:</label>
-                <select id="chargeUsdtPlayer" class="form-input">
-                    <option value="">-- انتخاب کنید --</option>
-                    ${playerOptions}
-                </select>
+            <div class="form-group" style="padding: 15px; background: var(--dark-bg); border-radius: 8px; margin-bottom: 15px;">
+                <strong style="color: var(--admin-color);">👤 بازیکن: ${currentPlayer.name}</strong>
             </div>
             <div class="form-group">
                 <label>مقدار USDT</label>
@@ -782,12 +776,8 @@ function showChargeForm(type) {
         `;
     } else if (type === 'trx') {
         form = `
-            <div class="form-group">
-                <label>👤 انتخاب بازیکن:</label>
-                <select id="chargeTrxPlayer" class="form-input">
-                    <option value="">-- انتخاب کنید --</option>
-                    ${playerOptions}
-                </select>
+            <div class="form-group" style="padding: 15px; background: var(--dark-bg); border-radius: 8px; margin-bottom: 15px;">
+                <strong style="color: var(--admin-color);">👤 بازیکن: ${currentPlayer.name}</strong>
             </div>
             <div class="form-group">
                 <label>مقدار TRX</label>
@@ -827,12 +817,8 @@ function showChargeForm(type) {
         `;
     } else if (type === 'rial') {
         form = `
-            <div class="form-group">
-                <label>👤 انتخاب بازیکن:</label>
-                <select id="chargeRialPlayer" class="form-input">
-                    <option value="">-- انتخاب کنید --</option>
-                    ${playerOptions}
-                </select>
+            <div class="form-group" style="padding: 15px; background: var(--dark-bg); border-radius: 8px; margin-bottom: 15px;">
+                <strong style="color: var(--admin-color);">👤 بازیکن: ${currentPlayer.name}</strong>
             </div>
             <div class="form-group">
                 <label>شماره سفارش</label>
@@ -856,12 +842,8 @@ function showChargeForm(type) {
         `;
     } else if (type === 'debt') {
         form = `
-            <div class="form-group">
-                <label>👤 انتخاب بازیکن:</label>
-                <select id="chargeDebtPlayer" class="form-input">
-                    <option value="">-- انتخاب کنید --</option>
-                    ${playerOptions}
-                </select>
+            <div class="form-group" style="padding: 15px; background: var(--dark-bg); border-radius: 8px; margin-bottom: 15px;">
+                <strong style="color: var(--admin-color);">👤 بازیکن: ${currentPlayer.name}</strong>
             </div>
             <div class="form-group">
                 <label>مقدار ژتون</label>
@@ -888,12 +870,8 @@ function showChargeForm(type) {
         `;
     } else if (type === 'payment') {
         form = `
-            <div class="form-group">
-                <label>👤 انتخاب بازیکن:</label>
-                <select id="chargePaymentPlayer" class="form-input">
-                    <option value="">-- انتخاب کنید --</option>
-                    ${playerOptions}
-                </select>
+            <div class="form-group" style="padding: 15px; background: var(--dark-bg); border-radius: 8px; margin-bottom: 15px;">
+                <strong style="color: var(--admin-color);">👤 بازیکن: ${currentPlayer.name}</strong>
             </div>
             <div class="form-group">
                 <label>مقدار پرداختی</label>
@@ -922,7 +900,7 @@ function submitCharge(type) {
     let playerName = '';
 
     if (type === 'usdt') {
-        playerName = document.getElementById('chargeUsdtPlayer').value;
+        playerName = currentPlayer.name;
         const amount = parseFloat(document.getElementById('chargeUsdtAmount').value);
         const tokens = parseInt(document.getElementById('chargeUsdtTokens').value);
         const wallet = document.getElementById('chargeUsdtWallet').value;
@@ -931,11 +909,6 @@ function submitCharge(type) {
         const date = document.getElementById('chargeUsdtDate').value;
         const time = document.getElementById('chargeUsdtTime').value;
         const farsiDate = convertToFarsiDate(date);
-
-        if (!playerName) {
-            alert('❌ بازیکن را انتخاب کنید!');
-            return;
-        }
 
         if (!amount || !tokens || !wallet) {
             alert('❌ تمام فیلدهای ضروری را پر کنید!');
@@ -954,7 +927,7 @@ function submitCharge(type) {
         };
         window.chargeUsdtScreenshot = null;
     } else if (type === 'trx') {
-        playerName = document.getElementById('chargeTrxPlayer').value;
+        playerName = currentPlayer.name;
         const amount = parseFloat(document.getElementById('chargeTrxAmount').value);
         const tokens = parseInt(document.getElementById('chargeTrxTokens').value);
         const wallet = document.getElementById('chargeTrxWallet').value;
@@ -963,11 +936,6 @@ function submitCharge(type) {
         const date = document.getElementById('chargeTrxDate').value;
         const time = document.getElementById('chargeTrxTime').value;
         const farsiDate = convertToFarsiDate(date);
-
-        if (!playerName) {
-            alert('❌ بازیکن را انتخاب کنید!');
-            return;
-        }
 
         if (!amount || !tokens || !wallet) {
             alert('❌ تمام فیلدهای ضروری را پر کنید!');
@@ -986,17 +954,12 @@ function submitCharge(type) {
         };
         window.chargeTrxScreenshot = null;
     } else if (type === 'rial') {
-        playerName = document.getElementById('chargeRialPlayer').value;
+        playerName = currentPlayer.name;
         const order = document.getElementById('chargeRialOrder').value;
         const amount = parseInt(document.getElementById('chargeRialAmount').value);
         const date = document.getElementById('chargeRialDate').value;
         const time = document.getElementById('chargeRialTime').value;
         const farsiDate = convertToFarsiDate(date);
-
-        if (!playerName) {
-            alert('❌ بازیکن را انتخاب کنید!');
-            return;
-        }
 
         if (!order || !amount) {
             alert('❌ تمام فیلدها را پر کنید!');
@@ -1014,17 +977,12 @@ function submitCharge(type) {
             adminId: currentAdmin
         };
     } else if (type === 'debt') {
-        playerName = document.getElementById('chargeDebtPlayer').value;
+        playerName = currentPlayer.name;
         const amount = parseInt(document.getElementById('chargeDebtAmount').value);
         const debtType = document.getElementById('chargeDebtType').value;
         const date = document.getElementById('chargeDebtDate').value;
         const time = document.getElementById('chargeDebtTime').value;
         const farsiDate = convertToFarsiDate(date);
-
-        if (!playerName) {
-            alert('❌ بازیکن را انتخاب کنید!');
-            return;
-        }
 
         if (!amount) {
             alert('❌ مقدار را وارد کنید!');
@@ -1055,16 +1013,11 @@ function submitCharge(type) {
             };
         }
     } else if (type === 'payment') {
-        playerName = document.getElementById('chargePaymentPlayer').value;
+        playerName = currentPlayer.name;
         const amount = parseInt(document.getElementById('chargePaymentAmount').value);
         const date = document.getElementById('chargePaymentDate').value;
         const time = document.getElementById('chargePaymentTime').value;
         const farsiDate = convertToFarsiDate(date);
-
-        if (!playerName) {
-            alert('❌ بازیکن را انتخاب کنید!');
-            return;
-        }
 
         if (!amount) {
             alert('❌ مقدار را وارد کنید!');
