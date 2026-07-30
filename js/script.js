@@ -11,6 +11,7 @@ let currentAdmin = null;
 let players = [];
 let transactions = [];
 let currentPlayer = null;
+let currentEditPlayer = null;
 let currentExportType = null;
 let currentCashoutType = 'rial';
 let currentUsdtType = 'bep20';
@@ -96,6 +97,11 @@ function getTodayDate() {
     return new Date().toLocaleDateString('fa-IR');
 }
 
+function getTodayDateEnglish() {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+}
+
 function getStartDate(player) {
     return player.startDate || getTodayDate();
 }
@@ -146,7 +152,10 @@ function displayPlayers() {
     const list = document.getElementById('playersList');
     const searchInput = document.getElementById('playerSearchInput');
     const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
-    const filteredPlayers = players.filter(p => p.name.toLowerCase().includes(searchTerm));
+    let filteredPlayers = players.filter(p => p.name.toLowerCase().includes(searchTerm));
+    
+    // مرتب‌سازی بر اساس نام (الفبایی)
+    filteredPlayers.sort((a, b) => a.name.localeCompare(b.name, 'fa'));
     
     if (filteredPlayers.length === 0) {
         list.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">هنوز بازیکنی اضافه نشده است</p>';
@@ -170,6 +179,7 @@ function displayPlayers() {
                 <div style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="viewHistory(${originalIdx})">📋 سوابق</button>
                     <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="openChargeModal(${originalIdx})">💳 شارژ</button>
+                    <button class="btn-add" style="flex: 1; padding: 8px; font-size: 12px;" onclick="openEditPlayerModal(${originalIdx})">✏️ ویرایش</button>
                 </div>
             </div>
         `;
@@ -260,10 +270,10 @@ function addTransaction(type) {
     };
 
     const keys = transactionMap[type];
-    const date = document.getElementById(keys.dateKey).value;
+    const dateStr = document.getElementById(keys.dateKey).value;
     const time = document.getElementById(keys.timeKey).value;
 
-    if (!date || !time) {
+    if (!dateStr || !time) {
         alert('❌ تاریخ و ساعت ضروری است!');
         return;
     }
@@ -357,11 +367,12 @@ function addTransaction(type) {
 
     if (!isValid) return;
 
-    const farsiDate = convertToFarsiDate(date);
+    const farsiDate = convertToFarsiDate(dateStr);
     
     const transaction = {
         id: Date.now(),
         type: type,
+        dateEnglish: dateStr,
         date: farsiDate,
         time: time,
         player: player,
@@ -379,7 +390,6 @@ function addTransaction(type) {
     saveData();
     alert('✅ تراکنش با موفقیت ثبت شد!');
     
-    // پاک کردن فرم
     if (type === 'usdt-bep20' || type === 'usdt-trc20') {
         document.getElementById(keys.amountKey).value = '';
         document.getElementById(keys.tokensKey).value = '';
@@ -933,38 +943,40 @@ function executeExport() {
     const type = currentExportType;
     const exportType = document.getElementById('selectedExportType').value;
     
-    let startDate, endDate;
-    const today = getTodayDate();
+    let startDateEng, endDateEng;
+    const todayEng = getTodayDateEnglish();
     
     if (exportType === 'daily') {
-        startDate = today;
-        endDate = today;
+        startDateEng = todayEng;
+        endDateEng = todayEng;
     } else if (exportType === 'weekly') {
-        const dateStr = document.getElementById('exportStartDate').value;
-        const date = new Date(dateStr);
+        const date = new Date(document.getElementById('exportStartDate').value);
         const day = date.getDay();
         const diff = date.getDate() - day;
         const weekStart = new Date(date.setDate(diff));
-        startDate = convertToFarsiDate(weekStart.toISOString().split('T')[0]);
-        
         const weekEnd = new Date(weekStart);
         weekEnd.setDate(weekStart.getDate() + 6);
-        endDate = convertToFarsiDate(weekEnd.toISOString().split('T')[0]);
+        
+        startDateEng = weekStart.toISOString().split('T')[0];
+        endDateEng = weekEnd.toISOString().split('T')[0];
     } else if (exportType === 'monthly') {
         const dateStr = document.getElementById('exportStartDate').value;
         const date = new Date(dateStr);
-        startDate = convertToFarsiDate(new Date(date.getFullYear(), date.getMonth(), 1).toISOString().split('T')[0]);
-        endDate = convertToFarsiDate(new Date(date.getFullYear(), date.getMonth() + 1, 0).toISOString().split('T')[0]);
+        const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+        const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        
+        startDateEng = monthStart.toISOString().split('T')[0];
+        endDateEng = monthEnd.toISOString().split('T')[0];
     }
     
     const startTime = document.getElementById('exportStartTime').value || '00:00';
     const endTime = document.getElementById('exportEndTime').value || '23:59';
     
-    generateExcelReport(type, startDate, endDate, startTime, endTime, exportType);
+    generateExcelReport(type, startDateEng, endDateEng, startTime, endTime, exportType);
     closeModal('exportModal');
 }
 
-function generateExcelReport(type, startDate, endDate, startTime, endTime, exportType) {
+function generateExcelReport(type, startDateEng, endDateEng, startTime, endTime, exportType) {
     let filtered = transactions.filter(t => {
         if (type === 'usdt') {
             return t.type === 'usdt-bep20' || t.type === 'usdt-trc20';
@@ -974,14 +986,11 @@ function generateExcelReport(type, startDate, endDate, startTime, endTime, expor
         return t.type === type;
     });
     
-    const isDateInRange = (tDate) => {
-        return tDate === startDate || tDate === endDate || (tDate > startDate && tDate < endDate);
-    };
-    
     filtered = filtered.filter(t => {
-        if (!isDateInRange(t.date)) return false;
+        if (!t.dateEnglish) return false;
+        if (t.dateEnglish < startDateEng || t.dateEnglish > endDateEng) return false;
         
-        if (t.date === startDate && t.date === endDate) {
+        if (t.dateEnglish === startDateEng && t.dateEnglish === endDateEng) {
             const tTime = t.time.split(':');
             const tTimeNum = parseInt(tTime[0] + (tTime[1] || '00'));
             const startTimeNum = parseInt(startTime.replace(':', ''));
@@ -998,11 +1007,14 @@ function generateExcelReport(type, startDate, endDate, startTime, endTime, expor
         return;
     }
 
+    const startDateFarsi = convertToFarsiDate(startDateEng);
+    const endDateFarsi = convertToFarsiDate(endDateEng);
+
     const data = [];
     data.push(['Silent Poker Accountant']);
     data.push(['گزارش تراکنش‌های ' + getTypeLabel(type)]);
     data.push(['نوع گزارش: ' + getExportTypeLabel(exportType)]);
-    data.push(['محدوده: ' + startDate + ' تا ' + endDate]);
+    data.push(['محدوده: ' + startDateFarsi + ' تا ' + endDateFarsi]);
     if (startTime || endTime) {
         data.push(['ساعت: ' + startTime + ' تا ' + endTime]);
     }
@@ -1050,7 +1062,7 @@ function generateExcelReport(type, startDate, endDate, startTime, endTime, expor
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, getTypeLabel(type));
     
-    const fileName = `Silent_Poker_${getTypeLabel(type)}_${startDate}_${exportType}.xlsx`;
+    const fileName = `Silent_Poker_${getTypeLabel(type)}_${startDateFarsi}_${exportType}.xlsx`;
     XLSX.writeFile(wb, fileName);
 }
 
@@ -1085,6 +1097,43 @@ function switchTab(tabName) {
     if (tabName !== 'players') {
         displayTransactions(tabName);
     }
+}
+
+// ===== ویرایش بازیکن =====
+function openEditPlayerModal(idx) {
+    currentEditPlayer = players[idx];
+    const modal = document.getElementById('editPlayerModal');
+    
+    // پر کردن فرم با اطلاعات فعلی
+    document.getElementById('editPlayerName').value = currentEditPlayer.name;
+    document.getElementById('editPlayerVerified').checked = currentEditPlayer.verified;
+    
+    modal.classList.add('active');
+}
+
+function savePlayerChanges(idx) {
+    const newName = document.getElementById('editPlayerName').value.trim();
+    const newVerified = document.getElementById('editPlayerVerified').checked;
+    
+    if (!newName) {
+        alert('❌ نام بازیکن نمی‌تواند خالی باشد!');
+        return;
+    }
+    
+    // چک کردن اینکه نام جدید قبلاً وجود ندارد (به جز خود بازیکن)
+    if (players.some((p, i) => i !== idx && p.name === newName)) {
+        alert('❌ این نام قبلاً وجود دارد!');
+        return;
+    }
+    
+    // ذخیره تغییرات
+    players[idx].name = newName;
+    players[idx].verified = newVerified;
+    
+    saveData();
+    closeModal('editPlayerModal');
+    displayPlayers();
+    alert('✅ تغییرات با موفقیت ذخیره شد!');
 }
 
 // ===== مودال =====
