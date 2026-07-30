@@ -22,10 +22,10 @@
                 <div style="margin-bottom: 20px;">
                     <label>انتخاب ادمین:</label>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                        <button type="button" class="admin-btn" onclick="selectAdmin('shahab')">👑 شهاب</button>
-                        <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">👑 تیام</button>
-                        <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">👑 تبسم</button>
-                        <button type="button" class="admin-btn" onclick="selectAdmin('arash')">👑 آرش</button>
+                        <button type="button" class="admin-btn" onclick="selectAdmin('shahab')">Shahab</button>
+                        <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">Tiyam</button>
+                        <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">Tabassam</button>
+                        <button type="button" class="admin-btn" onclick="selectAdmin('arash')">Arash</button>
                     </div>
                 </div>
 
@@ -33,10 +33,10 @@
                     <label>ادمین:</label>
                     <select id="adminName" class="form-input" required>
                         <option value="">-- انتخاب کنید --</option>
-                        <option value="shahab">شهاب</option>
-                        <option value="tiyam">تیام</option>
-                        <option value="tabassam">تبسم</option>
-                        <option value="arash">آرش</option>
+                        <option value="shahab">Shahab</option>
+                        <option value="tiyam">Tiyam</option>
+                        <option value="tabassam">Tabassam</option>
+                        <option value="arash">Arash</option>
                     </select>
                 </div>
 
@@ -520,6 +520,28 @@
                 <button class="close-btn" onclick="closeModal('chargeModal')">✕</button>
             </div>
             <div id="chargeContent" style="max-height: 600px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <div id="editPlayerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ ویرایش بازیکن</h2>
+                <button class="close-btn" onclick="closeModal('editPlayerModal')">✕</button>
+            </div>
+            <div style="padding: 20px;">
+                <div class="form-group">
+                    <label>نام بازیکن:</label>
+                    <input type="text" id="editPlayerName" class="form-input" placeholder="نام جدید">
+                </div>
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="editPlayerVerified">
+                        احراز درگاه
+                    </label>
+                </div>
+                <button class="btn-add" style="width: 100%; margin-top: 15px;" onclick="savePlayerChanges(players.indexOf(currentEditPlayer))">✅ ذخیره</button>
+            </div>
         </div>
     </div>
 
