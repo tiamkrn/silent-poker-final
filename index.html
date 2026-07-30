@@ -61,6 +61,11 @@
             </div>
             <div style="display: flex; align-items: center; gap: 20px;">
                 <span id="adminDisplayName" style="color: var(--admin-color); font-weight: 600;"></span>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="downloadDailyReport()" class="btn-small" title="گزارش روزانه">📅 روزانه</button>
+                    <button onclick="downloadWeeklyReport()" class="btn-small" title="گزارش هفتگی">📊 هفتگی</button>
+                    <button onclick="downloadMonthlyReport()" class="btn-small" title="گزارش ماهانه">📈 ماهانه</button>
+                </div>
                 <button onclick="logout()" class="btn-logout">خروج</button>
             </div>
         </div>
