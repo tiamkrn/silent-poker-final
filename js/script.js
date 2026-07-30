@@ -92,6 +92,23 @@ function saveData() {
     localStorage.setItem('silentPokerTransactions', JSON.stringify(transactions));
 }
 
+// ===== مهاجرت داده‌های قدیمی =====
+function migrateOldData() {
+    // اگر transaction‌ها dateEnglish یا date ندارند، آن را اضافه کن
+    transactions.forEach(t => {
+        // اگر تاریخ فارسی نیست، از امروز استفاده کن
+        if (!t.date) {
+            t.date = getTodayDate();
+        }
+    });
+    
+    // ذخیره تغییرات
+    if (transactions.length > 0) {
+        saveData();
+        console.log('✅ داده‌ها آماده شد: ' + transactions.length + ' تراکنش');
+    }
+}
+
 // ===== تاریخ امروز =====
 function getTodayDate() {
     return new Date().toLocaleDateString('fa-IR');
@@ -372,7 +389,6 @@ function addTransaction(type) {
     const transaction = {
         id: Date.now(),
         type: type,
-        dateEnglish: dateStr,
         date: farsiDate,
         time: time,
         player: player,
@@ -452,14 +468,14 @@ function displayTransactions(type) {
     filtered.forEach((t, idx) => {
         html += `<tr>
             <td>${idx + 1}</td>
-            <td>${t.date}</td>
-            <td>${t.time}</td>
+            <td>${t.date || 'بدون تاریخ'}</td>
+            <td>${t.time || 'بدون ساعت'}</td>
             <td>${t.player}</td>
             <td>${t.amount.toLocaleString()}</td>
-            ${t.type === 'usdt-bep20' || t.type === 'usdt-trc20' || t.type === 'trx' || t.type === 'card' ? `<td>${t.tokens}</td>` : ''}
-            ${t.type === 'usdt-bep20' || t.type === 'usdt-trc20' || t.type === 'trx' ? `<td>${t.wallet}</td><td><span style="font-size: 10px;">${t.hash.substring(0, 8)}...</span></td>` : ''}
-            ${t.type === 'rial' ? `<td>${t.wallet}</td>` : ''}
-            ${type === 'cashout' ? `<td>${t.type === 'cashout-rial' ? '💳 ریالی' : '💰 والت'}</td><td>${t.wallet}</td>` : ''}
+            ${t.type === 'usdt-bep20' || t.type === 'usdt-trc20' || t.type === 'trx' || t.type === 'card' ? `<td>${t.tokens || 0}</td>` : ''}
+            ${t.type === 'usdt-bep20' || t.type === 'usdt-trc20' || t.type === 'trx' ? `<td>${t.wallet || ''}</td><td><span style="font-size: 10px;">${(t.hash || '').substring(0, 8)}...</span></td>` : ''}
+            ${t.type === 'rial' ? `<td>${t.wallet || ''}</td>` : ''}
+            ${type === 'cashout' ? `<td>${t.type === 'cashout-rial' ? '💳 ریالی' : '💰 والت'}</td><td>${t.wallet || ''}</td>` : ''}
             <td style="color: ${t.adminColor}; font-weight: 600;">${t.adminName}</td>
             <td>
                 ${t.screenshot ? `<button class="btn-small" onclick="viewScreenshot('${t.screenshot.replace(/'/g, "\\'")}')">📸</button>` : ''}
@@ -919,11 +935,21 @@ function openExportDialog(type) {
     document.getElementById('exportType').textContent = getTypeLabel(type);
     document.getElementById('selectedExportType').value = 'daily';
     
-    const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
+    // تاریخ امروز
+    const today = new Date().toISOString().split('T')[0];
     
-    document.getElementById('exportStartDate').value = todayStr;
-    document.getElementById('exportEndDate').value = todayStr;
+    // تاریخ ابتدای ماه
+    const firstDay = new Date();
+    firstDay.setDate(1);
+    const firstDayStr = firstDay.toISOString().split('T')[0];
+    
+    // تنظیم تاریخ‌ها
+    const startDateEl = document.getElementById('exportStartDate');
+    const endDateEl = document.getElementById('exportEndDate');
+    
+    if (startDateEl) startDateEl.value = today;
+    if (endDateEl) endDateEl.value = today;
+    
     document.getElementById('exportStartTime').value = '';
     document.getElementById('exportEndTime').value = '';
     
@@ -937,46 +963,35 @@ function selectExportType(type) {
     document.getElementById('selectedExportType').value = type;
     document.querySelectorAll('.export-type-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`[data-type="${type}"]`).classList.add('active');
+    
+    // نمایش/مخفی کردن فیلدهای تاریخ و ساعت
+    const dateFields = document.getElementById('exportDateFields');
+    if (dateFields) {
+        dateFields.style.display = 'block';
+    }
 }
 
 function executeExport() {
     const type = currentExportType;
     const exportType = document.getElementById('selectedExportType').value;
     
-    let startDateEng, endDateEng;
-    const todayEng = getTodayDateEnglish();
+    // دریافت تاریخ‌ها
+    const startDateInput = document.getElementById('exportStartDate').value;
+    const endDateInput = document.getElementById('exportEndDate').value;
     
-    if (exportType === 'daily') {
-        startDateEng = todayEng;
-        endDateEng = todayEng;
-    } else if (exportType === 'weekly') {
-        const date = new Date(document.getElementById('exportStartDate').value);
-        const day = date.getDay();
-        const diff = date.getDate() - day;
-        const weekStart = new Date(date.setDate(diff));
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 6);
-        
-        startDateEng = weekStart.toISOString().split('T')[0];
-        endDateEng = weekEnd.toISOString().split('T')[0];
-    } else if (exportType === 'monthly') {
-        const dateStr = document.getElementById('exportStartDate').value;
-        const date = new Date(dateStr);
-        const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
-        const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        
-        startDateEng = monthStart.toISOString().split('T')[0];
-        endDateEng = monthEnd.toISOString().split('T')[0];
-    }
+    // تبدیل به فارسی
+    const startDate = convertToFarsiDate(startDateInput);
+    const endDate = convertToFarsiDate(endDateInput);
     
     const startTime = document.getElementById('exportStartTime').value || '00:00';
     const endTime = document.getElementById('exportEndTime').value || '23:59';
     
-    generateExcelReport(type, startDateEng, endDateEng, startTime, endTime, exportType);
+    generateExcelReport(type, startDate, endDate, startTime, endTime, exportType);
     closeModal('exportModal');
 }
 
-function generateExcelReport(type, startDateEng, endDateEng, startTime, endTime, exportType) {
+function generateExcelReport(type, startDate, endDate, startTime, endTime, exportType) {
+    // فیلتر کردن بر اساس نوع
     let filtered = transactions.filter(t => {
         if (type === 'usdt') {
             return t.type === 'usdt-bep20' || t.type === 'usdt-trc20';
@@ -986,36 +1001,24 @@ function generateExcelReport(type, startDateEng, endDateEng, startTime, endTime,
         return t.type === type;
     });
     
+    // فیلتر کردن بر اساس تاریخ - مقایسه ساده
     filtered = filtered.filter(t => {
-        if (!t.dateEnglish) return false;
-        if (t.dateEnglish < startDateEng || t.dateEnglish > endDateEng) return false;
-        
-        if (t.dateEnglish === startDateEng && t.dateEnglish === endDateEng) {
-            const tTime = t.time.split(':');
-            const tTimeNum = parseInt(tTime[0] + (tTime[1] || '00'));
-            const startTimeNum = parseInt(startTime.replace(':', ''));
-            const endTimeNum = parseInt(endTime.replace(':', ''));
-            
-            if (tTimeNum < startTimeNum || tTimeNum > endTimeNum) return false;
-        }
-        
-        return true;
+        const tDate = t.date || '';
+        const inRange = tDate >= startDate && tDate <= endDate;
+        return inRange;
     });
 
     if (filtered.length === 0) {
-        alert('❌ هیچ تراکنشی برای این محدوده وجود ندارد');
+        alert('❌ تراکنشی یافت نشد\n\n📊 اطلاعات:\n- کل تراکنش‌ها: ' + transactions.length + '\n- از تاریخ: ' + startDate + '\n- تا تاریخ: ' + endDate);
         return;
     }
-
-    const startDateFarsi = convertToFarsiDate(startDateEng);
-    const endDateFarsi = convertToFarsiDate(endDateEng);
 
     const data = [];
     data.push(['Silent Poker Accountant']);
     data.push(['گزارش تراکنش‌های ' + getTypeLabel(type)]);
     data.push(['نوع گزارش: ' + getExportTypeLabel(exportType)]);
-    data.push(['محدوده: ' + startDateFarsi + ' تا ' + endDateFarsi]);
-    if (startTime || endTime) {
+    data.push(['محدوده: ' + startDate + ' تا ' + endDate]);
+    if (startTime && endTime) {
         data.push(['ساعت: ' + startTime + ' تا ' + endTime]);
     }
     data.push(['ساعت صادر: ' + new Date().toLocaleTimeString('fa-IR')]);
@@ -1025,7 +1028,7 @@ function generateExcelReport(type, startDateEng, endDateEng, startTime, endTime,
     if (type === 'usdt' || type === 'trx' || type === 'card') headers.push('ژتون');
     if (type === 'usdt' || type === 'trx') {
         headers.push('والت');
-        headers.push('هش تراکنش');
+        headers.push('هش');
     }
     if (type === 'rial') headers.push('سفارش');
     if (type === 'cashout') {
@@ -1036,16 +1039,16 @@ function generateExcelReport(type, startDateEng, endDateEng, startTime, endTime,
     data.push(headers);
 
     filtered.forEach((t, idx) => {
-        const row = [idx + 1, t.date, t.time, t.player, t.amount, t.adminName];
-        if (type === 'usdt' || type === 'trx' || type === 'card') row.push(t.tokens);
+        const row = [idx + 1, t.date, t.time || '', t.player, t.amount, t.adminName];
+        if (type === 'usdt' || type === 'trx' || type === 'card') row.push(t.tokens || 0);
         if (type === 'usdt' || type === 'trx') {
-            row.push(t.wallet);
-            row.push(t.hash);
+            row.push(t.wallet || '');
+            row.push(t.hash || '');
         }
-        if (type === 'rial') row.push(t.wallet);
+        if (type === 'rial') row.push(t.wallet || '');
         if (type === 'cashout') {
             row.push(t.type === 'cashout-rial' ? 'ریالی' : 'والت');
-            row.push(t.wallet);
+            row.push(t.wallet || '');
         }
         data.push(row);
     });
@@ -1055,15 +1058,17 @@ function generateExcelReport(type, startDateEng, endDateEng, startTime, endTime,
     data.push(['کل تراکنش‌ها', filtered.length]);
     data.push(['کل مقدار', filtered.reduce((sum, t) => sum + t.amount, 0)]);
     if (type === 'usdt' || type === 'trx' || type === 'card') {
-        data.push(['کل ژتون', filtered.reduce((sum, t) => sum + t.tokens, 0)]);
+        data.push(['کل ژتون', filtered.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
     }
 
     const ws = XLSX.utils.aoa_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, getTypeLabel(type));
     
-    const fileName = `Silent_Poker_${getTypeLabel(type)}_${startDateFarsi}_${exportType}.xlsx`;
+    const fileName = `Silent_Poker_${getTypeLabel(type)}_${startDate}.xlsx`;
     XLSX.writeFile(wb, fileName);
+    
+    alert('✅ گزارش با موفقیت دانلود شد!');
 }
 
 function getExportTypeLabel(type) {
@@ -1143,6 +1148,9 @@ function closeModal(modalId) {
 
 // ===== بارگذاری =====
 loadData();
+
+// اصلاح داده‌های قدیمی
+migrateOldData();
 
 // بستن مودال با کلیک خارج
 document.addEventListener('click', (e) => {
