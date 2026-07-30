@@ -991,7 +991,7 @@ function executeExport() {
 }
 
 function generateExcelReport(type, startDate, endDate, startTime, endTime, exportType) {
-    // فیلتر کردن بر اساس نوع
+    // فیلتر تراکنش‌ها
     let filtered = transactions.filter(t => {
         if (type === 'usdt') {
             return t.type === 'usdt-bep20' || t.type === 'usdt-trc20';
@@ -1001,71 +1001,82 @@ function generateExcelReport(type, startDate, endDate, startTime, endTime, expor
         return t.type === type;
     });
     
-    // فیلتر کردن بر اساس تاریخ - مقایسه ساده
+    // فیلتر تاریخ
     filtered = filtered.filter(t => {
         const tDate = t.date || '';
-        const inRange = tDate >= startDate && tDate <= endDate;
-        return inRange;
+        return tDate >= startDate && tDate <= endDate;
     });
 
     if (filtered.length === 0) {
-        alert('❌ تراکنشی یافت نشد\n\n📊 اطلاعات:\n- کل تراکنش‌ها: ' + transactions.length + '\n- از تاریخ: ' + startDate + '\n- تا تاریخ: ' + endDate);
+        alert('❌ تراکنشی یافت نشد!\n\nکل تراکنش‌ها: ' + transactions.length + '\nفیلتر: ' + startDate + ' تا ' + endDate);
         return;
     }
 
+    // ساختار فایل حرفه‌ای
     const data = [];
-    data.push(['Silent Poker Accountant']);
-    data.push(['گزارش تراکنش‌های ' + getTypeLabel(type)]);
-    data.push(['نوع گزارش: ' + getExportTypeLabel(exportType)]);
-    data.push(['محدوده: ' + startDate + ' تا ' + endDate]);
-    if (startTime && endTime) {
-        data.push(['ساعت: ' + startTime + ' تا ' + endTime]);
-    }
-    data.push(['ساعت صادر: ' + new Date().toLocaleTimeString('fa-IR')]);
-    data.push(['']);
-
-    const headers = ['ردیف', 'تاریخ', 'ساعت', 'بازیکن', 'مقدار', 'ادمین'];
-    if (type === 'usdt' || type === 'trx' || type === 'card') headers.push('ژتون');
-    if (type === 'usdt' || type === 'trx') {
-        headers.push('والت');
-        headers.push('هش');
-    }
-    if (type === 'rial') headers.push('سفارش');
-    if (type === 'cashout') {
-        headers.push('نوع');
-        headers.push('کارت/والت');
-    }
-
-    data.push(headers);
-
-    filtered.forEach((t, idx) => {
-        const row = [idx + 1, t.date, t.time || '', t.player, t.amount, t.adminName];
-        if (type === 'usdt' || type === 'trx' || type === 'card') row.push(t.tokens || 0);
-        if (type === 'usdt' || type === 'trx') {
-            row.push(t.wallet || '');
-            row.push(t.hash || '');
-        }
-        if (type === 'rial') row.push(t.wallet || '');
-        if (type === 'cashout') {
-            row.push(t.type === 'cashout-rial' ? 'ریالی' : 'والت');
-            row.push(t.wallet || '');
-        }
-        data.push(row);
-    });
-
-    data.push(['']);
-    data.push(['خلاصه:']);
-    data.push(['کل تراکنش‌ها', filtered.length]);
-    data.push(['کل مقدار', filtered.reduce((sum, t) => sum + t.amount, 0)]);
-    if (type === 'usdt' || type === 'trx' || type === 'card') {
-        data.push(['کل ژتون', filtered.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
-    }
-
-    const ws = XLSX.utils.aoa_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, getTypeLabel(type));
     
-    const fileName = `Silent_Poker_${getTypeLabel(type)}_${startDate}.xlsx`;
+    // ردیف 1: عنوان
+    const admin = admins[currentAdmin];
+    data.push([admin.name + ' - گزارش روزانه شارژ و بونوس پلیرها']);
+    
+    // ردیف 2: تاریخ و نوع
+    data.push(['لیست پرداخت ' + getTypeLabel(type) + ' از ' + startDate + ' تا ' + endDate]);
+    
+    // ردیف 3: خالی
+    data.push(['']);
+    
+    // ردیف 4: هدر ستون‌ها
+    const headers = ['ردیف', 'اسم یوزر', 'مبلغ شارژ', 'ژتون', 'تاریخ', 'ساعت', 'ادمین'];
+    data.push(headers);
+    
+    // داده‌ها
+    let totalAmount = 0;
+    let totalTokens = 0;
+    
+    filtered.forEach((t, idx) => {
+        data.push([
+            idx + 1,
+            t.player,
+            t.amount,
+            t.tokens || 0,
+            t.date,
+            t.time || '',
+            t.adminName
+        ]);
+        totalAmount += t.amount;
+        totalTokens += (t.tokens || 0);
+    });
+    
+    // خط خالی
+    data.push(['']);
+    
+    // خلاصه
+    data.push(['خلاصه:']);
+    data.push(['کل تراکنش‌ها:', filtered.length]);
+    data.push(['کل مبلغ:', totalAmount.toLocaleString('fa-IR')]);
+    if (totalTokens > 0) {
+        data.push(['کل ژتون:', totalTokens]);
+    }
+    data.push(['تاریخ تولید:', new Date().toLocaleString('fa-IR')]);
+
+    // نوشتن Excel
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    
+    // تنظیم عرض ستون‌ها
+    ws['!cols'] = [
+        { wch: 8 },   // ردیف
+        { wch: 20 },  // نام یوزر
+        { wch: 15 },  // مبلغ
+        { wch: 10 },  // ژتون
+        { wch: 12 },  // تاریخ
+        { wch: 10 },  // ساعت
+        { wch: 15 }   // ادمین
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'گزارش');
+    
+    const fileName = `گزارش_${getTypeLabel(type)}_${startDate}.xlsx`;
     XLSX.writeFile(wb, fileName);
     
     alert('✅ گزارش با موفقیت دانلود شد!');
@@ -1078,15 +1089,15 @@ function getExportTypeLabel(type) {
 
 function getTypeLabel(type) {
     const labels = {
-        'usdt-bep20': 'USDT-BEP20',
-        'usdt-trc20': 'USDT-TRC20',
-        usdt: 'USDT',
-        trx: 'TRX',
-        debt: 'Debt',
-        rial: 'Rial',
-        card: 'Card',
-        payment: 'Payment',
-        cashout: 'Cashout'
+        'usdt-bep20': 'تتر',
+        'usdt-trc20': 'تتر',
+        usdt: 'تتر',
+        trx: 'ترون',
+        debt: 'بدهی',
+        rial: 'ریالی',
+        card: 'کارت',
+        payment: 'پرداخت',
+        cashout: 'کشاوت'
     };
     return labels[type] || type;
 }
@@ -1144,6 +1155,66 @@ function savePlayerChanges(idx) {
 // ===== مودال =====
 function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('active');
+}
+
+// ===== Export خودکار =====
+function downloadDailyReport() {
+    const today = getTodayDate();
+    
+    // تمام نوع‌های تراکنش
+    const types = ['usdt', 'trx', 'rial', 'cashout'];
+    
+    types.forEach(type => {
+        if (transactions.some(t => {
+            const tType = type === 'usdt' ? (t.type === 'usdt-bep20' || t.type === 'usdt-trc20') :
+                         type === 'cashout' ? (t.type === 'cashout-rial' || t.type === 'cashout-wallet') :
+                         t.type === type;
+            return tType && t.date === today;
+        })) {
+            generateExcelReport(type, today, today, '00:00', '23:59', 'daily');
+        }
+    });
+}
+
+function downloadWeeklyReport() {
+    const today = new Date();
+    const day = today.getDay();
+    
+    // شروع هفته (شنبه)
+    const start = new Date(today);
+    start.setDate(today.getDate() - day);
+    
+    // پایان هفته (جمعه)
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    
+    const startFarsi = start.toLocaleDateString('fa-IR');
+    const endFarsi = end.toLocaleDateString('fa-IR');
+    
+    const types = ['usdt', 'trx', 'rial', 'cashout'];
+    
+    types.forEach(type => {
+        generateExcelReport(type, startFarsi, endFarsi, '00:00', '23:59', 'weekly');
+    });
+}
+
+function downloadMonthlyReport() {
+    const today = new Date();
+    
+    // شروع ماه
+    const start = new Date(today.getFullYear(), today.getMonth(), 1);
+    
+    // پایان ماه
+    const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    
+    const startFarsi = start.toLocaleDateString('fa-IR');
+    const endFarsi = end.toLocaleDateString('fa-IR');
+    
+    const types = ['usdt', 'trx', 'rial', 'cashout'];
+    
+    types.forEach(type => {
+        generateExcelReport(type, startFarsi, endFarsi, '00:00', '23:59', 'monthly');
+    });
 }
 
 // ===== بارگذاری =====
