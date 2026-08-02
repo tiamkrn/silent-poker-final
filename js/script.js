@@ -991,7 +991,22 @@ function executeExport() {
 }
 
 function generateExcelReport(type, startDate, endDate, startTime, endTime, exportType) {
-    // فیلتر تراکنش‌ها
+    console.log('🔍 شروع Export...');
+    console.log('کل تراکنش‌ها:', transactions.length);
+    console.log('کل بازیکنان:', players.length);
+    
+    // تمام تراکنش‌ها را نمایش بده
+    if (transactions.length === 0) {
+        alert('❌ هیچ تراکنشی ثبت نشده!\n\nاول یک تراکنش ثبت کن، بعد export کن.');
+        return;
+    }
+    
+    console.log('\n📋 نمونه تراکنش‌ها:');
+    transactions.slice(0, 3).forEach((t, i) => {
+        console.log(`${i+1}. [${t.date}] ${t.type} - ${t.player} - ${t.amount}`);
+    });
+    
+    // فیلتر نوع
     let filtered = transactions.filter(t => {
         if (type === 'usdt') {
             return t.type === 'usdt-bep20' || t.type === 'usdt-trc20';
@@ -1001,56 +1016,67 @@ function generateExcelReport(type, startDate, endDate, startTime, endTime, expor
         return t.type === type;
     });
     
-    // فیلتر تاریخ
-    filtered = filtered.filter(t => {
-        const tDate = t.date || '';
-        return tDate >= startDate && tDate <= endDate;
-    });
-
+    console.log(`پس از فیلتر نوع [${type}]: ${filtered.length}`);
+    
+    // اگر هنوز خالی است، تمام تراکنش‌ها را نشان بده
     if (filtered.length === 0) {
-        alert('❌ تراکنشی یافت نشد!\n\nکل تراکنش‌ها: ' + transactions.length + '\nفیلتر: ' + startDate + ' تا ' + endDate);
+        console.log('هیچ تراکنش از این نوع یافت نشد!');
+        console.log('تمام نوع‌های موجود:');
+        const allTypes = [...new Set(transactions.map(t => t.type))];
+        allTypes.forEach(t => console.log(`  - ${t}`));
+        
+        alert('❌ هیچ تراکنش از این نوع یافت نشد!\n\nتراکنش‌های موجود:\n' + allTypes.join('\n'));
         return;
     }
-
-    // ساختار فایل حرفه‌ای
+    
+    // فیلتر تاریخ
+    const beforeDateFilter = filtered.length;
+    filtered = filtered.filter(t => {
+        const tDate = t.date || '';
+        const match = tDate >= startDate && tDate <= endDate;
+        if (!match) {
+            console.log(`❌ تاریخ ${tDate} بیرون محدوده [${startDate} - ${endDate}]`);
+        }
+        return match;
+    });
+    
+    console.log(`پس از فیلتر تاریخ: ${filtered.length} (از ${beforeDateFilter})`);
+    
+    if (filtered.length === 0) {
+        const allDates = [...new Set(transactions.map(t => t.date))].sort();
+        alert('❌ هیچ تراکنش برای این تاریخ یافت نشد!\n\nتاریخ‌های موجود:\n' + allDates.join('\n') + '\n\nتاریخ انتخاب شده: ' + startDate + ' تا ' + endDate);
+        return;
+    }
+    
+    // ✅ export
+    console.log('\n✅ شروع تولید Excel...');
+    
     const data = [];
-    
-    // ردیف 1: عنوان
     const admin = admins[currentAdmin];
+    
     data.push([admin.name + ' - گزارش روزانه شارژ و بونوس پلیرها']);
-    
-    // ردیف 2: تاریخ و نوع
     data.push(['لیست پرداخت ' + getTypeLabel(type) + ' از ' + startDate + ' تا ' + endDate]);
-    
-    // ردیف 3: خالی
     data.push(['']);
+    data.push(['ردیف', 'اسم یوزر', 'مبلغ شارژ', 'ژتون', 'تاریخ', 'ساعت', 'ادمین']);
     
-    // ردیف 4: هدر ستون‌ها
-    const headers = ['ردیف', 'اسم یوزر', 'مبلغ شارژ', 'ژتون', 'تاریخ', 'ساعت', 'ادمین'];
-    data.push(headers);
-    
-    // داده‌ها
     let totalAmount = 0;
     let totalTokens = 0;
     
     filtered.forEach((t, idx) => {
         data.push([
             idx + 1,
-            t.player,
-            t.amount,
+            t.player || '؟',
+            t.amount || 0,
             t.tokens || 0,
-            t.date,
-            t.time || '',
-            t.adminName
+            t.date || '؟',
+            t.time || '؟',
+            t.adminName || '؟'
         ]);
-        totalAmount += t.amount;
+        totalAmount += (t.amount || 0);
         totalTokens += (t.tokens || 0);
     });
     
-    // خط خالی
     data.push(['']);
-    
-    // خلاصه
     data.push(['خلاصه:']);
     data.push(['کل تراکنش‌ها:', filtered.length]);
     data.push(['کل مبلغ:', totalAmount.toLocaleString('fa-IR')]);
@@ -1059,27 +1085,30 @@ function generateExcelReport(type, startDate, endDate, startTime, endTime, expor
     }
     data.push(['تاریخ تولید:', new Date().toLocaleString('fa-IR')]);
 
-    // نوشتن Excel
-    const ws = XLSX.utils.aoa_to_sheet(data);
-    
-    // تنظیم عرض ستون‌ها
-    ws['!cols'] = [
-        { wch: 8 },   // ردیف
-        { wch: 20 },  // نام یوزر
-        { wch: 15 },  // مبلغ
-        { wch: 10 },  // ژتون
-        { wch: 12 },  // تاریخ
-        { wch: 10 },  // ساعت
-        { wch: 15 }   // ادمین
-    ];
+    try {
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        ws['!cols'] = [
+            { wch: 8 },
+            { wch: 20 },
+            { wch: 15 },
+            { wch: 10 },
+            { wch: 12 },
+            { wch: 10 },
+            { wch: 15 }
+        ];
 
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'گزارش');
-    
-    const fileName = `گزارش_${getTypeLabel(type)}_${startDate}.xlsx`;
-    XLSX.writeFile(wb, fileName);
-    
-    alert('✅ گزارش با موفقیت دانلود شد!');
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'گزارش');
+        
+        const fileName = `گزارش_${getTypeLabel(type)}_${startDate}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+        
+        console.log('✅ Excel دانلود شد!');
+        alert('✅ گزارش دانلود شد!\n\nفایل: ' + fileName + '\nتراکنش‌ها: ' + filtered.length);
+    } catch (error) {
+        console.error('❌ خطا:', error);
+        alert('❌ خطا:\n' + error.message);
+    }
 }
 
 function getExportTypeLabel(type) {
@@ -1157,23 +1186,304 @@ function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('active');
 }
 
-// ===== Export خودکار =====
+// ===== ایجاد تراکنش نمونه برای تست =====
+function createTestTransaction() {
+    const today = getTodayDate();
+    const admin = admins[currentAdmin];
+    
+    const testTransaction = {
+        id: Date.now(),
+        type: 'usdt-bep20',
+        date: today,
+        time: new Date().toTimeString().slice(0, 5),
+        player: 'بازیکن آزمایشی',
+        amount: 100,
+        tokens: 10,
+        wallet: 'TAddress123',
+        hash: 'abc123def456',
+        screenshot: null,
+        adminName: admin.name,
+        adminColor: admin.color,
+        adminId: currentAdmin
+    };
+    
+    transactions.push(testTransaction);
+    saveData();
+    
+    alert('✅ یک تراکنش آزمایشی ایجاد شد!\n\nحالا می‌توانی Export را امتحان کنی.');
+    displayTransactions('usdt');
+}
 function downloadDailyReport() {
     const today = getTodayDate();
     
-    // تمام نوع‌های تراکنش
-    const types = ['usdt', 'trx', 'rial', 'cashout'];
+    console.log('📊 شروع تولید گزارش روزانه...');
+    console.log('تاریخ:', today);
+    console.log('کل تراکنش‌ها:', transactions.length);
     
-    types.forEach(type => {
-        if (transactions.some(t => {
-            const tType = type === 'usdt' ? (t.type === 'usdt-bep20' || t.type === 'usdt-trc20') :
-                         type === 'cashout' ? (t.type === 'cashout-rial' || t.type === 'cashout-wallet') :
-                         t.type === type;
-            return tType && t.date === today;
-        })) {
-            generateExcelReport(type, today, today, '00:00', '23:59', 'daily');
-        }
-    });
+    // فیلتر تراکنش‌های امروز
+    const todayTransactions = transactions.filter(t => t.date === today);
+    
+    console.log('تراکنش‌های امروز:', todayTransactions.length);
+    
+    if (todayTransactions.length === 0) {
+        alert('❌ هیچ تراکنشی برای امروز یافت نشد!\n\nتاریخ: ' + today);
+        return;
+    }
+    
+    // دسته‌بندی تراکنش‌ها
+    const usdtTransactions = todayTransactions.filter(t => t.type === 'usdt-bep20' || t.type === 'usdt-trc20');
+    const trxTransactions = todayTransactions.filter(t => t.type === 'trx');
+    const rialTransactions = todayTransactions.filter(t => t.type === 'rial');
+    const debtTransactions = todayTransactions.filter(t => t.type === 'debt');
+    const cardTransactions = todayTransactions.filter(t => t.type === 'card');
+    const paymentTransactions = todayTransactions.filter(t => t.type === 'payment');
+    const cashoutTransactions = todayTransactions.filter(t => t.type === 'cashout-rial' || t.type === 'cashout-wallet');
+    
+    // ایجاد فایل Excel با چند شیت
+    const wb = XLSX.utils.book_new();
+    
+    // شیت خلاصه
+    const summaryData = [];
+    const admin = admins[currentAdmin];
+    summaryData.push([admin.name + ' - گزارش روزانه شارژ و بونوس پلیرها']);
+    summaryData.push(['تاریخ: ' + today]);
+    summaryData.push(['']);
+    summaryData.push(['خلاصه کلی:']);
+    summaryData.push(['نوع تراکنش', 'تعداد', 'کل مبلغ', 'کل ژتون']);
+    
+    summaryData.push([
+        'تتر (USDT)',
+        usdtTransactions.length,
+        usdtTransactions.reduce((sum, t) => sum + (t.amount || 0), 0),
+        usdtTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)
+    ]);
+    
+    summaryData.push([
+        'ترون (TRX)',
+        trxTransactions.length,
+        trxTransactions.reduce((sum, t) => sum + (t.amount || 0), 0),
+        trxTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)
+    ]);
+    
+    summaryData.push([
+        'ریالی',
+        rialTransactions.length,
+        rialTransactions.reduce((sum, t) => sum + (t.amount || 0), 0),
+        0
+    ]);
+    
+    summaryData.push([
+        'بدهی',
+        debtTransactions.length,
+        debtTransactions.reduce((sum, t) => sum + (t.amount || 0), 0),
+        0
+    ]);
+    
+    summaryData.push([
+        'کارت به کارت',
+        cardTransactions.length,
+        cardTransactions.reduce((sum, t) => sum + (t.amount || 0), 0),
+        cardTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)
+    ]);
+    
+    summaryData.push([
+        'پرداخت بدهی',
+        paymentTransactions.length,
+        paymentTransactions.reduce((sum, t) => sum + (t.amount || 0), 0),
+        0
+    ]);
+    
+    summaryData.push([
+        'کشاوت',
+        cashoutTransactions.length,
+        cashoutTransactions.reduce((sum, t) => sum + (t.amount || 0), 0),
+        0
+    ]);
+    
+    summaryData.push(['']);
+    summaryData.push(['کل همه:', todayTransactions.length, todayTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), todayTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+    
+    const summarySS = XLSX.utils.aoa_to_sheet(summaryData);
+    summarySS['!cols'] = [{ wch: 20 }, { wch: 10 }, { wch: 15 }, { wch: 12 }];
+    XLSX.utils.book_append_sheet(wb, summarySS, 'خلاصه');
+    
+    // شیت تتر
+    if (usdtTransactions.length > 0) {
+        const usdtData = [];
+        usdtData.push(['لیست پرداخت USDT - ' + today]);
+        usdtData.push(['']);
+        usdtData.push(['ردیف', 'نام بازیکن', 'مبلغ', 'ژتون', 'والت', 'هش', 'ساعت', 'ادمین']);
+        usdtTransactions.forEach((t, idx) => {
+            usdtData.push([
+                idx + 1,
+                t.player,
+                t.amount,
+                t.tokens || 0,
+                t.wallet || '',
+                t.hash || '',
+                t.time || '',
+                t.adminName
+            ]);
+        });
+        usdtData.push(['']);
+        usdtData.push(['کل:', usdtTransactions.length, usdtTransactions.reduce((sum, t) => sum + t.amount, 0), usdtTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+        
+        const usdtSS = XLSX.utils.aoa_to_sheet(usdtData);
+        usdtSS['!cols'] = [{ wch: 8 }, { wch: 18 }, { wch: 12 }, { wch: 10 }, { wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 12 }];
+        XLSX.utils.book_append_sheet(wb, usdtSS, 'تتر');
+    }
+    
+    // شیت ترون
+    if (trxTransactions.length > 0) {
+        const trxData = [];
+        trxData.push(['لیست پرداخت TRX - ' + today]);
+        trxData.push(['']);
+        trxData.push(['ردیف', 'نام بازیکن', 'مبلغ', 'ژتون', 'والت', 'هش', 'ساعت', 'ادمین']);
+        trxTransactions.forEach((t, idx) => {
+            trxData.push([
+                idx + 1,
+                t.player,
+                t.amount,
+                t.tokens || 0,
+                t.wallet || '',
+                t.hash || '',
+                t.time || '',
+                t.adminName
+            ]);
+        });
+        trxData.push(['']);
+        trxData.push(['کل:', trxTransactions.length, trxTransactions.reduce((sum, t) => sum + t.amount, 0), trxTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+        
+        const trxSS = XLSX.utils.aoa_to_sheet(trxData);
+        trxSS['!cols'] = [{ wch: 8 }, { wch: 18 }, { wch: 12 }, { wch: 10 }, { wch: 20 }, { wch: 20 }, { wch: 10 }, { wch: 12 }];
+        XLSX.utils.book_append_sheet(wb, trxSS, 'ترون');
+    }
+    
+    // شیت ریالی
+    if (rialTransactions.length > 0) {
+        const rialData = [];
+        rialData.push(['لیست پرداخت ریالی - ' + today]);
+        rialData.push(['']);
+        rialData.push(['ردیف', 'نام بازیکن', 'مبلغ', 'سفارش', 'ساعت', 'ادمین']);
+        rialTransactions.forEach((t, idx) => {
+            rialData.push([
+                idx + 1,
+                t.player,
+                t.amount,
+                t.wallet || '',
+                t.time || '',
+                t.adminName
+            ]);
+        });
+        rialData.push(['']);
+        rialData.push(['کل:', rialTransactions.length, rialTransactions.reduce((sum, t) => sum + t.amount, 0)]);
+        
+        const rialSS = XLSX.utils.aoa_to_sheet(rialData);
+        rialSS['!cols'] = [{ wch: 8 }, { wch: 18 }, { wch: 15 }, { wch: 20 }, { wch: 10 }, { wch: 12 }];
+        XLSX.utils.book_append_sheet(wb, rialSS, 'ریالی');
+    }
+    
+    // شیت بدهی
+    if (debtTransactions.length > 0) {
+        const debtData = [];
+        debtData.push(['لیست بدهی - ' + today]);
+        debtData.push(['']);
+        debtData.push(['ردیف', 'نام بازیکن', 'مبلغ', 'ساعت', 'ادمین']);
+        debtTransactions.forEach((t, idx) => {
+            debtData.push([
+                idx + 1,
+                t.player,
+                t.amount,
+                t.time || '',
+                t.adminName
+            ]);
+        });
+        debtData.push(['']);
+        debtData.push(['کل:', debtTransactions.length, debtTransactions.reduce((sum, t) => sum + t.amount, 0)]);
+        
+        const debtSS = XLSX.utils.aoa_to_sheet(debtData);
+        debtSS['!cols'] = [{ wch: 8 }, { wch: 18 }, { wch: 12 }, { wch: 10 }, { wch: 12 }];
+        XLSX.utils.book_append_sheet(wb, debtSS, 'بدهی');
+    }
+    
+    // شیت کارت
+    if (cardTransactions.length > 0) {
+        const cardData = [];
+        cardData.push(['لیست کارت به کارت - ' + today]);
+        cardData.push(['']);
+        cardData.push(['ردیف', 'نام بازیکن', 'مبلغ', 'ژتون', 'ساعت', 'ادمین']);
+        cardTransactions.forEach((t, idx) => {
+            cardData.push([
+                idx + 1,
+                t.player,
+                t.amount,
+                t.tokens || 0,
+                t.time || '',
+                t.adminName
+            ]);
+        });
+        cardData.push(['']);
+        cardData.push(['کل:', cardTransactions.length, cardTransactions.reduce((sum, t) => sum + t.amount, 0), cardTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+        
+        const cardSS = XLSX.utils.aoa_to_sheet(cardData);
+        cardSS['!cols'] = [{ wch: 8 }, { wch: 18 }, { wch: 12 }, { wch: 10 }, { wch: 10 }, { wch: 12 }];
+        XLSX.utils.book_append_sheet(wb, cardSS, 'کارت');
+    }
+    
+    // شیت پرداخت
+    if (paymentTransactions.length > 0) {
+        const paymentData = [];
+        paymentData.push(['لیست پرداخت بدهی - ' + today]);
+        paymentData.push(['']);
+        paymentData.push(['ردیف', 'نام بازیکن', 'مبلغ', 'ساعت', 'ادمین']);
+        paymentTransactions.forEach((t, idx) => {
+            paymentData.push([
+                idx + 1,
+                t.player,
+                t.amount,
+                t.time || '',
+                t.adminName
+            ]);
+        });
+        paymentData.push(['']);
+        paymentData.push(['کل:', paymentTransactions.length, paymentTransactions.reduce((sum, t) => sum + t.amount, 0)]);
+        
+        const paymentSS = XLSX.utils.aoa_to_sheet(paymentData);
+        paymentSS['!cols'] = [{ wch: 8 }, { wch: 18 }, { wch: 12 }, { wch: 10 }, { wch: 12 }];
+        XLSX.utils.book_append_sheet(wb, paymentSS, 'پرداخت');
+    }
+    
+    // شیت کشاوت
+    if (cashoutTransactions.length > 0) {
+        const cashoutData = [];
+        cashoutData.push(['لیست کشاوت - ' + today]);
+        cashoutData.push(['']);
+        cashoutData.push(['ردیف', 'نام بازیکن', 'مبلغ', 'نوع', 'کارت/والت', 'ساعت', 'ادمین']);
+        cashoutTransactions.forEach((t, idx) => {
+            cashoutData.push([
+                idx + 1,
+                t.player,
+                t.amount,
+                t.type === 'cashout-rial' ? 'ریالی' : 'والت',
+                t.wallet || '',
+                t.time || '',
+                t.adminName
+            ]);
+        });
+        cashoutData.push(['']);
+        cashoutData.push(['کل:', cashoutTransactions.length, cashoutTransactions.reduce((sum, t) => sum + t.amount, 0)]);
+        
+        const cashoutSS = XLSX.utils.aoa_to_sheet(cashoutData);
+        cashoutSS['!cols'] = [{ wch: 8 }, { wch: 18 }, { wch: 12 }, { wch: 10 }, { wch: 20 }, { wch: 10 }, { wch: 12 }];
+        XLSX.utils.book_append_sheet(wb, cashoutSS, 'کشاوت');
+    }
+    
+    // دانلود
+    const fileName = `گزارش_روزانه_${today}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    
+    alert('✅ گزارش روزانه دانلود شد!\n\nفایل: ' + fileName + '\nتراکنش‌ها: ' + todayTransactions.length);
+    console.log('✅ گزارش دانلود شد:', fileName);
 }
 
 function downloadWeeklyReport() {
@@ -1184,37 +1494,172 @@ function downloadWeeklyReport() {
     const start = new Date(today);
     start.setDate(today.getDate() - day);
     
-    // پایان هفته (جمعه)
-    const end = new Date(start);
-    end.setDate(start.getDate() + 6);
-    
     const startFarsi = start.toLocaleDateString('fa-IR');
-    const endFarsi = end.toLocaleDateString('fa-IR');
     
-    const types = ['usdt', 'trx', 'rial', 'cashout'];
-    
-    types.forEach(type => {
-        generateExcelReport(type, startFarsi, endFarsi, '00:00', '23:59', 'weekly');
+    // فیلتر تراکنش‌های این هفته
+    const weekTransactions = transactions.filter(t => {
+        const tDate = t.date || '';
+        return tDate >= startFarsi && tDate <= startFarsi; // این فقط برای شروع است
     });
+    
+    // بهتر است که از محدوده استفاده کنیم
+    const startDate = start.toISOString().split('T')[0];
+    const endDate = today.toISOString().split('T')[0];
+    
+    const weekStart = convertToFarsiDate(startDate);
+    const weekEnd = convertToFarsiDate(endDate);
+    
+    console.log('📊 شروع تولید گزارش هفتگی...');
+    console.log('از:', weekStart, 'تا:', weekEnd);
+    
+    // فیلتر صحیح
+    const weeklyTransactions = transactions.filter(t => {
+        const tDate = t.date || '';
+        return tDate >= weekStart && tDate <= weekEnd;
+    });
+    
+    console.log('تراکنش‌های هفته:', weeklyTransactions.length);
+    
+    if (weeklyTransactions.length === 0) {
+        alert('❌ هیچ تراکنشی برای این هفته یافت نشد!\n\nمحدوده: ' + weekStart + ' تا ' + weekEnd);
+        return;
+    }
+    
+    // دسته‌بندی
+    const usdtTransactions = weeklyTransactions.filter(t => t.type === 'usdt-bep20' || t.type === 'usdt-trc20');
+    const trxTransactions = weeklyTransactions.filter(t => t.type === 'trx');
+    const rialTransactions = weeklyTransactions.filter(t => t.type === 'rial');
+    const debtTransactions = weeklyTransactions.filter(t => t.type === 'debt');
+    const cardTransactions = weeklyTransactions.filter(t => t.type === 'card');
+    const paymentTransactions = weeklyTransactions.filter(t => t.type === 'payment');
+    const cashoutTransactions = weeklyTransactions.filter(t => t.type === 'cashout-rial' || t.type === 'cashout-wallet');
+    
+    const wb = XLSX.utils.book_new();
+    const admin = admins[currentAdmin];
+    
+    // خلاصه
+    const summaryData = [];
+    summaryData.push([admin.name + ' - گزارش هفتگی']);
+    summaryData.push(['از: ' + weekStart + ' تا: ' + weekEnd]);
+    summaryData.push(['']);
+    summaryData.push(['نوع تراکنش', 'تعداد', 'کل مبلغ', 'کل ژتون']);
+    
+    summaryData.push(['تتر (USDT)', usdtTransactions.length, usdtTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), usdtTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+    summaryData.push(['ترون (TRX)', trxTransactions.length, trxTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), trxTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+    summaryData.push(['ریالی', rialTransactions.length, rialTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), 0]);
+    summaryData.push(['بدهی', debtTransactions.length, debtTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), 0]);
+    summaryData.push(['کارت', cardTransactions.length, cardTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), cardTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+    summaryData.push(['پرداخت', paymentTransactions.length, paymentTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), 0]);
+    summaryData.push(['کشاوت', cashoutTransactions.length, cashoutTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), 0]);
+    summaryData.push(['']);
+    summaryData.push(['کل', weeklyTransactions.length, weeklyTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), weeklyTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+    
+    const summarySS = XLSX.utils.aoa_to_sheet(summaryData);
+    summarySS['!cols'] = [{ wch: 20 }, { wch: 10 }, { wch: 15 }, { wch: 12 }];
+    XLSX.utils.book_append_sheet(wb, summarySS, 'خلاصه');
+    
+    // شیت‌های جداگانه (مثل روزانه)
+    if (usdtTransactions.length > 0) {
+        const usdtData = [['لیست USDT'], [''], ['ردیف', 'نام', 'مبلغ', 'ژتون', 'والت', 'ساعت', 'ادمین']];
+        usdtTransactions.forEach((t, idx) => usdtData.push([idx+1, t.player, t.amount, t.tokens||0, t.wallet||'', t.time||'', t.adminName]));
+        const usdtSS = XLSX.utils.aoa_to_sheet(usdtData);
+        XLSX.utils.book_append_sheet(wb, usdtSS, 'تتر');
+    }
+    
+    if (trxTransactions.length > 0) {
+        const trxData = [['لیست TRX'], [''], ['ردیف', 'نام', 'مبلغ', 'ژتون', 'والت', 'ساعت', 'ادمین']];
+        trxTransactions.forEach((t, idx) => trxData.push([idx+1, t.player, t.amount, t.tokens||0, t.wallet||'', t.time||'', t.adminName]));
+        const trxSS = XLSX.utils.aoa_to_sheet(trxData);
+        XLSX.utils.book_append_sheet(wb, trxSS, 'ترون');
+    }
+    
+    if (rialTransactions.length > 0) {
+        const rialData = [['لیست ریالی'], [''], ['ردیف', 'نام', 'مبلغ', 'سفارش', 'ساعت', 'ادمین']];
+        rialTransactions.forEach((t, idx) => rialData.push([idx+1, t.player, t.amount, t.wallet||'', t.time||'', t.adminName]));
+        const rialSS = XLSX.utils.aoa_to_sheet(rialData);
+        XLSX.utils.book_append_sheet(wb, rialSS, 'ریالی');
+    }
+    
+    const fileName = `گزارش_هفتگی_${weekStart}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    alert('✅ گزارش هفتگی دانلود شد!\n\nفایل: ' + fileName);
 }
 
 function downloadMonthlyReport() {
     const today = new Date();
-    
-    // شروع ماه
     const start = new Date(today.getFullYear(), today.getMonth(), 1);
-    
-    // پایان ماه
     const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     
     const startFarsi = start.toLocaleDateString('fa-IR');
     const endFarsi = end.toLocaleDateString('fa-IR');
     
-    const types = ['usdt', 'trx', 'rial', 'cashout'];
+    console.log('📊 شروع تولید گزارش ماهانه...');
+    console.log('از:', startFarsi, 'تا:', endFarsi);
     
-    types.forEach(type => {
-        generateExcelReport(type, startFarsi, endFarsi, '00:00', '23:59', 'monthly');
+    // فیلتر
+    const monthlyTransactions = transactions.filter(t => {
+        const tDate = t.date || '';
+        return tDate >= startFarsi && tDate <= endFarsi;
     });
+    
+    console.log('تراکنش‌های ماه:', monthlyTransactions.length);
+    
+    if (monthlyTransactions.length === 0) {
+        alert('❌ هیچ تراکنشی برای این ماه یافت نشد!');
+        return;
+    }
+    
+    // دسته‌بندی
+    const usdtTransactions = monthlyTransactions.filter(t => t.type === 'usdt-bep20' || t.type === 'usdt-trc20');
+    const trxTransactions = monthlyTransactions.filter(t => t.type === 'trx');
+    const rialTransactions = monthlyTransactions.filter(t => t.type === 'rial');
+    const debtTransactions = monthlyTransactions.filter(t => t.type === 'debt');
+    const cardTransactions = monthlyTransactions.filter(t => t.type === 'card');
+    const paymentTransactions = monthlyTransactions.filter(t => t.type === 'payment');
+    const cashoutTransactions = monthlyTransactions.filter(t => t.type === 'cashout-rial' || t.type === 'cashout-wallet');
+    
+    const wb = XLSX.utils.book_new();
+    const admin = admins[currentAdmin];
+    
+    // خلاصه
+    const summaryData = [];
+    summaryData.push([admin.name + ' - گزارش ماهانه']);
+    summaryData.push(['از: ' + startFarsi + ' تا: ' + endFarsi]);
+    summaryData.push(['']);
+    summaryData.push(['نوع تراکنش', 'تعداد', 'کل مبلغ', 'کل ژتون']);
+    
+    summaryData.push(['تتر (USDT)', usdtTransactions.length, usdtTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), usdtTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+    summaryData.push(['ترون (TRX)', trxTransactions.length, trxTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), trxTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+    summaryData.push(['ریالی', rialTransactions.length, rialTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), 0]);
+    summaryData.push(['بدهی', debtTransactions.length, debtTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), 0]);
+    summaryData.push(['کارت', cardTransactions.length, cardTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), cardTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+    summaryData.push(['پرداخت', paymentTransactions.length, paymentTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), 0]);
+    summaryData.push(['کشاوت', cashoutTransactions.length, cashoutTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), 0]);
+    summaryData.push(['']);
+    summaryData.push(['کل', monthlyTransactions.length, monthlyTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), monthlyTransactions.reduce((sum, t) => sum + (t.tokens || 0), 0)]);
+    
+    const summarySS = XLSX.utils.aoa_to_sheet(summaryData);
+    summarySS['!cols'] = [{ wch: 20 }, { wch: 10 }, { wch: 15 }, { wch: 12 }];
+    XLSX.utils.book_append_sheet(wb, summarySS, 'خلاصه');
+    
+    // شیت‌های جداگانه
+    if (usdtTransactions.length > 0) {
+        const usdtData = [['لیست USDT'], [''], ['ردیف', 'نام', 'مبلغ', 'ژتون', 'تاریخ', 'ساعت']];
+        usdtTransactions.forEach((t, idx) => usdtData.push([idx+1, t.player, t.amount, t.tokens||0, t.date||'', t.time||'']));
+        const usdtSS = XLSX.utils.aoa_to_sheet(usdtData);
+        XLSX.utils.book_append_sheet(wb, usdtSS, 'تتر');
+    }
+    
+    if (trxTransactions.length > 0) {
+        const trxData = [['لیست TRX'], [''], ['ردیف', 'نام', 'مبلغ', 'ژتون', 'تاریخ', 'ساعت']];
+        trxTransactions.forEach((t, idx) => trxData.push([idx+1, t.player, t.amount, t.tokens||0, t.date||'', t.time||'']));
+        const trxSS = XLSX.utils.aoa_to_sheet(trxData);
+        XLSX.utils.book_append_sheet(wb, trxSS, 'ترون');
+    }
+    
+    const fileName = `گزارش_ماهانه_${startFarsi}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+    alert('✅ گزارش ماهانه دانلود شد!\n\nفایل: ' + fileName);
 }
 
 // ===== بارگذاری =====
