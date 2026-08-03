@@ -39,7 +39,6 @@
         .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 16px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(192,192,192,0.2); }
         .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,192,192,0.3); }
 
-        /* DASHBOARD */
         .dashboard { display: none; min-height: 100vh; }
         .dashboard.active { display: block; }
 
@@ -62,7 +61,9 @@
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .card h3 { color: var(--primary); margin-bottom: 15px; font-size: 18px; }
 
-        /* PLAYERS */
+        .search-box { margin-bottom: 20px; }
+        .search-box input { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); }
+
         .player-item { background: var(--card-bg); border: 2px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .player-item:hover { border-color: var(--primary); background: rgba(192,192,192,0.05); transform: translateX(-5px); }
         
@@ -97,10 +98,9 @@
         .message.error { background: rgba(244,67,54,0.2); color: #f44336; }
         .message.show { display: block; }
 
-        /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         .modal.show { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card-bg); border-radius: 15px; padding: 30px; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
+        .modal-content { background: var(--card-bg); border-radius: 15px; padding: 30px; max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         .modal-header h2 { color: var(--primary); }
         .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; transition: all 0.3s; }
@@ -120,6 +120,16 @@
         .toggle-switch.active { background: var(--primary); }
         .toggle-switch::before { content: ''; position: absolute; width: 20px; height: 20px; background: white; border-radius: 10px; top: 2px; left: 2px; transition: all 0.3s; }
         .toggle-switch.active::before { left: 18px; }
+
+        .file-input-wrapper { position: relative; display: inline-block; }
+        .file-input-wrapper input[type="file"] { display: none; }
+
+        .tabs-modal { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .tab-modal { padding: 8px 15px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 2px solid transparent; }
+        .tab-modal.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        .modal-tab-content { display: none; }
+        .modal-tab-content.active { display: block; }
     </style>
 </head>
 <body>
@@ -166,12 +176,19 @@
                     <h3>➕ افزودن بازیکن جدید</h3>
                     <div class="form-row">
                         <input type="text" id="newPlayerName" placeholder="نام بازیکن (انگلیسی)">
+                        <div class="file-input-wrapper">
+                            <button type="button" class="btn-add" onclick="document.getElementById('excelInput').click()" style="width: 100%;">📤 Import اکسل</button>
+                            <input type="file" id="excelInput" accept=".xlsx,.xls" onchange="importExcel(event)">
+                        </div>
                     </div>
-                    <button class="btn-add" onclick="addPlayer()">افزودن</button>
-                    <div style="margin-top: 15px; font-size: 12px; color: var(--text-secondary);">💡 می‌تونید یک بازیکن را چند بار اضافه کنید (نام‌های مختلف)</div>
+                    <button class="btn-add" onclick="addPlayer()" style="width: 100%;">افزودن</button>
                 </div>
 
                 <div id="message" class="message"></div>
+
+                <div class="search-box">
+                    <input type="text" id="playerSearch" placeholder="🔍 جستجوی بازیکن..." onkeyup="filterPlayers()">
+                </div>
 
                 <div id="playersList"></div>
             </div>
@@ -208,7 +225,7 @@
                         <input type="date" id="transDate" required>
                         <input type="time" id="transTime" required>
                     </div>
-                    <button class="btn-add" onclick="addTransaction()">✅ ثبت</button>
+                    <button class="btn-add" onclick="addTransaction()" style="width: 100%;">✅ ثبت</button>
                 </div>
             </div>
 
@@ -230,7 +247,7 @@
                         <input type="number" id="cashoutAmount" placeholder="مبلغ کشاوت" required>
                         <input type="text" id="cashoutAddress" placeholder="شماره کارت / آدرس والت" required>
                     </div>
-                    <button class="btn-add" onclick="requestCashout()">درخواست</button>
+                    <button class="btn-add" onclick="requestCashout()" style="width: 100%;">درخواست</button>
                 </div>
 
                 <h3 style="margin-top: 30px;">درخواست‌های جاری</h3>
@@ -281,14 +298,20 @@
                 <button class="btn-close" onclick="closeModal()">✕</button>
             </div>
 
-            <div style="margin-bottom: 20px;">
-                <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-                    <div>
-                        <label style="color: var(--text-secondary); font-size: 12px;">احراز درگاه:</label>
-                        <div class="verification-toggle" onclick="toggleVerification()">
-                            <div class="toggle-switch" id="verificationToggle"></div>
-                            <span id="verificationText">تایید نشده</span>
-                        </div>
+            <div class="tabs-modal">
+                <button class="tab-modal active" onclick="switchModalTab('info')">📋 اطلاعات</button>
+                <button class="tab-modal" onclick="switchModalTab('history')">📊 سابقه</button>
+                <button class="tab-modal" onclick="switchModalTab('cashout')">💰 کشاوت</button>
+                <button class="tab-modal" onclick="switchModalTab('add')">➕ اضافه</button>
+            </div>
+
+            <!-- INFO TAB -->
+            <div id="modalInfo" class="modal-tab-content active">
+                <div style="margin-bottom: 20px;">
+                    <label style="color: var(--text-secondary); font-size: 12px;">احراز درگاه:</label>
+                    <div class="verification-toggle" onclick="toggleVerification()">
+                        <div class="toggle-switch" id="verificationToggle"></div>
+                        <span id="verificationText">تایید نشده</span>
                     </div>
                 </div>
 
@@ -304,24 +327,43 @@
                 </div>
             </div>
 
-            <h3 style="margin-bottom: 15px; color: var(--primary);">📋 سابقه کامل</h3>
-            <table class="trans-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>نوع</th>
-                        <th>مبلغ</th>
-                        <th>بونوس</th>
-                        <th>تاریخ</th>
-                        <th>ساعت</th>
-                        <th>ادمین</th>
-                        <th>عملیات</th>
-                    </tr>
-                </thead>
-                <tbody id="historyTransactions"></tbody>
-            </table>
+            <!-- HISTORY TAB -->
+            <div id="modalHistory" class="modal-tab-content">
+                <h3 style="margin-bottom: 15px; color: var(--primary);">📋 سابقه کامل</h3>
+                <table class="trans-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>نوع</th>
+                            <th>مبلغ</th>
+                            <th>بونوس</th>
+                            <th>تاریخ</th>
+                            <th>ساعت</th>
+                            <th>ادمین</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTransactions"></tbody>
+                </table>
+            </div>
 
-            <div style="margin-top: 20px;">
+            <!-- CASHOUT TAB -->
+            <div id="modalCashout" class="modal-tab-content">
+                <h3 style="margin-bottom: 15px; color: var(--primary);">💰 درخواست کشاوت</h3>
+                <div class="form-row">
+                    <select id="modalCashoutType" onchange="updateCashoutForm()">
+                        <option value="rial">ریالی</option>
+                        <option value="usdt">تتر (USDT)</option>
+                        <option value="trx">ترون (TRX)</option>
+                    </select>
+                    <input type="number" id="modalCashoutAmount" placeholder="مبلغ کشاوت" required>
+                </div>
+                <input type="text" id="modalCashoutAddress" placeholder="شماره کارت / آدرس والت" style="width: 100%; margin-bottom: 15px;" required>
+                <button class="btn-add" onclick="requestModalCashout()" style="width: 100%;">درخواست کشاوت</button>
+            </div>
+
+            <!-- ADD TAB -->
+            <div id="modalAdd" class="modal-tab-content">
                 <h3 style="margin-bottom: 15px; color: var(--primary);">➕ شارژ جدید</h3>
                 <div class="form-row">
                     <select id="quickTransType" onchange="updateQuickForm()">
@@ -337,7 +379,7 @@
                     <input type="date" id="quickDate" required>
                     <input type="time" id="quickTime" required>
                 </div>
-                <button class="btn-add" onclick="addQuickTransaction()">✅ ثبت شارژ</button>
+                <button class="btn-add" onclick="addQuickTransaction()" style="width: 100%;">✅ ثبت شارژ</button>
             </div>
         </div>
     </div>
@@ -404,6 +446,46 @@
             document.getElementById('password').value = '';
         }
 
+        function importExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                    let added = 0;
+                    rows.forEach((row, idx) => {
+                        if (idx > 3 && row[row.length - 1]) {
+                            const name = row[row.length - 1].toString().trim();
+                            if (name && name !== 'اسم یوزر' && name !== 'یوزر') {
+                                if (!players.find(p => p.name.toLowerCase() === name.toLowerCase())) {
+                                    players.push({ id: Date.now() + Math.random(), name: name, verified: false });
+                                    added++;
+                                }
+                            }
+                        }
+                    });
+
+                    if (added > 0) {
+                        saveData();
+                        displayPlayers();
+                        updatePlayerSelect();
+                        showMessage(`✅ ${added} بازیکن اضافه شد!`, 'success');
+                    } else {
+                        showMessage('❌ بازیکنی برای اضافه کردن پیدا نشد', 'error');
+                    }
+                } catch (error) {
+                    showMessage('❌ خطا در خواندن فایل', 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
         function addPlayer() {
             const name = document.getElementById('newPlayerName').value.trim();
             if (!name) {
@@ -426,6 +508,15 @@
                 updatePlayerSelect();
                 showMessage('✅ حذف شد!', 'success');
             }
+        }
+
+        function filterPlayers() {
+            const search = document.getElementById('playerSearch').value.toLowerCase();
+            const items = document.querySelectorAll('.player-item');
+            items.forEach(item => {
+                const name = item.querySelector('.player-name').textContent.toLowerCase();
+                item.style.display = name.includes(search) ? 'flex' : 'none';
+            });
         }
 
         function displayPlayers() {
@@ -519,12 +610,17 @@
         }
 
         function updateCashoutForm() {
-            const type = document.getElementById('cashoutType').value;
-            const addressInput = document.getElementById('cashoutAddress');
-            if (type === 'rial') {
-                addressInput.placeholder = 'شماره کارت';
-            } else {
-                addressInput.placeholder = 'آدرس والت (' + type.toUpperCase() + ')';
+            const typeId = event.target.id;
+            const type = document.getElementById(typeId).value;
+            let addressId = typeId === 'cashoutType' ? 'cashoutAddress' : typeId === 'modalCashoutType' ? 'modalCashoutAddress' : null;
+            
+            if (addressId) {
+                const addressInput = document.getElementById(addressId);
+                if (type === 'rial') {
+                    addressInput.placeholder = 'شماره کارت';
+                } else {
+                    addressInput.placeholder = 'آدرس والت (' + type.toUpperCase() + ')';
+                }
             }
         }
 
@@ -557,6 +653,36 @@
             document.getElementById('cashoutPlayer').value = '';
             document.getElementById('cashoutAmount').value = '';
             document.getElementById('cashoutAddress').value = '';
+            displayCashoutList();
+        }
+
+        function requestModalCashout() {
+            const type = document.getElementById('modalCashoutType').value;
+            const amount = parseFloat(document.getElementById('modalCashoutAmount').value);
+            const address = document.getElementById('modalCashoutAddress').value.trim();
+
+            if (!amount || !address) {
+                showMessage('تمام فیلدها را پر کنید!', 'error');
+                return;
+            }
+
+            const player = players.find(p => p.id == currentHistoryPlayer);
+            cashoutRequests.push({
+                id: Date.now(),
+                playerId: currentHistoryPlayer,
+                playerName: player.name,
+                type: type,
+                amount: amount,
+                address: address,
+                paid: 0,
+                status: 'pending',
+                payments: []
+            });
+
+            saveData();
+            showMessage('✅ درخواست ثبت شد!', 'success');
+            document.getElementById('modalCashoutAmount').value = '';
+            document.getElementById('modalCashoutAddress').value = '';
             displayCashoutList();
         }
 
@@ -667,6 +793,9 @@
                 saveData();
                 displayToday();
                 displayPlayers();
+                if (currentHistoryPlayer) {
+                    showPlayerHistory(currentHistoryPlayer, players.find(p => p.id == currentHistoryPlayer)?.name, players.find(p => p.id == currentHistoryPlayer)?.verified);
+                }
                 showMessage('✅ حذف شد!', 'success');
             }
         }
@@ -743,6 +872,13 @@
             }
 
             document.getElementById('historyModal').classList.add('show');
+        }
+
+        function switchModalTab(tabName) {
+            document.querySelectorAll('.modal-tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-modal').forEach(b => b.classList.remove('active'));
+            document.getElementById('modal' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).classList.add('active');
+            event.target.classList.add('active');
         }
 
         function toggleVerification() {
