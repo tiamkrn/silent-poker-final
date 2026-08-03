@@ -26,110 +26,86 @@
         /* LOGIN */
         .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
         .login-box { background: var(--card-bg); padding: 50px; border-radius: 15px; border: 2px solid var(--primary); width: 100%; max-width: 450px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 10px; font-size: 36px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 10px; font-size: 36px; }
         .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary); }
         input, select { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: inherit; margin-bottom: 15px; }
         input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(192,192,192,0.3); }
 
-        .admin-btn { padding: 12px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-weight: 600; margin-bottom: 10px; width: 100%; transition: all 0.3s; }
-        .admin-btn:hover { border-color: var(--primary); }
-        .admin-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
+        .admin-btn { padding: 12px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-weight: 600; margin-bottom: 10px; width: 100%; }
+        .admin-btn.active { background: var(--primary); color: #000; }
 
-        .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 16px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(192,192,192,0.2); }
-        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,192,192,0.3); }
+        .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
 
         .dashboard { display: none; min-height: 100vh; }
         .dashboard.active { display: block; }
 
-        .navbar { background: linear-gradient(135deg, var(--card-bg) 0%, #2a2a2a 100%); border-bottom: 2px solid var(--primary); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .navbar h2 { color: var(--primary); font-size: 28px; }
-        .admin-info { display: flex; align-items: center; gap: 20px; }
-        .btn-logout { padding: 10px 20px; background: linear-gradient(135deg, #ff6b6b, #ff5252); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .btn-logout:hover { transform: translateY(-2px); }
+        .navbar { background: linear-gradient(135deg, var(--card-bg) 0%, #2a2a2a 100%); border-bottom: 2px solid var(--primary); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar h2 { color: var(--primary); }
+        .btn-logout { padding: 10px 20px; background: #ff6b6b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
         .content { max-width: 1400px; margin: 20px auto; padding: 20px; }
 
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border); flex-wrap: wrap; }
-        .tab-btn { padding: 12px 20px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.3s; }
-        .tab-btn:hover { color: var(--primary); }
+        .tab-btn { padding: 12px 20px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .card h3 { color: var(--primary); margin-bottom: 15px; font-size: 18px; }
+        .card h3 { color: var(--primary); margin-bottom: 15px; }
 
         .search-box { margin-bottom: 20px; }
-        .search-box input { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); }
+        .search-box input { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; }
 
-        .player-item { background: var(--card-bg); border: 2px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .player-item:hover { border-color: var(--primary); background: rgba(192,192,192,0.05); transform: translateX(-5px); }
+        .player-item { background: var(--card-bg); border: 2px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .player-item:hover { border-color: var(--primary); }
         
-        .player-info { flex: 1; }
-        .player-name { font-weight: 700; font-size: 16px; color: var(--primary); margin-bottom: 8px; }
-        .player-stats { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+        .player-name { font-weight: 700; font-size: 16px; color: var(--primary); }
+        .player-stats { font-size: 12px; color: var(--text-secondary); }
         
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-right: 8px; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
         .badge-verified { background: rgba(76,175,80,0.2); color: #4caf50; }
         .badge-unverified { background: rgba(244,67,54,0.2); color: #f44336; }
 
-        .btn-small { padding: 8px 12px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 10px; font-size: 12px; transition: all 0.3s; }
-        .btn-small:hover { transform: scale(1.05); }
+        .btn-small { padding: 8px 12px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 10px; font-size: 12px; }
         
-        .btn-add { padding: 10px 20px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .btn-add:hover { transform: translateY(-2px); }
+        .btn-add { padding: 10px 20px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
 
         .trans-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .trans-table th, .trans-table td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); font-size: 13px; }
         .trans-table th { background: rgba(192,192,192,0.1); color: var(--primary); font-weight: 600; }
-        .trans-table tr:hover { background: rgba(192,192,192,0.05); }
 
-        .button-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
-        .btn-report { padding: 20px 10px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(192,192,192,0.2); }
-        .btn-report:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(192,192,192,0.3); }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card-bg); border-radius: 15px; padding: 30px; max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .modal-header h2 { color: var(--primary); }
+        .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; }
+
+        .tabs-modal { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; flex-wrap: wrap; }
+        .tab-modal { padding: 8px 15px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 2px solid transparent; }
+        .tab-modal.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        .modal-tab-content { display: none; }
+        .modal-tab-content.active { display: block; }
 
         .message { padding: 15px; margin-top: 15px; border-radius: 8px; display: none; font-weight: 600; }
         .message.success { background: rgba(76,175,80,0.2); color: #4caf50; }
         .message.error { background: rgba(244,67,54,0.2); color: #f44336; }
         .message.show { display: block; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
-        .modal.show { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card-bg); border-radius: 15px; padding: 30px; max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .modal-header h2 { color: var(--primary); }
-        .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; transition: all 0.3s; }
-        .btn-close:hover { color: var(--primary); }
+        .charge-preview { background: var(--dark-bg); border-radius: 10px; padding: 15px; margin: 15px 0; }
+        .charge-preview-item { display: flex; justify-content: space-between; margin: 8px 0; font-size: 14px; }
+        .charge-preview-total { font-size: 18px; font-weight: 700; color: var(--primary); border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px; }
 
-        .empty-state { text-align: center; color: var(--text-secondary); padding: 40px 20px; }
+        .image-preview { max-width: 150px; max-height: 150px; border-radius: 8px; margin: 10px 0; border: 1px solid var(--border); }
 
-        .admin-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: rgba(192,192,192,0.2); color: var(--primary); }
-
-        .cashout-progress { background: var(--dark-bg); border-radius: 10px; padding: 15px; margin: 15px 0; }
-        .progress-bar { background: var(--border); height: 8px; border-radius: 4px; overflow: hidden; margin: 10px 0; }
-        .progress-fill { background: linear-gradient(90deg, var(--primary), var(--accent)); height: 100%; }
-        .progress-text { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
-
-        .verification-toggle { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--dark-bg); border-radius: 6px; cursor: pointer; user-select: none; }
-        .toggle-switch { width: 40px; height: 24px; background: var(--border); border-radius: 12px; position: relative; transition: all 0.3s; }
-        .toggle-switch.active { background: var(--primary); }
-        .toggle-switch::before { content: ''; position: absolute; width: 20px; height: 20px; background: white; border-radius: 10px; top: 2px; left: 2px; transition: all 0.3s; }
-        .toggle-switch.active::before { left: 18px; }
-
-        .file-input-wrapper { position: relative; display: inline-block; }
-        .file-input-wrapper input[type="file"] { display: none; }
-
-        .tabs-modal { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .tab-modal { padding: 8px 15px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 2px solid transparent; }
-        .tab-modal.active { color: var(--primary); border-bottom-color: var(--primary); }
-
-        .modal-tab-content { display: none; }
-        .modal-tab-content.active { display: block; }
+        .file-input { position: relative; display: inline-block; }
+        .file-input input[type="file"] { display: none; }
     </style>
 </head>
 <body>
@@ -155,7 +131,7 @@
     <div id="dashboard" class="dashboard">
         <div class="navbar">
             <h2>🎰 Silent Poker</h2>
-            <div class="admin-info">
+            <div style="display: flex; align-items: center; gap: 20px;">
                 <span id="adminName" style="color: var(--primary); font-weight: 600;"></span>
                 <button class="btn-logout" onclick="logout()">خروج</button>
             </div>
@@ -164,8 +140,6 @@
         <div class="content">
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('players')">👥 بازیکنان</button>
-                <button class="tab-btn" onclick="switchTab('transaction')">💳 تراکنش</button>
-                <button class="tab-btn" onclick="switchTab('cashout')">💰 کشاوت</button>
                 <button class="tab-btn" onclick="switchTab('today')">📅 امروز</button>
                 <button class="tab-btn" onclick="switchTab('reports')">📊 گزارش‌ها</button>
             </div>
@@ -176,7 +150,7 @@
                     <h3>➕ افزودن بازیکن جدید</h3>
                     <div class="form-row">
                         <input type="text" id="newPlayerName" placeholder="نام بازیکن (انگلیسی)">
-                        <div class="file-input-wrapper">
+                        <div class="file-input">
                             <button type="button" class="btn-add" onclick="document.getElementById('excelInput').click()" style="width: 100%;">📤 Import اکسل</button>
                             <input type="file" id="excelInput" accept=".xlsx,.xls" onchange="importExcel(event)">
                         </div>
@@ -193,67 +167,6 @@
                 <div id="playersList"></div>
             </div>
 
-            <!-- TRANSACTION TAB -->
-            <div id="transaction" class="tab-content">
-                <div class="card">
-                    <h3>💳 ثبت تراکنش جدید</h3>
-                    <div class="form-row">
-                        <div>
-                            <label>بازیکن:</label>
-                            <select id="transPlayer" required></select>
-                        </div>
-                        <div>
-                            <label>نوع تراکنش:</label>
-                            <select id="transType" onchange="updateTransactionForm()">
-                                <option value="usdt-bep20">تتر (USDT BEP20)</option>
-                                <option value="usdt-trc20">تتر (USDT TRC20)</option>
-                                <option value="trx">ترون (TRX)</option>
-                                <option value="rial">ریالی</option>
-                                <option value="debt">بدهی</option>
-                                <option value="payment">پرداخت بدهی</option>
-                                <option value="card">کارت به کارت</option>
-                                <option value="godratzi">گودرزی</option>
-                                <option value="teacher">درگاه معلم مجازی</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <input type="number" id="transAmount" placeholder="مبلغ" step="0.01" required>
-                        <input type="number" id="transBonus" placeholder="بونوس (خودکار 10%)" readonly>
-                    </div>
-                    <div class="form-row">
-                        <input type="date" id="transDate" required>
-                        <input type="time" id="transTime" required>
-                    </div>
-                    <button class="btn-add" onclick="addTransaction()" style="width: 100%;">✅ ثبت</button>
-                </div>
-            </div>
-
-            <!-- CASHOUT TAB -->
-            <div id="cashout" class="tab-content">
-                <div class="card">
-                    <h3>💰 درخواست کشاوت</h3>
-                    <div class="form-row">
-                        <select id="cashoutPlayer" required>
-                            <option>انتخاب بازیکن</option>
-                        </select>
-                        <select id="cashoutType" onchange="updateCashoutForm()">
-                            <option value="rial">ریالی</option>
-                            <option value="usdt">تتر (USDT)</option>
-                            <option value="trx">ترون (TRX)</option>
-                        </select>
-                    </div>
-                    <div class="form-row">
-                        <input type="number" id="cashoutAmount" placeholder="مبلغ کشاوت" required>
-                        <input type="text" id="cashoutAddress" placeholder="شماره کارت / آدرس والت" required>
-                    </div>
-                    <button class="btn-add" onclick="requestCashout()" style="width: 100%;">درخواست</button>
-                </div>
-
-                <h3 style="margin-top: 30px;">درخواست‌های جاری</h3>
-                <div id="cashoutList"></div>
-            </div>
-
             <!-- TODAY TAB -->
             <div id="today" class="tab-content">
                 <h3 id="todayTitle" style="margin-bottom: 20px;"></h3>
@@ -265,10 +178,10 @@
                             <th>نوع</th>
                             <th>مبلغ</th>
                             <th>بونوس</th>
+                            <th>جمع</th>
                             <th>تاریخ</th>
                             <th>ساعت</th>
                             <th>ادمین</th>
-                            <th>عملیات</th>
                         </tr>
                     </thead>
                     <tbody id="todayTransactions"></tbody>
@@ -279,57 +192,53 @@
             <div id="reports" class="tab-content">
                 <div class="card">
                     <h3>📊 دانلود گزارش‌ها</h3>
-                    <p style="color: var(--text-secondary); margin: 10px 0;">تمام تراکنش‌های هر دوره را به عنوان فایل Excel دانلود کنید</p>
-                    <div class="button-group">
-                        <button class="btn-report" onclick="downloadDailyReport()">📅<br>روزانه</button>
-                        <button class="btn-report" onclick="downloadWeeklyReport()">📊<br>هفتگی</button>
-                        <button class="btn-report" onclick="downloadMonthlyReport()">📈<br>ماهانه</button>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 20px;">
+                        <button class="btn-add" onclick="downloadDailyReport()">📅 روزانه</button>
+                        <button class="btn-add" onclick="downloadWeeklyReport()">📊 هفتگی</button>
+                        <button class="btn-add" onclick="downloadMonthlyReport()">📈 ماهانه</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PLAYER HISTORY MODAL -->
-    <div id="historyModal" class="modal">
+    <!-- PLAYER MODAL -->
+    <div id="playerModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="historyPlayerName"></h2>
+                <h2 id="modalPlayerName"></h2>
                 <button class="btn-close" onclick="closeModal()">✕</button>
             </div>
 
             <div class="tabs-modal">
                 <button class="tab-modal active" onclick="switchModalTab('info')">📋 اطلاعات</button>
                 <button class="tab-modal" onclick="switchModalTab('history')">📊 سابقه</button>
-                <button class="tab-modal" onclick="switchModalTab('cashout')">💰 کشاوت</button>
-                <button class="tab-modal" onclick="switchModalTab('add')">➕ اضافه</button>
+                <button class="tab-modal" onclick="switchModalTab('charge')">💳 شارژ</button>
             </div>
 
             <!-- INFO TAB -->
             <div id="modalInfo" class="modal-tab-content active">
-                <div style="margin-bottom: 20px;">
-                    <label style="color: var(--text-secondary); font-size: 12px;">احراز درگاه:</label>
-                    <div class="verification-toggle" onclick="toggleVerification()">
-                        <div class="toggle-switch" id="verificationToggle"></div>
-                        <span id="verificationText">تایید نشده</span>
-                    </div>
+                <label style="color: var(--text-secondary); font-size: 12px;">احراز درگاه:</label>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--dark-bg); border-radius: 6px; cursor: pointer; user-select: none; margin-bottom: 20px;" onclick="toggleVerification()">
+                    <div class="toggle-switch" id="verificationToggle" style="width: 40px; height: 24px; background: var(--border); border-radius: 12px; position: relative;"></div>
+                    <span id="verificationText">تایید نشده</span>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
                     <div style="background: var(--dark-bg); padding: 15px; border-radius: 8px;">
                         <div style="font-size: 12px; color: var(--text-secondary);">کل شارژ</div>
-                        <div style="font-size: 20px; color: var(--primary); font-weight: 700;" id="totalChargeHis">0</div>
+                        <div style="font-size: 20px; color: var(--primary); font-weight: 700;" id="totalChargeModal">0</div>
                     </div>
                     <div style="background: var(--dark-bg); padding: 15px; border-radius: 8px;">
                         <div style="font-size: 12px; color: var(--text-secondary);">کل بدهی</div>
-                        <div style="font-size: 20px; color: #f44336; font-weight: 700;" id="totalDebtHis">0</div>
+                        <div style="font-size: 20px; color: #f44336; font-weight: 700;" id="totalDebtModal">0</div>
                     </div>
                 </div>
             </div>
 
             <!-- HISTORY TAB -->
             <div id="modalHistory" class="modal-tab-content">
-                <h3 style="margin-bottom: 15px; color: var(--primary);">📋 سابقه کامل</h3>
+                <h3 style="margin-bottom: 15px; color: var(--primary);">📋 سابقه شارژ‌ها</h3>
                 <table class="trans-table">
                     <thead>
                         <tr>
@@ -337,49 +246,97 @@
                             <th>نوع</th>
                             <th>مبلغ</th>
                             <th>بونوس</th>
+                            <th>جمع</th>
                             <th>تاریخ</th>
                             <th>ساعت</th>
                             <th>ادمین</th>
-                            <th>عملیات</th>
                         </tr>
                     </thead>
                     <tbody id="historyTransactions"></tbody>
                 </table>
             </div>
 
-            <!-- CASHOUT TAB -->
-            <div id="modalCashout" class="modal-tab-content">
-                <h3 style="margin-bottom: 15px; color: var(--primary);">💰 درخواست کشاوت</h3>
-                <div class="form-row">
-                    <select id="modalCashoutType" onchange="updateCashoutForm()">
-                        <option value="rial">ریالی</option>
-                        <option value="usdt">تتر (USDT)</option>
-                        <option value="trx">ترون (TRX)</option>
-                    </select>
-                    <input type="number" id="modalCashoutAmount" placeholder="مبلغ کشاوت" required>
-                </div>
-                <input type="text" id="modalCashoutAddress" placeholder="شماره کارت / آدرس والت" style="width: 100%; margin-bottom: 15px;" required>
-                <button class="btn-add" onclick="requestModalCashout()" style="width: 100%;">درخواست کشاوت</button>
-            </div>
-
-            <!-- ADD TAB -->
-            <div id="modalAdd" class="modal-tab-content">
-                <h3 style="margin-bottom: 15px; color: var(--primary);">➕ شارژ جدید</h3>
-                <div class="form-row">
-                    <select id="quickTransType" onchange="updateQuickForm()">
+            <!-- CHARGE TAB -->
+            <div id="modalCharge" class="modal-tab-content">
+                <h3 style="margin-bottom: 15px; color: var(--primary);">💳 شارژ جدید</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <label>نوع شارژ:</label>
+                    <select id="chargeType" onchange="updateChargeForm()">
                         <option value="usdt-bep20">تتر (USDT BEP20)</option>
                         <option value="usdt-trc20">تتر (USDT TRC20)</option>
                         <option value="trx">ترون (TRX)</option>
                         <option value="rial">ریالی</option>
-                        <option value="debt">بدهی</option>
                     </select>
-                    <input type="number" id="quickAmount" placeholder="مبلغ" step="0.01" required>
                 </div>
+
+                <!-- USDT/TRX FORM -->
+                <div id="cryptoForm" style="display: none;">
+                    <div class="form-row">
+                        <div>
+                            <label id="amountLabel">مبلغ (دلار):</label>
+                            <input type="number" id="chargeAmount" placeholder="0" step="0.01" onchange="calculateCharge()">
+                        </div>
+                        <div>
+                            <label id="priceLabel">قیمت دلار (تومان):</label>
+                            <input type="number" id="chargePrice" placeholder="193000" onchange="calculateCharge()">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label>هش (Transaction ID):</label>
+                        <input type="text" id="chargeHash" placeholder="0x...">
+                    </div>
+                </div>
+
+                <!-- RIAL FORM -->
+                <div id="rialForm" style="display: none;">
+                    <div class="form-row">
+                        <div>
+                            <label>مبلغ (تومان):</label>
+                            <input type="number" id="chargeRialAmount" placeholder="0" step="1" onchange="calculateRialCharge()">
+                        </div>
+                        <div>
+                            <label>شماره سفارش:</label>
+                            <input type="text" id="chargeOrderId" placeholder="12345678">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COMMON -->
                 <div class="form-row">
-                    <input type="date" id="quickDate" required>
-                    <input type="time" id="quickTime" required>
+                    <input type="date" id="chargeDate" required>
+                    <input type="time" id="chargeTime" required>
                 </div>
-                <button class="btn-add" onclick="addQuickTransaction()" style="width: 100%;">✅ ثبت شارژ</button>
+
+                <!-- IMAGE -->
+                <div style="margin-bottom: 15px;">
+                    <label>عکس / اسکرین شات:</label>
+                    <div class="file-input">
+                        <button type="button" class="btn-add" onclick="document.getElementById('chargeImage').click()" style="width: 100%; margin-bottom: 10px;">📤 آپلود عکس</button>
+                        <input type="file" id="chargeImage" accept="image/*" onchange="previewImage()">
+                    </div>
+                    <img id="imagePreview" class="image-preview" style="display: none;">
+                </div>
+
+                <!-- PREVIEW -->
+                <div class="charge-preview">
+                    <div class="charge-preview-item">
+                        <span>مبلغ:</span>
+                        <strong id="previewAmount">0</strong>
+                    </div>
+                    <div class="charge-preview-item">
+                        <span>بونوس (10%):</span>
+                        <strong id="previewBonus">0</strong>
+                    </div>
+                    <div class="charge-preview-total">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>جمع کل:</span>
+                            <strong id="previewTotal">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-add" onclick="saveCharge()" style="width: 100%;">✅ ثبت شارژ</button>
             </div>
         </div>
     </div>
@@ -395,23 +352,20 @@
         let currentAdmin = null;
         let selectedAdmin = null;
         let players = [];
-        let transactions = [];
-        let cashoutRequests = [];
-        let currentHistoryPlayer = null;
+        let charges = [];
+        let currentModalPlayer = null;
+        let currentChargeImage = null;
 
         function loadData() {
             const sp = localStorage.getItem('pokerPlayers');
-            const st = localStorage.getItem('pokerTransactions');
-            const sc = localStorage.getItem('pokerCashouts');
+            const sc = localStorage.getItem('pokerCharges');
             if (sp) players = JSON.parse(sp);
-            if (st) transactions = JSON.parse(st);
-            if (sc) cashoutRequests = JSON.parse(sc);
+            if (sc) charges = JSON.parse(sc);
         }
 
         function saveData() {
             localStorage.setItem('pokerPlayers', JSON.stringify(players));
-            localStorage.setItem('pokerTransactions', JSON.stringify(transactions));
-            localStorage.setItem('pokerCashouts', JSON.stringify(cashoutRequests));
+            localStorage.setItem('pokerCharges', JSON.stringify(charges));
         }
 
         function selectAdmin(adminId) {
@@ -431,12 +385,10 @@
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
             document.getElementById('adminName').textContent = '👋 ' + admins[selectedAdmin].name;
-            updatePlayerSelect();
             displayPlayers();
             displayToday();
-            displayCashoutList();
-            document.getElementById('transDate').valueAsDate = new Date();
-            document.getElementById('quickDate').valueAsDate = new Date();
+            document.getElementById('chargeDate').valueAsDate = new Date();
+            document.getElementById('chargeTime').value = new Date().toTimeString().slice(0, 5);
         }
 
         function logout() {
@@ -462,11 +414,9 @@
                     rows.forEach((row, idx) => {
                         if (idx > 3 && row[row.length - 1]) {
                             const name = row[row.length - 1].toString().trim();
-                            if (name && name !== 'اسم یوزر' && name !== 'یوزر') {
-                                if (!players.find(p => p.name.toLowerCase() === name.toLowerCase())) {
-                                    players.push({ id: Date.now() + Math.random(), name: name, verified: false });
-                                    added++;
-                                }
+                            if (name && !['اسم یوزر', 'یوزر'].includes(name)) {
+                                players.push({ id: Date.now() + Math.random(), name: name, verified: false });
+                                added++;
                             }
                         }
                     });
@@ -474,10 +424,7 @@
                     if (added > 0) {
                         saveData();
                         displayPlayers();
-                        updatePlayerSelect();
                         showMessage(`✅ ${added} بازیکن اضافه شد!`, 'success');
-                    } else {
-                        showMessage('❌ بازیکنی برای اضافه کردن پیدا نشد', 'error');
                     }
                 } catch (error) {
                     showMessage('❌ خطا در خواندن فایل', 'error');
@@ -496,24 +443,12 @@
             saveData();
             document.getElementById('newPlayerName').value = '';
             displayPlayers();
-            updatePlayerSelect();
             showMessage('✅ بازیکن اضافه شد!', 'success');
-        }
-
-        function deletePlayer(id) {
-            if (confirm('حذف کنید؟')) {
-                players = players.filter(p => p.id !== id);
-                saveData();
-                displayPlayers();
-                updatePlayerSelect();
-                showMessage('✅ حذف شد!', 'success');
-            }
         }
 
         function filterPlayers() {
             const search = document.getElementById('playerSearch').value.toLowerCase();
-            const items = document.querySelectorAll('.player-item');
-            items.forEach(item => {
+            document.querySelectorAll('.player-item').forEach(item => {
                 const name = item.querySelector('.player-name').textContent.toLowerCase();
                 item.style.display = name.includes(search) ? 'flex' : 'none';
             });
@@ -524,26 +459,23 @@
             const sorted = [...players].sort((a, b) => a.name.localeCompare(b.name, 'en'));
             
             if (sorted.length === 0) {
-                list.innerHTML = '<div class="empty-state">بازیکنی موجود نیست</div>';
+                list.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 40px;">بازیکنی موجود نیست</div>';
                 return;
             }
 
             list.innerHTML = sorted.map(p => {
-                const playerTrans = transactions.filter(t => t.playerId == p.id);
-                const charges = playerTrans.filter(t => !['debt', 'payment'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
-                const debts = playerTrans.filter(t => t.type === 'debt').reduce((s, t) => s + t.amount, 0) - playerTrans.filter(t => t.type === 'payment').reduce((s, t) => s + t.amount, 0);
+                const playerCharges = charges.filter(c => c.playerId == p.id);
+                const totalCharge = playerCharges.reduce((s, c) => s + c.total, 0);
                 
                 return `
-                    <div class="player-item" onclick="showPlayerHistory(${p.id}, '${p.name}', ${p.verified})">
-                        <div class="player-info">
+                    <div class="player-item" onclick="showPlayerModal(${p.id}, '${p.name}', ${p.verified})">
+                        <div style="flex: 1;">
                             <div class="player-name">${p.name}</div>
-                            <div class="player-stats">
-                                شارژ: <strong>${charges.toLocaleString()}</strong> | بدهی: <strong>${debts.toLocaleString()}</strong>
-                            </div>
+                            <div class="player-stats">شارژ کل: ${totalCharge.toLocaleString()}</div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span class="badge ${p.verified ? 'badge-verified' : 'badge-unverified'}">
-                                ${p.verified ? '✅ احراز' : '❌ احراز نشده'}
+                                ${p.verified ? '✅' : '❌'}
                             </span>
                             <button class="btn-small" onclick="event.stopPropagation(); deletePlayer(${p.id})">🗑️</button>
                         </div>
@@ -552,326 +484,56 @@
             }).join('');
         }
 
-        function updatePlayerSelect() {
-            const select = document.getElementById('transPlayer');
-            const selectCashout = document.getElementById('cashoutPlayer');
-            if (players.length === 0) {
-                select.innerHTML = '<option>بازیکن اضافه کنید</option>';
-                selectCashout.innerHTML = '<option>بازیکن اضافه کنید</option>';
-                return;
-            }
-            const sorted = [...players].sort((a, b) => a.name.localeCompare(b.name, 'en'));
-            const html = sorted.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            select.innerHTML = html;
-            selectCashout.innerHTML = '<option>انتخاب بازیکن</option>' + html;
-        }
-
-        function updateTransactionForm() {
-            const type = document.getElementById('transType').value;
-            const amount = parseFloat(document.getElementById('transAmount').value) || 0;
-            const bonus = amount * 0.1;
-            document.getElementById('transBonus').value = bonus.toLocaleString();
-        }
-
-        function addTransaction() {
-            const playerId = document.getElementById('transPlayer').value;
-            const type = document.getElementById('transType').value;
-            const amount = parseFloat(document.getElementById('transAmount').value);
-            const date = document.getElementById('transDate').value;
-            const time = document.getElementById('transTime').value;
-
-            if (!playerId || !amount || !date || !time) {
-                showMessage('تمام فیلدها را پر کنید!', 'error');
-                return;
-            }
-
-            const player = players.find(p => p.id == playerId);
-            const farsiDate = new Date(date + 'T00:00:00').toLocaleDateString('fa-IR');
-            const bonus = ['debt', 'payment'].includes(type) ? 0 : amount * 0.1;
-
-            transactions.push({
-                id: Date.now(),
-                playerId: parseInt(playerId),
-                playerName: player.name,
-                type: type,
-                amount: amount,
-                bonus: bonus,
-                date: farsiDate,
-                time: time,
-                adminName: admins[currentAdmin].name
-            });
-
-            saveData();
-            showMessage('✅ تراکنش ثبت شد!', 'success');
-            document.getElementById('transAmount').value = '';
-            document.getElementById('transBonus').value = '';
-            displayToday();
-            displayPlayers();
-        }
-
-        function updateCashoutForm() {
-            const typeId = event.target.id;
-            const type = document.getElementById(typeId).value;
-            let addressId = typeId === 'cashoutType' ? 'cashoutAddress' : typeId === 'modalCashoutType' ? 'modalCashoutAddress' : null;
-            
-            if (addressId) {
-                const addressInput = document.getElementById(addressId);
-                if (type === 'rial') {
-                    addressInput.placeholder = 'شماره کارت';
-                } else {
-                    addressInput.placeholder = 'آدرس والت (' + type.toUpperCase() + ')';
-                }
-            }
-        }
-
-        function requestCashout() {
-            const playerId = document.getElementById('cashoutPlayer').value;
-            const type = document.getElementById('cashoutType').value;
-            const amount = parseFloat(document.getElementById('cashoutAmount').value);
-            const address = document.getElementById('cashoutAddress').value.trim();
-
-            if (!playerId || !amount || !address) {
-                showMessage('تمام فیلدها را پر کنید!', 'error');
-                return;
-            }
-
-            const player = players.find(p => p.id == playerId);
-            cashoutRequests.push({
-                id: Date.now(),
-                playerId: parseInt(playerId),
-                playerName: player.name,
-                type: type,
-                amount: amount,
-                address: address,
-                paid: 0,
-                status: 'pending',
-                payments: []
-            });
-
-            saveData();
-            showMessage('✅ درخواست ثبت شد!', 'success');
-            document.getElementById('cashoutPlayer').value = '';
-            document.getElementById('cashoutAmount').value = '';
-            document.getElementById('cashoutAddress').value = '';
-            displayCashoutList();
-        }
-
-        function requestModalCashout() {
-            const type = document.getElementById('modalCashoutType').value;
-            const amount = parseFloat(document.getElementById('modalCashoutAmount').value);
-            const address = document.getElementById('modalCashoutAddress').value.trim();
-
-            if (!amount || !address) {
-                showMessage('تمام فیلدها را پر کنید!', 'error');
-                return;
-            }
-
-            const player = players.find(p => p.id == currentHistoryPlayer);
-            cashoutRequests.push({
-                id: Date.now(),
-                playerId: currentHistoryPlayer,
-                playerName: player.name,
-                type: type,
-                amount: amount,
-                address: address,
-                paid: 0,
-                status: 'pending',
-                payments: []
-            });
-
-            saveData();
-            showMessage('✅ درخواست ثبت شد!', 'success');
-            document.getElementById('modalCashoutAmount').value = '';
-            document.getElementById('modalCashoutAddress').value = '';
-            displayCashoutList();
-        }
-
-        function displayCashoutList() {
-            const list = document.getElementById('cashoutList');
-            const pending = cashoutRequests.filter(c => c.status === 'pending');
-            
-            if (pending.length === 0) {
-                list.innerHTML = '<div class="empty-state">درخواستی موجود نیست</div>';
-                return;
-            }
-
-            list.innerHTML = pending.map(c => {
-                const remaining = c.amount - c.paid;
-                const percent = (c.paid / c.amount) * 100;
-                
-                return `
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
-                            <div>
-                                <h4 style="color: var(--primary); margin-bottom: 5px;">${c.playerName}</h4>
-                                <p style="font-size: 12px; color: var(--text-secondary);">${c.type.toUpperCase()} | ${c.address}</p>
-                            </div>
-                            <button class="btn-small" onclick="finishCashout(${c.id})">✅ تمام</button>
-                        </div>
-                        
-                        <div class="cashout-progress">
-                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 10px;">کل: ${c.amount.toLocaleString()} تومان</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${percent}%"></div>
-                            </div>
-                            <div class="progress-text">
-                                <span>واریز شده: ${c.paid.toLocaleString()}</span>
-                                <span>باقی: ${remaining.toLocaleString()} (${percent.toFixed(0)}%)</span>
-                            </div>
-                        </div>
-
-                        ${c.type === 'rial' ? `
-                            <div style="margin-top: 15px;">
-                                <div class="form-row">
-                                    <input type="number" id="payAmount${c.id}" placeholder="مبلغ واریز" step="0.01">
-                                </div>
-                                <button class="btn-add" onclick="addPayment(${c.id})">💳 ثبت واریز</button>
-                            </div>
-                        ` : ''}
-
-                        ${c.payments.length > 0 ? `
-                            <div style="margin-top: 15px;">
-                                <h5 style="color: var(--primary); margin-bottom: 10px;">واریزی‌ها:</h5>
-                                <table class="trans-table" style="font-size: 12px;">
-                                    <tbody>
-                                        ${c.payments.map((p, i) => `
-                                            <tr>
-                                                <td>${i+1}</td>
-                                                <td>${p.amount.toLocaleString()}</td>
-                                                <td>${p.date}</td>
-                                                <td>${p.adminName}</td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function addPayment(cashoutId) {
-            const amount = parseFloat(document.getElementById('payAmount' + cashoutId).value);
-            if (!amount) {
-                showMessage('مبلغ را وارد کنید!', 'error');
-                return;
-            }
-
-            const cashout = cashoutRequests.find(c => c.id === cashoutId);
-            if (!cashout) return;
-
-            cashout.paid += amount;
-            cashout.payments.push({
-                amount: amount,
-                date: new Date().toLocaleDateString('fa-IR'),
-                adminName: admins[currentAdmin].name
-            });
-
-            if (cashout.paid >= cashout.amount) {
-                cashout.status = 'completed';
-            }
-
-            saveData();
-            displayCashoutList();
-            showMessage('✅ واریز ثبت شد!', 'success');
-        }
-
-        function finishCashout(cashoutId) {
-            const cashout = cashoutRequests.find(c => c.id === cashoutId);
-            if (cashout) {
-                cashout.status = 'completed';
-                saveData();
-                displayCashoutList();
-                showMessage('✅ کشاوت تمام شد!', 'success');
-            }
-        }
-
-        function deleteTransaction(id) {
+        function deletePlayer(id) {
             if (confirm('حذف کنید؟')) {
-                transactions = transactions.filter(t => t.id !== id);
+                players = players.filter(p => p.id !== id);
                 saveData();
-                displayToday();
                 displayPlayers();
-                if (currentHistoryPlayer) {
-                    showPlayerHistory(currentHistoryPlayer, players.find(p => p.id == currentHistoryPlayer)?.name, players.find(p => p.id == currentHistoryPlayer)?.verified);
-                }
                 showMessage('✅ حذف شد!', 'success');
             }
         }
 
-        function getTodayDate() {
-            return new Date().toLocaleDateString('fa-IR');
-        }
-
-        function displayToday() {
-            const today = getTodayDate();
-            document.getElementById('todayTitle').textContent = '📅 تراکنش‌های ' + today;
-            
-            const todayTrans = transactions.filter(t => t.date === today).sort((a, b) => b.id - a.id);
-            const tbody = document.getElementById('todayTransactions');
-            
-            if (todayTrans.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">تراکنشی برای امروز نیست</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = todayTrans.map((t, i) => `
-                <tr>
-                    <td>${i+1}</td>
-                    <td>${t.playerName}</td>
-                    <td>${t.type}</td>
-                    <td>${t.amount.toLocaleString()}</td>
-                    <td>${t.bonus.toLocaleString()}</td>
-                    <td>${t.date}</td>
-                    <td>${t.time}</td>
-                    <td><span class="admin-badge">${t.adminName}</span></td>
-                    <td><button class="btn-small" onclick="deleteTransaction(${t.id})">🗑️</button></td>
-                </tr>
-            `).join('');
-        }
-
-        function showPlayerHistory(playerId, playerName, verified) {
-            currentHistoryPlayer = playerId;
-            document.getElementById('historyPlayerName').textContent = playerName;
+        function showPlayerModal(playerId, playerName, verified) {
+            currentModalPlayer = playerId;
+            document.getElementById('modalPlayerName').textContent = playerName;
             
             const toggle = document.getElementById('verificationToggle');
             const text = document.getElementById('verificationText');
             if (verified) {
                 toggle.classList.add('active');
+                toggle.style.background = 'var(--primary)';
                 text.textContent = 'احراز شده';
             } else {
                 toggle.classList.remove('active');
+                toggle.style.background = 'var(--border)';
                 text.textContent = 'احراز نشده';
             }
 
-            const history = transactions.filter(t => t.playerId == playerId).sort((a, b) => b.id - a.id);
-            const totalCharge = history.filter(t => !['debt', 'payment'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
-            const totalDebt = history.filter(t => t.type === 'debt').reduce((s, t) => s + t.amount, 0) - history.filter(t => t.type === 'payment').reduce((s, t) => s + t.amount, 0);
+            const playerCharges = charges.filter(c => c.playerId == playerId);
+            const totalCharge = playerCharges.reduce((s, c) => s + c.total, 0);
             
-            document.getElementById('totalChargeHis').textContent = totalCharge.toLocaleString();
-            document.getElementById('totalDebtHis').textContent = totalDebt.toLocaleString();
-
+            document.getElementById('totalChargeModal').textContent = totalCharge.toLocaleString();
+            
             const tbody = document.getElementById('historyTransactions');
-            
-            if (history.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">تراکنشی برای این بازیکن نیست</td></tr>';
+            if (playerCharges.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-secondary);">شارژی موجود نیست</td></tr>';
             } else {
-                tbody.innerHTML = history.map((t, i) => `
+                tbody.innerHTML = playerCharges.map((c, i) => `
                     <tr>
                         <td>${i+1}</td>
-                        <td>${t.type}</td>
-                        <td>${t.amount.toLocaleString()}</td>
-                        <td>${t.bonus.toLocaleString()}</td>
-                        <td>${t.date}</td>
-                        <td>${t.time}</td>
-                        <td><span class="admin-badge">${t.adminName}</span></td>
-                        <td><button class="btn-small" onclick="deleteTransaction(${t.id})">🗑️</button></td>
+                        <td>${c.type}</td>
+                        <td>${c.amount.toLocaleString()}</td>
+                        <td>${c.bonus.toLocaleString()}</td>
+                        <td>${c.total.toLocaleString()}</td>
+                        <td>${c.date}</td>
+                        <td>${c.time}</td>
+                        <td><span style="background: rgba(192,192,192,0.2); color: var(--primary); padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">${c.adminName}</span></td>
                     </tr>
                 `).join('');
             }
 
-            document.getElementById('historyModal').classList.add('show');
+            switchModalTab('info');
+            document.getElementById('playerModal').classList.add('show');
         }
 
         function switchModalTab(tabName) {
@@ -882,7 +544,7 @@
         }
 
         function toggleVerification() {
-            const player = players.find(p => p.id == currentHistoryPlayer);
+            const player = players.find(p => p.id == currentModalPlayer);
             if (player) {
                 player.verified = !player.verified;
                 saveData();
@@ -891,125 +553,223 @@
                 const text = document.getElementById('verificationText');
                 if (player.verified) {
                     toggle.classList.add('active');
+                    toggle.style.background = 'var(--primary)';
                     text.textContent = 'احراز شده';
                 } else {
                     toggle.classList.remove('active');
+                    toggle.style.background = 'var(--border)';
                     text.textContent = 'احراز نشده';
                 }
                 displayPlayers();
             }
         }
 
-        function addQuickTransaction() {
-            const type = document.getElementById('quickTransType').value;
-            const amount = parseFloat(document.getElementById('quickAmount').value);
-            const date = document.getElementById('quickDate').value;
-            const time = document.getElementById('quickTime').value;
+        function updateChargeForm() {
+            const type = document.getElementById('chargeType').value;
+            const cryptoForm = document.getElementById('cryptoForm');
+            const rialForm = document.getElementById('rialForm');
+            const amountLabel = document.getElementById('amountLabel');
+            const priceLabel = document.getElementById('priceLabel');
 
-            if (!amount || !date || !time) {
-                showMessage('تمام فیلدها را پر کنید!', 'error');
-                return;
+            if (type === 'rial') {
+                cryptoForm.style.display = 'none';
+                rialForm.style.display = 'block';
+            } else {
+                cryptoForm.style.display = 'block';
+                rialForm.style.display = 'none';
+                
+                if (type.includes('usdt')) {
+                    amountLabel.textContent = 'مبلغ (دلار):';
+                    priceLabel.textContent = 'قیمت دلار (تومان):';
+                } else if (type === 'trx') {
+                    amountLabel.textContent = 'مبلغ (TRX):';
+                    priceLabel.textContent = 'قیمت TRX (تومان):';
+                }
+            }
+        }
+
+        function calculateCharge() {
+            const amount = parseFloat(document.getElementById('chargeAmount').value) || 0;
+            const price = parseFloat(document.getElementById('chargePrice').value) || 0;
+            const rialAmount = amount * price;
+            const bonus = rialAmount * 0.1;
+            const total = rialAmount + bonus;
+
+            document.getElementById('previewAmount').textContent = rialAmount.toLocaleString();
+            document.getElementById('previewBonus').textContent = bonus.toLocaleString();
+            document.getElementById('previewTotal').textContent = total.toLocaleString();
+        }
+
+        function calculateRialCharge() {
+            const amount = parseFloat(document.getElementById('chargeRialAmount').value) || 0;
+            const bonus = amount * 0.1;
+            const total = amount + bonus;
+
+            document.getElementById('previewAmount').textContent = amount.toLocaleString();
+            document.getElementById('previewBonus').textContent = bonus.toLocaleString();
+            document.getElementById('previewTotal').textContent = total.toLocaleString();
+        }
+
+        function previewImage() {
+            const file = document.getElementById('chargeImage').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentChargeImage = e.target.result;
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = currentChargeImage;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveCharge() {
+            const type = document.getElementById('chargeType').value;
+            const date = document.getElementById('chargeDate').value;
+            const time = document.getElementById('chargeTime').value;
+            const farsiDate = new Date(date + 'T00:00:00').toLocaleDateString('fa-IR');
+
+            let amount, bonus, total, hash, orderId;
+
+            if (type === 'rial') {
+                amount = parseFloat(document.getElementById('chargeRialAmount').value);
+                orderId = document.getElementById('chargeOrderId').value;
+                if (!amount || !orderId) {
+                    showMessage('تمام فیلدها را پر کنید!', 'error');
+                    return;
+                }
+            } else {
+                amount = parseFloat(document.getElementById('chargeAmount').value);
+                const price = parseFloat(document.getElementById('chargePrice').value);
+                hash = document.getElementById('chargeHash').value;
+                if (!amount || !price || !hash) {
+                    showMessage('تمام فیلدها را پر کنید!', 'error');
+                    return;
+                }
+                amount = amount * price;
             }
 
-            const farsiDate = new Date(date + 'T00:00:00').toLocaleDateString('fa-IR');
-            const bonus = type === 'debt' ? 0 : amount * 0.1;
+            bonus = amount * 0.1;
+            total = amount + bonus;
 
-            transactions.push({
+            charges.push({
                 id: Date.now(),
-                playerId: currentHistoryPlayer,
-                playerName: players.find(p => p.id == currentHistoryPlayer)?.name,
+                playerId: currentModalPlayer,
                 type: type,
                 amount: amount,
                 bonus: bonus,
+                total: total,
                 date: farsiDate,
                 time: time,
+                hash: hash || null,
+                orderId: orderId || null,
+                image: currentChargeImage,
                 adminName: admins[currentAdmin].name
             });
 
             saveData();
-            showMessage('✅ شارژ اضافه شد!', 'success');
-            document.getElementById('quickAmount').value = '';
-            showPlayerHistory(currentHistoryPlayer, players.find(p => p.id == currentHistoryPlayer)?.name, players.find(p => p.id == currentHistoryPlayer)?.verified);
+            showMessage('✅ شارژ ثبت شد!', 'success');
+            
+            document.getElementById('chargeAmount').value = '';
+            document.getElementById('chargePrice').value = '';
+            document.getElementById('chargeHash').value = '';
+            document.getElementById('chargeRialAmount').value = '';
+            document.getElementById('chargeOrderId').value = '';
+            document.getElementById('chargeImage').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            currentChargeImage = null;
+            
             displayPlayers();
             displayToday();
+            showPlayerModal(currentModalPlayer, players.find(p => p.id == currentModalPlayer)?.name, players.find(p => p.id == currentModalPlayer)?.verified);
         }
 
-        function closeModal() {
-            document.getElementById('historyModal').classList.remove('show');
-            currentHistoryPlayer = null;
+        function displayToday() {
+            const today = new Date().toLocaleDateString('fa-IR');
+            document.getElementById('todayTitle').textContent = '📅 تراکنش‌های ' + today;
+            
+            const todayCharges = charges.filter(c => c.date === today).sort((a, b) => b.id - a.id);
+            const tbody = document.getElementById('todayTransactions');
+            
+            if (todayCharges.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-secondary);">شارژی برای امروز نیست</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = todayCharges.map((c, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${players.find(p => p.id == c.playerId)?.name}</td>
+                    <td>${c.type}</td>
+                    <td>${c.amount.toLocaleString()}</td>
+                    <td>${c.bonus.toLocaleString()}</td>
+                    <td>${c.total.toLocaleString()}</td>
+                    <td>${c.date}</td>
+                    <td>${c.time}</td>
+                    <td><span style="background: rgba(192,192,192,0.2); color: var(--primary); padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">${c.adminName}</span></td>
+                </tr>
+            `).join('');
         }
 
-        function getWeekRange() {
+        function downloadDailyReport() {
+            const today = new Date().toLocaleDateString('fa-IR');
+            const filtered = charges.filter(c => c.date === today);
+            createExcel(filtered, 'گزارش روزانه', `report_${today.replace(/\//g, '-')}.xlsx`);
+        }
+
+        function downloadWeeklyReport() {
             const today = new Date();
             const day = today.getDay();
             const start = new Date(today);
             start.setDate(today.getDate() - day);
-            return {
-                start: start.toLocaleDateString('fa-IR'),
-                end: today.toLocaleDateString('fa-IR')
-            };
+            const startDate = start.toLocaleDateString('fa-IR');
+            const endDate = today.toLocaleDateString('fa-IR');
+            
+            const filtered = charges.filter(c => c.date >= startDate && c.date <= endDate);
+            createExcel(filtered, 'گزارش هفتگی', `report_week_${startDate.replace(/\//g, '-')}.xlsx`);
         }
 
-        function getMonthRange() {
+        function downloadMonthlyReport() {
             const today = new Date();
             const start = new Date(today.getFullYear(), today.getMonth(), 1);
             const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            return {
-                start: start.toLocaleDateString('fa-IR'),
-                end: end.toLocaleDateString('fa-IR')
-            };
-        }
-
-        function filterTransactions(startDate, endDate) {
-            return transactions.filter(t => t.date >= startDate && t.date <= endDate).sort((a, b) => b.id - a.id);
+            const startDate = start.toLocaleDateString('fa-IR');
+            const endDate = end.toLocaleDateString('fa-IR');
+            
+            const filtered = charges.filter(c => c.date >= startDate && c.date <= endDate);
+            createExcel(filtered, 'گزارش ماهانه', `report_month_${startDate.replace(/\//g, '-')}.xlsx`);
         }
 
         function createExcel(filtered, title, fileName) {
             if (filtered.length === 0) {
-                showMessage('تراکنشی یافت نشد!', 'error');
+                showMessage('شارژی یافت نشد!', 'error');
                 return;
             }
 
             const data = [
                 [admins[currentAdmin].name + ' - ' + title],
                 [''],
-                ['ردیف', 'بازیکن', 'نوع', 'مبلغ', 'بونوس', 'تاریخ', 'ساعت', 'ادمین']
+                ['ردیف', 'بازیکن', 'نوع', 'مبلغ', 'بونوس', 'جمع', 'تاریخ', 'ساعت', 'ادمین']
             ];
 
-            filtered.forEach((t, i) => {
-                data.push([i+1, t.playerName, t.type, t.amount, t.bonus, t.date, t.time, t.adminName]);
+            filtered.forEach((c, i) => {
+                data.push([i+1, players.find(p => p.id == c.playerId)?.name, c.type, c.amount, c.bonus, c.total, c.date, c.time, c.adminName]);
             });
 
             data.push(['']);
-            data.push(['کل تراکنش‌ها:', filtered.length]);
-            data.push(['کل مبلغ:', filtered.reduce((s, t) => s + t.amount, 0)]);
-            data.push(['کل بونوس:', filtered.reduce((s, t) => s + t.bonus, 0)]);
+            data.push(['کل شارژ:', filtered.length]);
+            data.push(['کل مبلغ:', filtered.reduce((s, c) => s + c.amount, 0)]);
+            data.push(['کل بونوس:', filtered.reduce((s, c) => s + c.bonus, 0)]);
+            data.push(['کل جمع:', filtered.reduce((s, c) => s + c.total, 0)]);
 
             const ws = XLSX.utils.aoa_to_sheet(data);
-            ws['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 8 }, { wch: 12 }];
+            ws['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 8 }, { wch: 12 }];
             
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'گزارش');
             XLSX.writeFile(wb, fileName);
             showMessage('✅ دانلود شد!', 'success');
-        }
-
-        function downloadDailyReport() {
-            const today = getTodayDate();
-            const filtered = filterTransactions(today, today);
-            createExcel(filtered, 'گزارش روزانه', `report_${today.replace(/\//g, '-')}.xlsx`);
-        }
-
-        function downloadWeeklyReport() {
-            const { start, end } = getWeekRange();
-            const filtered = filterTransactions(start, end);
-            createExcel(filtered, 'گزارش هفتگی', `report_week_${start.replace(/\//g, '-')}.xlsx`);
-        }
-
-        function downloadMonthlyReport() {
-            const { start, end } = getMonthRange();
-            const filtered = filterTransactions(start, end);
-            createExcel(filtered, 'گزارش ماهانه', `report_month_${start.replace(/\//g, '-')}.xlsx`);
         }
 
         function switchTab(tabName) {
@@ -1019,6 +779,11 @@
             event.target.classList.add('active');
         }
 
+        function closeModal() {
+            document.getElementById('playerModal').classList.remove('show');
+            currentModalPlayer = null;
+        }
+
         function showMessage(msg, type) {
             const el = document.getElementById('message');
             el.textContent = msg;
@@ -1026,14 +791,10 @@
             setTimeout(() => el.classList.remove('show'), 3000);
         }
 
-        updateQuickForm = updateTransactionForm;
-
         loadData();
-        document.getElementById('transTime').value = new Date().toTimeString().slice(0, 5);
-        document.getElementById('quickTime').value = new Date().toTimeString().slice(0, 5);
-        updatePlayerSelect();
-        updateTransactionForm();
-        updateCashoutForm();
+        document.getElementById('chargeDate').valueAsDate = new Date();
+        document.getElementById('chargeTime').value = new Date().toTimeString().slice(0, 5);
+        updateChargeForm();
     </script>
 </body>
 </html>
