@@ -20,65 +20,33 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: var(--dark-bg); 
             color: var(--text-primary); 
-            line-height: 1.6;
         }
 
-        /* LOGIN */
         .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
         .login-box { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid var(--border); width: 100%; max-width: 400px; }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 10px; font-size: 32px; }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 10px; }
         .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; }
-        .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; }
-        input, select { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: inherit; margin-bottom: 15px; }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
 
-        .admin-btn { 
-            padding: 12px; 
-            background: var(--card-bg); 
-            border: 2px solid var(--border); 
-            border-radius: 8px; 
-            color: var(--text-primary); 
-            cursor: pointer; 
-            font-weight: 600; 
-            margin-bottom: 10px;
-            width: 100%;
-            transition: all 0.3s;
-        }
-        .admin-btn:hover { background: var(--border); }
+        .admin-btn { padding: 12px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-weight: 600; margin-bottom: 10px; width: 100%; }
         .admin-btn.active { background: var(--primary); color: #000; }
 
-        .btn-login { 
-            width: 100%; 
-            padding: 14px; 
-            background: var(--primary); 
-            color: #000; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            margin-top: 20px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
+        .btn-login { width: 100%; padding: 14px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
         .btn-login:hover { opacity: 0.9; }
 
-        /* DASHBOARD */
         .dashboard { display: none; min-height: 100vh; }
         .dashboard.active { display: block; }
 
-        .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .navbar h2 { color: var(--primary); font-size: 24px; }
-        .navbar > div { display: flex; align-items: center; gap: 20px; }
-        
-        .btn-logout { padding: 8px 15px; background: #ff6b6b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .btn-logout:hover { background: #ff5252; }
+        .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar h2 { color: var(--primary); }
+        .btn-logout { padding: 8px 15px; background: #ff6b6b; color: white; border: none; border-radius: 8px; cursor: pointer; }
 
         .content { max-width: 1200px; margin: 20px auto; padding: 20px; }
 
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-        .tab-btn { padding: 12px 20px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.3s; }
-        .tab-btn:hover { color: var(--primary); }
+        .tab-btn { padding: 12px 20px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
         .tab-content { display: none; }
@@ -86,40 +54,106 @@
 
         .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
 
-        /* PLAYERS */
-        .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .player-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 15px; }
-        .player-card h3 { color: var(--primary); margin-bottom: 10px; }
-        .player-card p { color: var(--text-secondary); font-size: 12px; margin-bottom: 5px; }
-
-        .btn-small { padding: 8px 12px; background: var(--primary); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 5px; font-size: 12px; transition: all 0.3s; }
-        .btn-small:hover { opacity: 0.8; }
-        
-        .btn-add { padding: 10px 20px; background: var(--primary); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .btn-add:hover { opacity: 0.9; }
-
-        /* TRANSACTIONS */
-        .transaction-form { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        @media (max-width: 600px) {
-            .form-row { grid-template-columns: 1fr; }
+        /* PLAYERS LIST */
+        .players-list { display: flex; flex-direction: column; gap: 10px; }
+        .player-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+        .player-item:hover { border-color: var(--primary); background: rgba(255, 215, 0, 0.05); }
+        
+        .player-info { flex: 1; }
+        .player-name { font-weight: 600; font-size: 16px; color: var(--primary); margin-bottom: 5px; }
+        .player-stats { font-size: 12px; color: var(--text-secondary); }
+        
+        .verification-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        .verification-badge.unverified {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .btn-small { padding: 8px 12px; background: var(--primary); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 10px; font-size: 12px; }
+        .btn-add { padding: 10px 20px; background: var(--primary); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
 
         .trans-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .trans-table th, .trans-table td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); font-size: 13px; }
         .trans-table th { background: var(--card-bg); color: var(--primary); font-weight: 600; }
 
-        /* REPORTS */
         .button-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
-        .btn-report { padding: 20px 10px; background: linear-gradient(135deg, var(--primary), #ffd700); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; transition: all 0.3s; }
-        .btn-report:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3); }
+        .btn-report { padding: 20px 10px; background: linear-gradient(135deg, var(--primary), #ffd700); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
+        .btn-report:hover { transform: translateY(-3px); }
 
         .message { padding: 15px; margin-top: 15px; border-radius: 8px; display: none; }
         .message.success { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
         .message.error { background: rgba(244, 67, 54, 0.2); color: #f44336; }
         .message.show { display: block; }
 
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card-bg); border-radius: 15px; padding: 30px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .modal-header h2 { color: var(--primary); }
+        .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; }
+
         .empty-state { text-align: center; color: var(--text-secondary); padding: 40px 20px; }
+
+        .verification-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--dark-bg);
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 24px;
+            background: #555;
+            border-radius: 12px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 10px;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active::before {
+            left: 18px;
+        }
     </style>
 </head>
 <body>
@@ -129,17 +163,13 @@
             <h1>🎰 Silent Poker</h1>
             <p class="subtitle">سیستم حساب‌داری و گزارش</p>
             <form onsubmit="handleLogin(event)">
-                <div style="margin-bottom: 20px;">
-                    <label>انتخاب ادمین:</label>
-                    <button type="button" class="admin-btn" onclick="selectAdmin('shahab')">Shahab (1234)</button>
-                    <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">Tiyam (4552)</button>
-                    <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">Tabassam (9825)</button>
-                    <button type="button" class="admin-btn" onclick="selectAdmin('arash')">Arash (4321)</button>
-                </div>
-                <div class="form-group">
-                    <label>رمز عبور:</label>
-                    <input type="password" id="password" required autofocus>
-                </div>
+                <label>انتخاب ادمین:</label>
+                <button type="button" class="admin-btn" onclick="selectAdmin('shahab')">Shahab (1234)</button>
+                <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">Tiyam (4552)</button>
+                <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">Tabassam (9825)</button>
+                <button type="button" class="admin-btn" onclick="selectAdmin('arash')">Arash (4321)</button>
+                <label>رمز عبور:</label>
+                <input type="password" id="password" required>
                 <button type="submit" class="btn-login">ورود</button>
             </form>
         </div>
@@ -150,13 +180,12 @@
         <div class="navbar">
             <h2>🎰 Silent Poker</h2>
             <div>
-                <span id="adminName" style="color: var(--primary); font-weight: 600;"></span>
+                <span id="adminName" style="color: var(--primary); font-weight: 600; margin-right: 20px;"></span>
                 <button class="btn-logout" onclick="logout()">خروج</button>
             </div>
         </div>
 
         <div class="content">
-            <!-- TABS -->
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('players')">👥 بازیکنان</button>
                 <button class="tab-btn" onclick="switchTab('transaction')">💳 تراکنش</button>
@@ -168,20 +197,18 @@
             <div id="players" class="tab-content active">
                 <div class="card">
                     <h3>➕ افزودن بازیکن جدید</h3>
-                    <div class="form-row">
-                        <input type="text" id="newPlayerName" placeholder="نام بازیکن" required>
-                    </div>
+                    <input type="text" id="newPlayerName" placeholder="نام بازیکن" style="width: 100%; margin-bottom: 10px;">
                     <button class="btn-add" onclick="addPlayer()">افزودن</button>
                 </div>
 
                 <div id="message" class="message"></div>
 
-                <div class="players-grid" id="playersList"></div>
+                <div class="players-list" id="playersList"></div>
             </div>
 
             <!-- TRANSACTION TAB -->
             <div id="transaction" class="tab-content">
-                <div class="transaction-form">
+                <div class="card">
                     <h3>💳 ثبت تراکنش جدید</h3>
                     <div class="form-row">
                         <div>
@@ -200,19 +227,19 @@
                     </div>
                     <div class="form-row">
                         <input type="number" id="transAmount" placeholder="مبلغ" step="0.01" required>
-                        <input type="number" id="transTokens" placeholder="ژتون (اختیاری)" value="0">
+                        <input type="number" id="transTokens" placeholder="ژتون" value="0">
                     </div>
                     <div class="form-row">
                         <input type="date" id="transDate" required>
                         <input type="time" id="transTime" required>
                     </div>
-                    <button class="btn-add" onclick="addTransaction()">✅ ثبت تراکنش</button>
+                    <button class="btn-add" onclick="addTransaction()">✅ ثبت</button>
                 </div>
             </div>
 
             <!-- TODAY TAB -->
             <div id="today" class="tab-content">
-                <h3 id="todayTitle" style="margin-bottom: 20px;"></h3>
+                <h3 style="margin-bottom: 20px;" id="todayTitle"></h3>
                 <table class="trans-table">
                     <thead>
                         <tr>
@@ -245,8 +272,45 @@
         </div>
     </div>
 
+    <!-- PLAYER HISTORY MODAL -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="historyPlayerName"></h2>
+                <button class="btn-close" onclick="closeModal()">✕</button>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label style="color: var(--text-secondary); font-size: 12px;">احراز درگاه:</label>
+                        <div class="verification-toggle" onclick="toggleVerification()">
+                            <div class="toggle-switch" id="verificationToggle"></div>
+                            <span id="verificationText">تایید نشده</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 15px; color: var(--primary);">📋 سابقه کامل</h3>
+            <table class="trans-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>نوع</th>
+                        <th>مبلغ</th>
+                        <th>ژتون</th>
+                        <th>تاریخ</th>
+                        <th>ساعت</th>
+                        <th>ادمین</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTransactions"></tbody>
+            </table>
+        </div>
+    </div>
+
     <script>
-        // ========== SETTINGS ==========
         const admins = {
             shahab: { password: '1234', name: 'شهاب' },
             tiyam: { password: '4552', name: 'تیام' },
@@ -258,13 +322,13 @@
         let selectedAdmin = null;
         let players = [];
         let transactions = [];
+        let currentHistoryPlayer = null;
 
-        // ========== STORAGE ==========
         function loadData() {
-            const savedPlayers = localStorage.getItem('pokerPlayers');
-            const savedTransactions = localStorage.getItem('pokerTransactions');
-            if (savedPlayers) players = JSON.parse(savedPlayers);
-            if (savedTransactions) transactions = JSON.parse(savedTransactions);
+            const sp = localStorage.getItem('pokerPlayers');
+            const st = localStorage.getItem('pokerTransactions');
+            if (sp) players = JSON.parse(sp);
+            if (st) transactions = JSON.parse(st);
         }
 
         function saveData() {
@@ -272,7 +336,6 @@
             localStorage.setItem('pokerTransactions', JSON.stringify(transactions));
         }
 
-        // ========== AUTH ==========
         function selectAdmin(adminId) {
             selectedAdmin = adminId;
             document.querySelectorAll('.admin-btn').forEach(b => b.classList.remove('active'));
@@ -282,19 +345,14 @@
         function handleLogin(event) {
             event.preventDefault();
             const password = document.getElementById('password').value;
-            if (!selectedAdmin) {
-                showMessage('ادمین انتخاب کنید!', 'error');
-                return;
-            }
-            const admin = admins[selectedAdmin];
-            if (admin.password !== password) {
-                showMessage('رمز عبور نادرست!', 'error');
+            if (!selectedAdmin || admins[selectedAdmin].password !== password) {
+                alert('خطا!');
                 return;
             }
             currentAdmin = selectedAdmin;
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
-            document.getElementById('adminName').textContent = '👋 ' + admin.name;
+            document.getElementById('adminName').textContent = '👋 ' + admins[selectedAdmin].name;
             updatePlayerSelect();
             displayPlayers();
             displayToday();
@@ -307,7 +365,6 @@
             document.getElementById('password').value = '';
         }
 
-        // ========== PLAYERS ==========
         function addPlayer() {
             const name = document.getElementById('newPlayerName').value.trim();
             if (!name) {
@@ -318,7 +375,7 @@
                 showMessage('این بازیکن قبلاً اضافه شده است!', 'error');
                 return;
             }
-            players.push({ id: Date.now(), name: name });
+            players.push({ id: Date.now(), name: name, verified: false });
             saveData();
             document.getElementById('newPlayerName').value = '';
             displayPlayers();
@@ -327,30 +384,40 @@
         }
 
         function deletePlayer(id) {
-            if (confirm('مطمئن هستید؟')) {
+            if (confirm('حذف کنید؟')) {
                 players = players.filter(p => p.id !== id);
+                transactions = transactions.filter(t => t.playerId !== id);
                 saveData();
                 displayPlayers();
                 updatePlayerSelect();
-                showMessage('✅ بازیکن حذف شد!', 'success');
+                showMessage('✅ حذف شد!', 'success');
             }
         }
 
         function displayPlayers() {
             const list = document.getElementById('playersList');
-            if (players.length === 0) {
-                list.innerHTML = '<div class="empty-state">بازیکنی موجود نیست. اولی را اضافه کنید! 👆</div>';
+            const sorted = [...players].sort((a, b) => a.name.localeCompare(b.name, 'fa'));
+            
+            if (sorted.length === 0) {
+                list.innerHTML = '<div class="empty-state">بازیکنی موجود نیست</div>';
                 return;
             }
-            list.innerHTML = players.map(p => {
+
+            list.innerHTML = sorted.map(p => {
                 const count = transactions.filter(t => t.playerId == p.id).length;
                 const total = transactions.filter(t => t.playerId == p.id).reduce((s, t) => s + t.amount, 0);
                 return `
-                    <div class="player-card">
-                        <h3>${p.name}</h3>
-                        <p>تراکنش‌ها: <strong>${count}</strong></p>
-                        <p>کل مبلغ: <strong>${total.toLocaleString()}</strong></p>
-                        <button class="btn-small" onclick="deletePlayer(${p.id})">🗑️ حذف</button>
+                    <div class="player-item" onclick="showPlayerHistory(${p.id}, '${p.name}', ${p.verified})">
+                        <div class="player-info">
+                            <div class="player-name">${p.name}</div>
+                            <div class="player-stats">تراکنش‌ها: ${count} | کل: ${total.toLocaleString()}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="verification-badge ${p.verified ? '' : 'unverified'}">
+                                ${p.verified ? '✅ احراز شده' : '❌ احراز نشده'}
+                            </span>
+                            <button class="btn-small" onclick="event.stopPropagation(); deletePlayer(${p.id})">🗑️</button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -359,7 +426,7 @@
         function updatePlayerSelect() {
             const select = document.getElementById('transPlayer');
             if (players.length === 0) {
-                select.innerHTML = '<option>ابتدا بازیکن اضافه کنید</option>';
+                select.innerHTML = '<option>بازیکن اضافه کنید</option>';
                 select.disabled = true;
                 return;
             }
@@ -367,11 +434,9 @@
             select.innerHTML = players.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
         }
 
-        // ========== TRANSACTIONS ==========
         function updateTransactionForm() {
             const type = document.getElementById('transType').value;
-            const tokensInput = document.getElementById('transTokens');
-            tokensInput.style.display = (type === 'usdt' || type === 'trx') ? 'block' : 'none';
+            document.getElementById('transTokens').style.display = (type === 'usdt' || type === 'trx') ? 'block' : 'none';
         }
 
         function addTransaction() {
@@ -392,7 +457,7 @@
 
             transactions.push({
                 id: Date.now(),
-                playerId: playerId,
+                playerId: parseInt(playerId),
                 playerName: player.name,
                 type: type,
                 amount: amount,
@@ -411,16 +476,15 @@
         }
 
         function deleteTransaction(id) {
-            if (confirm('حذف این تراکنش؟')) {
+            if (confirm('حذف کنید؟')) {
                 transactions = transactions.filter(t => t.id !== id);
                 saveData();
                 displayToday();
                 displayPlayers();
-                showMessage('✅ تراکنش حذف شد!', 'success');
+                showMessage('✅ حذف شد!', 'success');
             }
         }
 
-        // ========== TODAY ==========
         function getTodayDate() {
             return new Date().toLocaleDateString('fa-IR');
         }
@@ -433,7 +497,7 @@
             const tbody = document.getElementById('todayTransactions');
             
             if (todayTrans.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">تراکنشی برای امروز ثبت نشده</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">تراکنشی برای امروز نیست</td></tr>';
                 return;
             }
 
@@ -451,7 +515,66 @@
             `).join('');
         }
 
-        // ========== REPORTS ==========
+        function showPlayerHistory(playerId, playerName, verified) {
+            currentHistoryPlayer = playerId;
+            document.getElementById('historyPlayerName').textContent = playerName;
+            
+            const toggle = document.getElementById('verificationToggle');
+            const text = document.getElementById('verificationText');
+            if (verified) {
+                toggle.classList.add('active');
+                text.textContent = 'احراز شده';
+            } else {
+                toggle.classList.remove('active');
+                text.textContent = 'احراز نشده';
+            }
+
+            const history = transactions.filter(t => t.playerId == playerId).sort((a, b) => b.id - a.id);
+            const tbody = document.getElementById('historyTransactions');
+            
+            if (history.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">تراکنشی برای این بازیکن نیست</td></tr>';
+            } else {
+                tbody.innerHTML = history.map((t, i) => `
+                    <tr>
+                        <td>${i+1}</td>
+                        <td>${t.type}</td>
+                        <td>${t.amount.toLocaleString()}</td>
+                        <td>${t.tokens}</td>
+                        <td>${t.date}</td>
+                        <td>${t.time}</td>
+                        <td>${t.adminName}</td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('historyModal').classList.add('show');
+        }
+
+        function toggleVerification() {
+            const player = players.find(p => p.id == currentHistoryPlayer);
+            if (player) {
+                player.verified = !player.verified;
+                saveData();
+                
+                const toggle = document.getElementById('verificationToggle');
+                const text = document.getElementById('verificationText');
+                if (player.verified) {
+                    toggle.classList.add('active');
+                    text.textContent = 'احراز شده';
+                } else {
+                    toggle.classList.remove('active');
+                    text.textContent = 'احراز نشده';
+                }
+                displayPlayers();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('historyModal').classList.remove('show');
+            currentHistoryPlayer = null;
+        }
+
         function getWeekRange() {
             const today = new Date();
             const day = today.getDay();
@@ -479,7 +602,7 @@
 
         function createExcel(filtered, title, fileName) {
             if (filtered.length === 0) {
-                showMessage('تراکنشی برای این دوره یافت نشد!', 'error');
+                showMessage('تراکنشی یافت نشد!', 'error');
                 return;
             }
 
@@ -496,7 +619,6 @@
             data.push(['']);
             data.push(['کل تراکنش‌ها:', filtered.length]);
             data.push(['کل مبلغ:', filtered.reduce((s, t) => s + t.amount, 0)]);
-            data.push(['کل ژتون:', filtered.reduce((s, t) => s + t.tokens, 0)]);
 
             const ws = XLSX.utils.aoa_to_sheet(data);
             ws['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 10 }, { wch: 8 }, { wch: 10 }];
@@ -504,28 +626,27 @@
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'گزارش');
             XLSX.writeFile(wb, fileName);
-            showMessage('✅ ' + title + ' دانلود شد!', 'success');
+            showMessage('✅ دانلود شد!', 'success');
         }
 
         function downloadDailyReport() {
             const today = getTodayDate();
             const filtered = filterTransactions(today, today);
-            createExcel(filtered, 'گزارش روزانه', `report_daily_${today.replace(/\//g, '-')}.xlsx`);
+            createExcel(filtered, 'گزارش روزانه', `report_${today.replace(/\//g, '-')}.xlsx`);
         }
 
         function downloadWeeklyReport() {
             const { start, end } = getWeekRange();
             const filtered = filterTransactions(start, end);
-            createExcel(filtered, 'گزارش هفتگی', `report_weekly_${start.replace(/\//g, '-')}.xlsx`);
+            createExcel(filtered, 'گزارش هفتگی', `report_week_${start.replace(/\//g, '-')}.xlsx`);
         }
 
         function downloadMonthlyReport() {
             const { start, end } = getMonthRange();
             const filtered = filterTransactions(start, end);
-            createExcel(filtered, 'گزارش ماهانه', `report_monthly_${start.replace(/\//g, '-')}.xlsx`);
+            createExcel(filtered, 'گزارش ماهانه', `report_month_${start.replace(/\//g, '-')}.xlsx`);
         }
 
-        // ========== UI ==========
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -540,7 +661,6 @@
             setTimeout(() => el.classList.remove('show'), 3000);
         }
 
-        // ========== INIT ==========
         loadData();
         document.getElementById('transDate').valueAsDate = new Date();
         updatePlayerSelect();
