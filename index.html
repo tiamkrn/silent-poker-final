@@ -3,157 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silent Poker - سیستم کامل</title>
+    <title>Silent Poker - سیستم حسابداری</title>
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <style>
         :root {
-            --primary: #FFD700;
-            --dark-bg: #0a0a0a;
-            --card-bg: #1a1a1a;
+            --primary: #c0c0c0;
+            --primary-dark: #a8a8a8;
+            --accent: #e8e8e8;
+            --dark-bg: #1a1a1a;
+            --card-bg: #252525;
             --text-primary: #ffffff;
-            --text-secondary: #a0aec0;
-            --border: #2d3548;
+            --text-secondary: #b0b0b0;
+            --border: #404040;
+            --success: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: var(--dark-bg); 
-            color: var(--text-primary); 
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); color: var(--text-primary); min-height: 100vh; }
 
-        .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-        .login-box { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid var(--border); width: 100%; max-width: 400px; }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 10px; }
+        /* LOGIN */
+        .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .login-box { background: var(--card-bg); padding: 50px; border-radius: 15px; border: 2px solid var(--primary); width: 100%; max-width: 450px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 10px; font-size: 36px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary); }
         input, select { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: inherit; margin-bottom: 15px; }
-        input:focus, select:focus { outline: none; border-color: var(--primary); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(192,192,192,0.3); }
 
-        .admin-btn { padding: 12px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-weight: 600; margin-bottom: 10px; width: 100%; }
-        .admin-btn.active { background: var(--primary); color: #000; }
+        .admin-btn { padding: 12px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-weight: 600; margin-bottom: 10px; width: 100%; transition: all 0.3s; }
+        .admin-btn:hover { border-color: var(--primary); }
+        .admin-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
 
-        .btn-login { width: 100%; padding: 14px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-login:hover { opacity: 0.9; }
+        .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 16px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(192,192,192,0.2); }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(192,192,192,0.3); }
 
+        /* DASHBOARD */
         .dashboard { display: none; min-height: 100vh; }
         .dashboard.active { display: block; }
 
-        .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar h2 { color: var(--primary); }
-        .btn-logout { padding: 8px 15px; background: #ff6b6b; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .navbar { background: linear-gradient(135deg, var(--card-bg) 0%, #2a2a2a 100%); border-bottom: 2px solid var(--primary); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .navbar h2 { color: var(--primary); font-size: 28px; }
+        .admin-info { display: flex; align-items: center; gap: 20px; }
+        .btn-logout { padding: 10px 20px; background: linear-gradient(135deg, #ff6b6b, #ff5252); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-logout:hover { transform: translateY(-2px); }
 
-        .content { max-width: 1200px; margin: 20px auto; padding: 20px; }
+        .content { max-width: 1400px; margin: 20px auto; padding: 20px; }
 
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-        .tab-btn { padding: 12px 20px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border); flex-wrap: wrap; }
+        .tab-btn { padding: 12px 20px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.3s; }
+        .tab-btn:hover { color: var(--primary); }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .card h3 { color: var(--primary); margin-bottom: 15px; font-size: 18px; }
 
-        /* PLAYERS LIST */
-        .players-list { display: flex; flex-direction: column; gap: 10px; }
-        .player-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .player-item:hover { border-color: var(--primary); background: rgba(255, 215, 0, 0.05); }
+        /* PLAYERS */
+        .player-item { background: var(--card-bg); border: 2px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .player-item:hover { border-color: var(--primary); background: rgba(192,192,192,0.05); transform: translateX(-5px); }
         
         .player-info { flex: 1; }
-        .player-name { font-weight: 600; font-size: 16px; color: var(--primary); margin-bottom: 5px; }
-        .player-stats { font-size: 12px; color: var(--text-secondary); }
+        .player-name { font-weight: 700; font-size: 16px; color: var(--primary); margin-bottom: 8px; }
+        .player-stats { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
         
-        .verification-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            background: rgba(76, 175, 80, 0.2);
-            color: #4caf50;
-        }
-        .verification-badge.unverified {
-            background: rgba(244, 67, 54, 0.2);
-            color: #f44336;
-        }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-right: 8px; }
+        .badge-verified { background: rgba(76,175,80,0.2); color: #4caf50; }
+        .badge-unverified { background: rgba(244,67,54,0.2); color: #f44336; }
 
-        .btn-small { padding: 8px 12px; background: var(--primary); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 10px; font-size: 12px; }
-        .btn-add { padding: 10px 20px; background: var(--primary); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-small { padding: 8px 12px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 10px; font-size: 12px; transition: all 0.3s; }
+        .btn-small:hover { transform: scale(1.05); }
+        
+        .btn-add { padding: 10px 20px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-add:hover { transform: translateY(-2px); }
 
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
 
         .trans-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .trans-table th, .trans-table td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .trans-table th { background: var(--card-bg); color: var(--primary); font-weight: 600; }
+        .trans-table th { background: rgba(192,192,192,0.1); color: var(--primary); font-weight: 600; }
+        .trans-table tr:hover { background: rgba(192,192,192,0.05); }
 
         .button-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
-        .btn-report { padding: 20px 10px; background: linear-gradient(135deg, var(--primary), #ffd700); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; }
-        .btn-report:hover { transform: translateY(-3px); }
+        .btn-report { padding: 20px 10px; background: linear-gradient(135deg, var(--primary), var(--accent)); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(192,192,192,0.2); }
+        .btn-report:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(192,192,192,0.3); }
 
-        .message { padding: 15px; margin-top: 15px; border-radius: 8px; display: none; }
-        .message.success { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
-        .message.error { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+        .message { padding: 15px; margin-top: 15px; border-radius: 8px; display: none; font-weight: 600; }
+        .message.success { background: rgba(76,175,80,0.2); color: #4caf50; }
+        .message.error { background: rgba(244,67,54,0.2); color: #f44336; }
         .message.show { display: block; }
 
         /* MODAL */
-        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         .modal.show { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card-bg); border-radius: 15px; padding: 30px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal-content { background: var(--card-bg); border-radius: 15px; padding: 30px; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.7); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         .modal-header h2 { color: var(--primary); }
-        .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; }
+        .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; transition: all 0.3s; }
+        .btn-close:hover { color: var(--primary); }
 
         .empty-state { text-align: center; color: var(--text-secondary); padding: 40px 20px; }
 
-        .verification-toggle {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: var(--dark-bg);
-            border-radius: 6px;
-            cursor: pointer;
-            user-select: none;
-        }
+        .admin-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: rgba(192,192,192,0.2); color: var(--primary); }
 
-        .toggle-switch {
-            width: 40px;
-            height: 24px;
-            background: #555;
-            border-radius: 12px;
-            position: relative;
-            transition: all 0.3s;
-        }
+        .cashout-progress { background: var(--dark-bg); border-radius: 10px; padding: 15px; margin: 15px 0; }
+        .progress-bar { background: var(--border); height: 8px; border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { background: linear-gradient(90deg, var(--primary), var(--accent)); height: 100%; }
+        .progress-text { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
 
-        .toggle-switch.active {
-            background: var(--primary);
-        }
-
-        .toggle-switch::before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 10px;
-            top: 2px;
-            left: 2px;
-            transition: all 0.3s;
-        }
-
-        .toggle-switch.active::before {
-            left: 18px;
-        }
+        .verification-toggle { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--dark-bg); border-radius: 6px; cursor: pointer; user-select: none; }
+        .toggle-switch { width: 40px; height: 24px; background: var(--border); border-radius: 12px; position: relative; transition: all 0.3s; }
+        .toggle-switch.active { background: var(--primary); }
+        .toggle-switch::before { content: ''; position: absolute; width: 20px; height: 20px; background: white; border-radius: 10px; top: 2px; left: 2px; transition: all 0.3s; }
+        .toggle-switch.active::before { left: 18px; }
     </style>
 </head>
 <body>
@@ -161,15 +127,15 @@
     <div id="loginPage" class="login-container">
         <div class="login-box">
             <h1>🎰 Silent Poker</h1>
-            <p class="subtitle">سیستم حساب‌داری و گزارش</p>
+            <p class="subtitle">سیستم حسابداری و گزارش</p>
             <form onsubmit="handleLogin(event)">
                 <label>انتخاب ادمین:</label>
-                <button type="button" class="admin-btn" onclick="selectAdmin('shahab')">Shahab (1234)</button>
-                <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">Tiyam (4552)</button>
-                <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">Tabassam (9825)</button>
-                <button type="button" class="admin-btn" onclick="selectAdmin('arash')">Arash (4321)</button>
+                <button type="button" class="admin-btn" onclick="selectAdmin('shahab')">Shahab</button>
+                <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">Tiyam</button>
+                <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">Tabassam</button>
+                <button type="button" class="admin-btn" onclick="selectAdmin('arash')">Arash</button>
                 <label>رمز عبور:</label>
-                <input type="password" id="password" required>
+                <input type="password" id="password" required autofocus>
                 <button type="submit" class="btn-login">ورود</button>
             </form>
         </div>
@@ -179,8 +145,8 @@
     <div id="dashboard" class="dashboard">
         <div class="navbar">
             <h2>🎰 Silent Poker</h2>
-            <div>
-                <span id="adminName" style="color: var(--primary); font-weight: 600; margin-right: 20px;"></span>
+            <div class="admin-info">
+                <span id="adminName" style="color: var(--primary); font-weight: 600;"></span>
                 <button class="btn-logout" onclick="logout()">خروج</button>
             </div>
         </div>
@@ -189,6 +155,7 @@
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('players')">👥 بازیکنان</button>
                 <button class="tab-btn" onclick="switchTab('transaction')">💳 تراکنش</button>
+                <button class="tab-btn" onclick="switchTab('cashout')">💰 کشاوت</button>
                 <button class="tab-btn" onclick="switchTab('today')">📅 امروز</button>
                 <button class="tab-btn" onclick="switchTab('reports')">📊 گزارش‌ها</button>
             </div>
@@ -197,13 +164,16 @@
             <div id="players" class="tab-content active">
                 <div class="card">
                     <h3>➕ افزودن بازیکن جدید</h3>
-                    <input type="text" id="newPlayerName" placeholder="نام بازیکن" style="width: 100%; margin-bottom: 10px;">
+                    <div class="form-row">
+                        <input type="text" id="newPlayerName" placeholder="نام بازیکن (انگلیسی)">
+                    </div>
                     <button class="btn-add" onclick="addPlayer()">افزودن</button>
+                    <div style="margin-top: 15px; font-size: 12px; color: var(--text-secondary);">💡 می‌تونید یک بازیکن را چند بار اضافه کنید (نام‌های مختلف)</div>
                 </div>
 
                 <div id="message" class="message"></div>
 
-                <div class="players-list" id="playersList"></div>
+                <div id="playersList"></div>
             </div>
 
             <!-- TRANSACTION TAB -->
@@ -218,16 +188,21 @@
                         <div>
                             <label>نوع تراکنش:</label>
                             <select id="transType" onchange="updateTransactionForm()">
-                                <option value="usdt">تتر (USDT)</option>
+                                <option value="usdt-bep20">تتر (USDT BEP20)</option>
+                                <option value="usdt-trc20">تتر (USDT TRC20)</option>
                                 <option value="trx">ترون (TRX)</option>
                                 <option value="rial">ریالی</option>
                                 <option value="debt">بدهی</option>
+                                <option value="payment">پرداخت بدهی</option>
+                                <option value="card">کارت به کارت</option>
+                                <option value="godratzi">گودرزی</option>
+                                <option value="teacher">درگاه معلم مجازی</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-row">
                         <input type="number" id="transAmount" placeholder="مبلغ" step="0.01" required>
-                        <input type="number" id="transTokens" placeholder="ژتون" value="0">
+                        <input type="number" id="transBonus" placeholder="بونوس (خودکار 10%)" readonly>
                     </div>
                     <div class="form-row">
                         <input type="date" id="transDate" required>
@@ -237,9 +212,34 @@
                 </div>
             </div>
 
+            <!-- CASHOUT TAB -->
+            <div id="cashout" class="tab-content">
+                <div class="card">
+                    <h3>💰 درخواست کشاوت</h3>
+                    <div class="form-row">
+                        <select id="cashoutPlayer" required>
+                            <option>انتخاب بازیکن</option>
+                        </select>
+                        <select id="cashoutType" onchange="updateCashoutForm()">
+                            <option value="rial">ریالی</option>
+                            <option value="usdt">تتر (USDT)</option>
+                            <option value="trx">ترون (TRX)</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="cashoutAmount" placeholder="مبلغ کشاوت" required>
+                        <input type="text" id="cashoutAddress" placeholder="شماره کارت / آدرس والت" required>
+                    </div>
+                    <button class="btn-add" onclick="requestCashout()">درخواست</button>
+                </div>
+
+                <h3 style="margin-top: 30px;">درخواست‌های جاری</h3>
+                <div id="cashoutList"></div>
+            </div>
+
             <!-- TODAY TAB -->
             <div id="today" class="tab-content">
-                <h3 style="margin-bottom: 20px;" id="todayTitle"></h3>
+                <h3 id="todayTitle" style="margin-bottom: 20px;"></h3>
                 <table class="trans-table">
                     <thead>
                         <tr>
@@ -247,7 +247,8 @@
                             <th>بازیکن</th>
                             <th>نوع</th>
                             <th>مبلغ</th>
-                            <th>ژتون</th>
+                            <th>بونوس</th>
+                            <th>تاریخ</th>
                             <th>ساعت</th>
                             <th>ادمین</th>
                             <th>عملیات</th>
@@ -290,6 +291,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div style="background: var(--dark-bg); padding: 15px; border-radius: 8px;">
+                        <div style="font-size: 12px; color: var(--text-secondary);">کل شارژ</div>
+                        <div style="font-size: 20px; color: var(--primary); font-weight: 700;" id="totalChargeHis">0</div>
+                    </div>
+                    <div style="background: var(--dark-bg); padding: 15px; border-radius: 8px;">
+                        <div style="font-size: 12px; color: var(--text-secondary);">کل بدهی</div>
+                        <div style="font-size: 20px; color: #f44336; font-weight: 700;" id="totalDebtHis">0</div>
+                    </div>
+                </div>
             </div>
 
             <h3 style="margin-bottom: 15px; color: var(--primary);">📋 سابقه کامل</h3>
@@ -299,14 +311,34 @@
                         <th>#</th>
                         <th>نوع</th>
                         <th>مبلغ</th>
-                        <th>ژتون</th>
+                        <th>بونوس</th>
                         <th>تاریخ</th>
                         <th>ساعت</th>
                         <th>ادمین</th>
+                        <th>عملیات</th>
                     </tr>
                 </thead>
                 <tbody id="historyTransactions"></tbody>
             </table>
+
+            <div style="margin-top: 20px;">
+                <h3 style="margin-bottom: 15px; color: var(--primary);">➕ شارژ جدید</h3>
+                <div class="form-row">
+                    <select id="quickTransType" onchange="updateQuickForm()">
+                        <option value="usdt-bep20">تتر (USDT BEP20)</option>
+                        <option value="usdt-trc20">تتر (USDT TRC20)</option>
+                        <option value="trx">ترون (TRX)</option>
+                        <option value="rial">ریالی</option>
+                        <option value="debt">بدهی</option>
+                    </select>
+                    <input type="number" id="quickAmount" placeholder="مبلغ" step="0.01" required>
+                </div>
+                <div class="form-row">
+                    <input type="date" id="quickDate" required>
+                    <input type="time" id="quickTime" required>
+                </div>
+                <button class="btn-add" onclick="addQuickTransaction()">✅ ثبت شارژ</button>
+            </div>
         </div>
     </div>
 
@@ -322,18 +354,22 @@
         let selectedAdmin = null;
         let players = [];
         let transactions = [];
+        let cashoutRequests = [];
         let currentHistoryPlayer = null;
 
         function loadData() {
             const sp = localStorage.getItem('pokerPlayers');
             const st = localStorage.getItem('pokerTransactions');
+            const sc = localStorage.getItem('pokerCashouts');
             if (sp) players = JSON.parse(sp);
             if (st) transactions = JSON.parse(st);
+            if (sc) cashoutRequests = JSON.parse(sc);
         }
 
         function saveData() {
             localStorage.setItem('pokerPlayers', JSON.stringify(players));
             localStorage.setItem('pokerTransactions', JSON.stringify(transactions));
+            localStorage.setItem('pokerCashouts', JSON.stringify(cashoutRequests));
         }
 
         function selectAdmin(adminId) {
@@ -346,7 +382,7 @@
             event.preventDefault();
             const password = document.getElementById('password').value;
             if (!selectedAdmin || admins[selectedAdmin].password !== password) {
-                alert('خطا!');
+                alert('❌ خطا!');
                 return;
             }
             currentAdmin = selectedAdmin;
@@ -356,6 +392,9 @@
             updatePlayerSelect();
             displayPlayers();
             displayToday();
+            displayCashoutList();
+            document.getElementById('transDate').valueAsDate = new Date();
+            document.getElementById('quickDate').valueAsDate = new Date();
         }
 
         function logout() {
@@ -371,10 +410,6 @@
                 showMessage('نام بازیکن را وارد کنید!', 'error');
                 return;
             }
-            if (players.some(p => p.name === name)) {
-                showMessage('این بازیکن قبلاً اضافه شده است!', 'error');
-                return;
-            }
             players.push({ id: Date.now(), name: name, verified: false });
             saveData();
             document.getElementById('newPlayerName').value = '';
@@ -386,7 +421,6 @@
         function deletePlayer(id) {
             if (confirm('حذف کنید؟')) {
                 players = players.filter(p => p.id !== id);
-                transactions = transactions.filter(t => t.playerId !== id);
                 saveData();
                 displayPlayers();
                 updatePlayerSelect();
@@ -396,7 +430,7 @@
 
         function displayPlayers() {
             const list = document.getElementById('playersList');
-            const sorted = [...players].sort((a, b) => a.name.localeCompare(b.name, 'fa'));
+            const sorted = [...players].sort((a, b) => a.name.localeCompare(b.name, 'en'));
             
             if (sorted.length === 0) {
                 list.innerHTML = '<div class="empty-state">بازیکنی موجود نیست</div>';
@@ -404,17 +438,21 @@
             }
 
             list.innerHTML = sorted.map(p => {
-                const count = transactions.filter(t => t.playerId == p.id).length;
-                const total = transactions.filter(t => t.playerId == p.id).reduce((s, t) => s + t.amount, 0);
+                const playerTrans = transactions.filter(t => t.playerId == p.id);
+                const charges = playerTrans.filter(t => !['debt', 'payment'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
+                const debts = playerTrans.filter(t => t.type === 'debt').reduce((s, t) => s + t.amount, 0) - playerTrans.filter(t => t.type === 'payment').reduce((s, t) => s + t.amount, 0);
+                
                 return `
                     <div class="player-item" onclick="showPlayerHistory(${p.id}, '${p.name}', ${p.verified})">
                         <div class="player-info">
                             <div class="player-name">${p.name}</div>
-                            <div class="player-stats">تراکنش‌ها: ${count} | کل: ${total.toLocaleString()}</div>
+                            <div class="player-stats">
+                                شارژ: <strong>${charges.toLocaleString()}</strong> | بدهی: <strong>${debts.toLocaleString()}</strong>
+                            </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <span class="verification-badge ${p.verified ? '' : 'unverified'}">
-                                ${p.verified ? '✅ احراز شده' : '❌ احراز نشده'}
+                            <span class="badge ${p.verified ? 'badge-verified' : 'badge-unverified'}">
+                                ${p.verified ? '✅ احراز' : '❌ احراز نشده'}
                             </span>
                             <button class="btn-small" onclick="event.stopPropagation(); deletePlayer(${p.id})">🗑️</button>
                         </div>
@@ -425,25 +463,29 @@
 
         function updatePlayerSelect() {
             const select = document.getElementById('transPlayer');
+            const selectCashout = document.getElementById('cashoutPlayer');
             if (players.length === 0) {
                 select.innerHTML = '<option>بازیکن اضافه کنید</option>';
-                select.disabled = true;
+                selectCashout.innerHTML = '<option>بازیکن اضافه کنید</option>';
                 return;
             }
-            select.disabled = false;
-            select.innerHTML = players.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            const sorted = [...players].sort((a, b) => a.name.localeCompare(b.name, 'en'));
+            const html = sorted.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            select.innerHTML = html;
+            selectCashout.innerHTML = '<option>انتخاب بازیکن</option>' + html;
         }
 
         function updateTransactionForm() {
             const type = document.getElementById('transType').value;
-            document.getElementById('transTokens').style.display = (type === 'usdt' || type === 'trx') ? 'block' : 'none';
+            const amount = parseFloat(document.getElementById('transAmount').value) || 0;
+            const bonus = amount * 0.1;
+            document.getElementById('transBonus').value = bonus.toLocaleString();
         }
 
         function addTransaction() {
             const playerId = document.getElementById('transPlayer').value;
             const type = document.getElementById('transType').value;
             const amount = parseFloat(document.getElementById('transAmount').value);
-            const tokens = parseInt(document.getElementById('transTokens').value) || 0;
             const date = document.getElementById('transDate').value;
             const time = document.getElementById('transTime').value;
 
@@ -454,6 +496,7 @@
 
             const player = players.find(p => p.id == playerId);
             const farsiDate = new Date(date + 'T00:00:00').toLocaleDateString('fa-IR');
+            const bonus = ['debt', 'payment'].includes(type) ? 0 : amount * 0.1;
 
             transactions.push({
                 id: Date.now(),
@@ -461,7 +504,7 @@
                 playerName: player.name,
                 type: type,
                 amount: amount,
-                tokens: tokens,
+                bonus: bonus,
                 date: farsiDate,
                 time: time,
                 adminName: admins[currentAdmin].name
@@ -470,9 +513,152 @@
             saveData();
             showMessage('✅ تراکنش ثبت شد!', 'success');
             document.getElementById('transAmount').value = '';
-            document.getElementById('transTokens').value = '0';
+            document.getElementById('transBonus').value = '';
             displayToday();
             displayPlayers();
+        }
+
+        function updateCashoutForm() {
+            const type = document.getElementById('cashoutType').value;
+            const addressInput = document.getElementById('cashoutAddress');
+            if (type === 'rial') {
+                addressInput.placeholder = 'شماره کارت';
+            } else {
+                addressInput.placeholder = 'آدرس والت (' + type.toUpperCase() + ')';
+            }
+        }
+
+        function requestCashout() {
+            const playerId = document.getElementById('cashoutPlayer').value;
+            const type = document.getElementById('cashoutType').value;
+            const amount = parseFloat(document.getElementById('cashoutAmount').value);
+            const address = document.getElementById('cashoutAddress').value.trim();
+
+            if (!playerId || !amount || !address) {
+                showMessage('تمام فیلدها را پر کنید!', 'error');
+                return;
+            }
+
+            const player = players.find(p => p.id == playerId);
+            cashoutRequests.push({
+                id: Date.now(),
+                playerId: parseInt(playerId),
+                playerName: player.name,
+                type: type,
+                amount: amount,
+                address: address,
+                paid: 0,
+                status: 'pending',
+                payments: []
+            });
+
+            saveData();
+            showMessage('✅ درخواست ثبت شد!', 'success');
+            document.getElementById('cashoutPlayer').value = '';
+            document.getElementById('cashoutAmount').value = '';
+            document.getElementById('cashoutAddress').value = '';
+            displayCashoutList();
+        }
+
+        function displayCashoutList() {
+            const list = document.getElementById('cashoutList');
+            const pending = cashoutRequests.filter(c => c.status === 'pending');
+            
+            if (pending.length === 0) {
+                list.innerHTML = '<div class="empty-state">درخواستی موجود نیست</div>';
+                return;
+            }
+
+            list.innerHTML = pending.map(c => {
+                const remaining = c.amount - c.paid;
+                const percent = (c.paid / c.amount) * 100;
+                
+                return `
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                            <div>
+                                <h4 style="color: var(--primary); margin-bottom: 5px;">${c.playerName}</h4>
+                                <p style="font-size: 12px; color: var(--text-secondary);">${c.type.toUpperCase()} | ${c.address}</p>
+                            </div>
+                            <button class="btn-small" onclick="finishCashout(${c.id})">✅ تمام</button>
+                        </div>
+                        
+                        <div class="cashout-progress">
+                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 10px;">کل: ${c.amount.toLocaleString()} تومان</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percent}%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>واریز شده: ${c.paid.toLocaleString()}</span>
+                                <span>باقی: ${remaining.toLocaleString()} (${percent.toFixed(0)}%)</span>
+                            </div>
+                        </div>
+
+                        ${c.type === 'rial' ? `
+                            <div style="margin-top: 15px;">
+                                <div class="form-row">
+                                    <input type="number" id="payAmount${c.id}" placeholder="مبلغ واریز" step="0.01">
+                                </div>
+                                <button class="btn-add" onclick="addPayment(${c.id})">💳 ثبت واریز</button>
+                            </div>
+                        ` : ''}
+
+                        ${c.payments.length > 0 ? `
+                            <div style="margin-top: 15px;">
+                                <h5 style="color: var(--primary); margin-bottom: 10px;">واریزی‌ها:</h5>
+                                <table class="trans-table" style="font-size: 12px;">
+                                    <tbody>
+                                        ${c.payments.map((p, i) => `
+                                            <tr>
+                                                <td>${i+1}</td>
+                                                <td>${p.amount.toLocaleString()}</td>
+                                                <td>${p.date}</td>
+                                                <td>${p.adminName}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addPayment(cashoutId) {
+            const amount = parseFloat(document.getElementById('payAmount' + cashoutId).value);
+            if (!amount) {
+                showMessage('مبلغ را وارد کنید!', 'error');
+                return;
+            }
+
+            const cashout = cashoutRequests.find(c => c.id === cashoutId);
+            if (!cashout) return;
+
+            cashout.paid += amount;
+            cashout.payments.push({
+                amount: amount,
+                date: new Date().toLocaleDateString('fa-IR'),
+                adminName: admins[currentAdmin].name
+            });
+
+            if (cashout.paid >= cashout.amount) {
+                cashout.status = 'completed';
+            }
+
+            saveData();
+            displayCashoutList();
+            showMessage('✅ واریز ثبت شد!', 'success');
+        }
+
+        function finishCashout(cashoutId) {
+            const cashout = cashoutRequests.find(c => c.id === cashoutId);
+            if (cashout) {
+                cashout.status = 'completed';
+                saveData();
+                displayCashoutList();
+                showMessage('✅ کشاوت تمام شد!', 'success');
+            }
         }
 
         function deleteTransaction(id) {
@@ -497,7 +683,7 @@
             const tbody = document.getElementById('todayTransactions');
             
             if (todayTrans.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">تراکنشی برای امروز نیست</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">تراکنشی برای امروز نیست</td></tr>';
                 return;
             }
 
@@ -507,9 +693,10 @@
                     <td>${t.playerName}</td>
                     <td>${t.type}</td>
                     <td>${t.amount.toLocaleString()}</td>
-                    <td>${t.tokens}</td>
+                    <td>${t.bonus.toLocaleString()}</td>
+                    <td>${t.date}</td>
                     <td>${t.time}</td>
-                    <td>${t.adminName}</td>
+                    <td><span class="admin-badge">${t.adminName}</span></td>
                     <td><button class="btn-small" onclick="deleteTransaction(${t.id})">🗑️</button></td>
                 </tr>
             `).join('');
@@ -530,20 +717,27 @@
             }
 
             const history = transactions.filter(t => t.playerId == playerId).sort((a, b) => b.id - a.id);
+            const totalCharge = history.filter(t => !['debt', 'payment'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
+            const totalDebt = history.filter(t => t.type === 'debt').reduce((s, t) => s + t.amount, 0) - history.filter(t => t.type === 'payment').reduce((s, t) => s + t.amount, 0);
+            
+            document.getElementById('totalChargeHis').textContent = totalCharge.toLocaleString();
+            document.getElementById('totalDebtHis').textContent = totalDebt.toLocaleString();
+
             const tbody = document.getElementById('historyTransactions');
             
             if (history.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">تراکنشی برای این بازیکن نیست</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">تراکنشی برای این بازیکن نیست</td></tr>';
             } else {
                 tbody.innerHTML = history.map((t, i) => `
                     <tr>
                         <td>${i+1}</td>
                         <td>${t.type}</td>
                         <td>${t.amount.toLocaleString()}</td>
-                        <td>${t.tokens}</td>
+                        <td>${t.bonus.toLocaleString()}</td>
                         <td>${t.date}</td>
                         <td>${t.time}</td>
-                        <td>${t.adminName}</td>
+                        <td><span class="admin-badge">${t.adminName}</span></td>
+                        <td><button class="btn-small" onclick="deleteTransaction(${t.id})">🗑️</button></td>
                     </tr>
                 `).join('');
             }
@@ -568,6 +762,40 @@
                 }
                 displayPlayers();
             }
+        }
+
+        function addQuickTransaction() {
+            const type = document.getElementById('quickTransType').value;
+            const amount = parseFloat(document.getElementById('quickAmount').value);
+            const date = document.getElementById('quickDate').value;
+            const time = document.getElementById('quickTime').value;
+
+            if (!amount || !date || !time) {
+                showMessage('تمام فیلدها را پر کنید!', 'error');
+                return;
+            }
+
+            const farsiDate = new Date(date + 'T00:00:00').toLocaleDateString('fa-IR');
+            const bonus = type === 'debt' ? 0 : amount * 0.1;
+
+            transactions.push({
+                id: Date.now(),
+                playerId: currentHistoryPlayer,
+                playerName: players.find(p => p.id == currentHistoryPlayer)?.name,
+                type: type,
+                amount: amount,
+                bonus: bonus,
+                date: farsiDate,
+                time: time,
+                adminName: admins[currentAdmin].name
+            });
+
+            saveData();
+            showMessage('✅ شارژ اضافه شد!', 'success');
+            document.getElementById('quickAmount').value = '';
+            showPlayerHistory(currentHistoryPlayer, players.find(p => p.id == currentHistoryPlayer)?.name, players.find(p => p.id == currentHistoryPlayer)?.verified);
+            displayPlayers();
+            displayToday();
         }
 
         function closeModal() {
@@ -609,19 +837,20 @@
             const data = [
                 [admins[currentAdmin].name + ' - ' + title],
                 [''],
-                ['ردیف', 'بازیکن', 'نوع', 'مبلغ', 'ژتون', 'تاریخ', 'ساعت', 'ادمین']
+                ['ردیف', 'بازیکن', 'نوع', 'مبلغ', 'بونوس', 'تاریخ', 'ساعت', 'ادمین']
             ];
 
             filtered.forEach((t, i) => {
-                data.push([i+1, t.playerName, t.type, t.amount, t.tokens, t.date, t.time, t.adminName]);
+                data.push([i+1, t.playerName, t.type, t.amount, t.bonus, t.date, t.time, t.adminName]);
             });
 
             data.push(['']);
             data.push(['کل تراکنش‌ها:', filtered.length]);
             data.push(['کل مبلغ:', filtered.reduce((s, t) => s + t.amount, 0)]);
+            data.push(['کل بونوس:', filtered.reduce((s, t) => s + t.bonus, 0)]);
 
             const ws = XLSX.utils.aoa_to_sheet(data);
-            ws['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 10 }, { wch: 8 }, { wch: 10 }];
+            ws['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 8 }, { wch: 12 }];
             
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'گزارش');
@@ -661,10 +890,14 @@
             setTimeout(() => el.classList.remove('show'), 3000);
         }
 
+        updateQuickForm = updateTransactionForm;
+
         loadData();
-        document.getElementById('transDate').valueAsDate = new Date();
+        document.getElementById('transTime').value = new Date().toTimeString().slice(0, 5);
+        document.getElementById('quickTime').value = new Date().toTimeString().slice(0, 5);
         updatePlayerSelect();
         updateTransactionForm();
+        updateCashoutForm();
     </script>
 </body>
 </html>
