@@ -3,300 +3,455 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Silent Poker - گزارش‌های روزانه</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+    <title>Silent Poker - سیستم کامل</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <style>
         :root {
-            --primary: #808080;
-            --secondary: #606060;
+            --primary: #FFD700;
             --dark-bg: #0a0a0a;
             --card-bg: #1a1a1a;
             --text-primary: #ffffff;
             --text-secondary: #a0aec0;
-            --border-color: #2d3548;
-            --admin-color: #FFD700;
+            --border: #2d3548;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--dark-bg);
-            color: var(--text-primary);
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--dark-bg); 
+            color: var(--text-primary); 
             line-height: 1.6;
-            min-height: 100vh;
         }
 
-        .login-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-        }
-
-        .login-box {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        h1 { text-align: center; color: var(--admin-color); margin-bottom: 10px; }
+        /* LOGIN */
+        .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .login-box { background: var(--card-bg); padding: 40px; border-radius: 15px; border: 1px solid var(--border); width: 100%; max-width: 400px; }
+        h1 { text-align: center; color: var(--primary); margin-bottom: 10px; font-size: 32px; }
         .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; }
-
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, select { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 14px; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
 
-        input, select {
+        .admin-btn { 
+            padding: 12px; 
+            background: var(--card-bg); 
+            border: 2px solid var(--border); 
+            border-radius: 8px; 
+            color: var(--text-primary); 
+            cursor: pointer; 
+            font-weight: 600; 
+            margin-bottom: 10px;
             width: 100%;
-            padding: 12px;
-            background: var(--dark-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-        }
-
-        input:focus, select:focus { outline: none; border-color: var(--admin-color); }
-
-        .admin-btn {
-            padding: 12px;
-            background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            cursor: pointer;
-            font-weight: 600;
             transition: all 0.3s;
-            font-family: 'Poppins', sans-serif;
         }
+        .admin-btn:hover { background: var(--border); }
+        .admin-btn.active { background: var(--primary); color: #000; }
 
-        .admin-btn:hover, .admin-btn.active {
-            background: var(--admin-color);
-            color: var(--dark-bg);
-            border-color: var(--admin-color);
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            background: var(--admin-color);
-            color: var(--dark-bg);
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 16px;
+        .btn-login { 
+            width: 100%; 
+            padding: 14px; 
+            background: var(--primary); 
+            color: #000; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            cursor: pointer; 
             margin-top: 20px;
+            font-size: 16px;
             transition: all 0.3s;
         }
-
         .btn-login:hover { opacity: 0.9; }
 
-        .dashboard {
-            display: none;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-        }
-
+        /* DASHBOARD */
+        .dashboard { display: none; min-height: 100vh; }
         .dashboard.active { display: block; }
 
-        .navbar {
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar h2 { color: var(--admin-color); margin-bottom: 5px; }
-        #adminDisplayName { color: var(--text-secondary); font-size: 14px; }
-
-        .btn-logout {
-            padding: 10px 20px;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
+        .navbar { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .navbar h2 { color: var(--primary); font-size: 24px; }
+        .navbar > div { display: flex; align-items: center; gap: 20px; }
+        
+        .btn-logout { padding: 8px 15px; background: #ff6b6b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
         .btn-logout:hover { background: #ff5252; }
 
-        .dashboard-content { max-width: 1200px; margin: 40px auto; padding: 20px; }
-        .report-section h3 { color: var(--admin-color); margin-bottom: 20px; text-align: center; }
+        .content { max-width: 1200px; margin: 20px auto; padding: 20px; }
 
-        .button-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            justify-items: center;
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .tab-btn { padding: 12px 20px; background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 600; border-bottom: 3px solid transparent; transition: all 0.3s; }
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+
+        /* PLAYERS */
+        .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        .player-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 15px; }
+        .player-card h3 { color: var(--primary); margin-bottom: 10px; }
+        .player-card p { color: var(--text-secondary); font-size: 12px; margin-bottom: 5px; }
+
+        .btn-small { padding: 8px 12px; background: var(--primary); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 5px; font-size: 12px; transition: all 0.3s; }
+        .btn-small:hover { opacity: 0.8; }
+        
+        .btn-add { padding: 10px 20px; background: var(--primary); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-add:hover { opacity: 0.9; }
+
+        /* TRANSACTIONS */
+        .transaction-form { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
         }
 
-        .btn-report {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            padding: 30px;
-            background: linear-gradient(135deg, var(--admin-color), #ffd700);
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
-            min-width: 150px;
-        }
+        .trans-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .trans-table th, .trans-table td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .trans-table th { background: var(--card-bg); color: var(--primary); font-weight: 600; }
 
-        .btn-report:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3); }
-        .btn-report .icon { font-size: 32px; }
+        /* REPORTS */
+        .button-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
+        .btn-report { padding: 20px 10px; background: linear-gradient(135deg, var(--primary), #ffd700); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 13px; transition: all 0.3s; }
+        .btn-report:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3); }
 
-        .message {
-            text-align: center;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: none;
-        }
+        .message { padding: 15px; margin-top: 15px; border-radius: 8px; display: none; }
+        .message.success { background: rgba(76, 175, 80, 0.2); color: #4caf50; }
+        .message.error { background: rgba(244, 67, 54, 0.2); color: #f44336; }
+        .message.show { display: block; }
 
-        .message.success { background: rgba(76, 175, 80, 0.2); color: #4caf50; display: block; }
-        .message.error { background: rgba(244, 67, 54, 0.2); color: #f44336; display: block; }
+        .empty-state { text-align: center; color: var(--text-secondary); padding: 40px 20px; }
     </style>
 </head>
 <body>
-    <!-- صفحه ورود -->
+    <!-- LOGIN -->
     <div id="loginPage" class="login-container">
         <div class="login-box">
             <h1>🎰 Silent Poker</h1>
-            <p class="subtitle">سیستم گزارش روزانه</p>
-            
+            <p class="subtitle">سیستم حساب‌داری و گزارش</p>
             <form onsubmit="handleLogin(event)">
                 <div style="margin-bottom: 20px;">
                     <label>انتخاب ادمین:</label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                        <button type="button" class="admin-btn" onclick="selectAdmin('shahab')">Shahab</button>
-                        <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">Tiyam</button>
-                        <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">Tabassam</button>
-                        <button type="button" class="admin-btn" onclick="selectAdmin('arash')">Arash</button>
-                    </div>
+                    <button type="button" class="admin-btn" onclick="selectAdmin('shahab')">Shahab (1234)</button>
+                    <button type="button" class="admin-btn" onclick="selectAdmin('tiyam')">Tiyam (4552)</button>
+                    <button type="button" class="admin-btn" onclick="selectAdmin('tabassam')">Tabassam (9825)</button>
+                    <button type="button" class="admin-btn" onclick="selectAdmin('arash')">Arash (4321)</button>
                 </div>
-
                 <div class="form-group">
                     <label>رمز عبور:</label>
-                    <input type="password" id="password" class="form-input" placeholder="رمز عبور" required>
+                    <input type="password" id="password" required autofocus>
                 </div>
-
                 <button type="submit" class="btn-login">ورود</button>
             </form>
         </div>
     </div>
 
-    <!-- داشبورد -->
+    <!-- DASHBOARD -->
     <div id="dashboard" class="dashboard">
         <div class="navbar">
+            <h2>🎰 Silent Poker</h2>
             <div>
-                <h2>🎰 Silent Poker</h2>
-                <span id="adminDisplayName"></span>
+                <span id="adminName" style="color: var(--primary); font-weight: 600;"></span>
+                <button class="btn-logout" onclick="logout()">خروج</button>
             </div>
-            <button onclick="logout()" class="btn-logout">خروج</button>
         </div>
 
-        <div class="dashboard-content">
-            <div class="report-section">
-                <h3>📊 گزارش‌های دوره‌ای</h3>
-                <div class="button-group">
-                    <button class="btn-report" onclick="downloadDailyReport()">
-                        <span class="icon">📅</span>
-                        <span class="text">روزانه</span>
-                    </button>
-                    <button class="btn-report" onclick="downloadWeeklyReport()">
-                        <span class="icon">📊</span>
-                        <span class="text">هفتگی</span>
-                    </button>
-                    <button class="btn-report" onclick="downloadMonthlyReport()">
-                        <span class="icon">📈</span>
-                        <span class="text">ماهانه</span>
-                    </button>
+        <div class="content">
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('players')">👥 بازیکنان</button>
+                <button class="tab-btn" onclick="switchTab('transaction')">💳 تراکنش</button>
+                <button class="tab-btn" onclick="switchTab('today')">📅 امروز</button>
+                <button class="tab-btn" onclick="switchTab('reports')">📊 گزارش‌ها</button>
+            </div>
+
+            <!-- PLAYERS TAB -->
+            <div id="players" class="tab-content active">
+                <div class="card">
+                    <h3>➕ افزودن بازیکن جدید</h3>
+                    <div class="form-row">
+                        <input type="text" id="newPlayerName" placeholder="نام بازیکن" required>
+                    </div>
+                    <button class="btn-add" onclick="addPlayer()">افزودن</button>
+                </div>
+
+                <div id="message" class="message"></div>
+
+                <div class="players-grid" id="playersList"></div>
+            </div>
+
+            <!-- TRANSACTION TAB -->
+            <div id="transaction" class="tab-content">
+                <div class="transaction-form">
+                    <h3>💳 ثبت تراکنش جدید</h3>
+                    <div class="form-row">
+                        <div>
+                            <label>بازیکن:</label>
+                            <select id="transPlayer" required></select>
+                        </div>
+                        <div>
+                            <label>نوع تراکنش:</label>
+                            <select id="transType" onchange="updateTransactionForm()">
+                                <option value="usdt">تتر (USDT)</option>
+                                <option value="trx">ترون (TRX)</option>
+                                <option value="rial">ریالی</option>
+                                <option value="debt">بدهی</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="transAmount" placeholder="مبلغ" step="0.01" required>
+                        <input type="number" id="transTokens" placeholder="ژتون (اختیاری)" value="0">
+                    </div>
+                    <div class="form-row">
+                        <input type="date" id="transDate" required>
+                        <input type="time" id="transTime" required>
+                    </div>
+                    <button class="btn-add" onclick="addTransaction()">✅ ثبت تراکنش</button>
                 </div>
             </div>
 
-            <div id="message" class="message"></div>
+            <!-- TODAY TAB -->
+            <div id="today" class="tab-content">
+                <h3 id="todayTitle" style="margin-bottom: 20px;"></h3>
+                <table class="trans-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>بازیکن</th>
+                            <th>نوع</th>
+                            <th>مبلغ</th>
+                            <th>ژتون</th>
+                            <th>ساعت</th>
+                            <th>ادمین</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todayTransactions"></tbody>
+                </table>
+            </div>
+
+            <!-- REPORTS TAB -->
+            <div id="reports" class="tab-content">
+                <div class="card">
+                    <h3>📊 دانلود گزارش‌ها</h3>
+                    <p style="color: var(--text-secondary); margin: 10px 0;">تمام تراکنش‌های هر دوره را به عنوان فایل Excel دانلود کنید</p>
+                    <div class="button-group">
+                        <button class="btn-report" onclick="downloadDailyReport()">📅<br>روزانه</button>
+                        <button class="btn-report" onclick="downloadWeeklyReport()">📊<br>هفتگی</button>
+                        <button class="btn-report" onclick="downloadMonthlyReport()">📈<br>ماهانه</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // تنظیمات
+        // ========== SETTINGS ==========
         const admins = {
-            shahab: { password: '1234', name: 'شهاب', color: '#FFD700' },
-            tiyam: { password: '4552', name: 'تیام', color: '#C0C0C0' },
-            tabassam: { password: '9825', name: 'تبسم', color: '#FFB6C1' },
-            arash: { password: '4321', name: 'آرش', color: '#B87333' }
+            shahab: { password: '1234', name: 'شهاب' },
+            tiyam: { password: '4552', name: 'تیام' },
+            tabassam: { password: '9825', name: 'تبسم' },
+            arash: { password: '4321', name: 'آرش' }
         };
 
         let currentAdmin = null;
         let selectedAdmin = null;
+        let players = [];
         let transactions = [];
 
+        // ========== STORAGE ==========
         function loadData() {
-            const saved = localStorage.getItem('silentPokerTransactions');
-            if (saved) transactions = JSON.parse(saved);
+            const savedPlayers = localStorage.getItem('pokerPlayers');
+            const savedTransactions = localStorage.getItem('pokerTransactions');
+            if (savedPlayers) players = JSON.parse(savedPlayers);
+            if (savedTransactions) transactions = JSON.parse(savedTransactions);
         }
 
         function saveData() {
-            localStorage.setItem('silentPokerTransactions', JSON.stringify(transactions));
+            localStorage.setItem('pokerPlayers', JSON.stringify(players));
+            localStorage.setItem('pokerTransactions', JSON.stringify(transactions));
         }
 
+        // ========== AUTH ==========
         function selectAdmin(adminId) {
             selectedAdmin = adminId;
-            document.querySelectorAll('.admin-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.admin-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
         }
 
         function handleLogin(event) {
             event.preventDefault();
             const password = document.getElementById('password').value;
-            
             if (!selectedAdmin) {
-                alert('❌ یک ادمین انتخاب کنید!');
+                showMessage('ادمین انتخاب کنید!', 'error');
                 return;
             }
-            
             const admin = admins[selectedAdmin];
             if (admin.password !== password) {
-                alert('❌ رمز عبور نادرست است!');
+                showMessage('رمز عبور نادرست!', 'error');
                 return;
             }
-            
             currentAdmin = selectedAdmin;
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('dashboard').classList.add('active');
-            document.getElementById('adminDisplayName').textContent = '👋 سلام ' + admin.name;
+            document.getElementById('adminName').textContent = '👋 ' + admin.name;
+            updatePlayerSelect();
+            displayPlayers();
+            displayToday();
         }
 
         function logout() {
             currentAdmin = null;
-            selectedAdmin = null;
-            document.getElementById('password').value = '';
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('dashboard').classList.remove('active');
-            document.querySelectorAll('.admin-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('password').value = '';
         }
 
+        // ========== PLAYERS ==========
+        function addPlayer() {
+            const name = document.getElementById('newPlayerName').value.trim();
+            if (!name) {
+                showMessage('نام بازیکن را وارد کنید!', 'error');
+                return;
+            }
+            if (players.some(p => p.name === name)) {
+                showMessage('این بازیکن قبلاً اضافه شده است!', 'error');
+                return;
+            }
+            players.push({ id: Date.now(), name: name });
+            saveData();
+            document.getElementById('newPlayerName').value = '';
+            displayPlayers();
+            updatePlayerSelect();
+            showMessage('✅ بازیکن اضافه شد!', 'success');
+        }
+
+        function deletePlayer(id) {
+            if (confirm('مطمئن هستید؟')) {
+                players = players.filter(p => p.id !== id);
+                saveData();
+                displayPlayers();
+                updatePlayerSelect();
+                showMessage('✅ بازیکن حذف شد!', 'success');
+            }
+        }
+
+        function displayPlayers() {
+            const list = document.getElementById('playersList');
+            if (players.length === 0) {
+                list.innerHTML = '<div class="empty-state">بازیکنی موجود نیست. اولی را اضافه کنید! 👆</div>';
+                return;
+            }
+            list.innerHTML = players.map(p => {
+                const count = transactions.filter(t => t.playerId == p.id).length;
+                const total = transactions.filter(t => t.playerId == p.id).reduce((s, t) => s + t.amount, 0);
+                return `
+                    <div class="player-card">
+                        <h3>${p.name}</h3>
+                        <p>تراکنش‌ها: <strong>${count}</strong></p>
+                        <p>کل مبلغ: <strong>${total.toLocaleString()}</strong></p>
+                        <button class="btn-small" onclick="deletePlayer(${p.id})">🗑️ حذف</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updatePlayerSelect() {
+            const select = document.getElementById('transPlayer');
+            if (players.length === 0) {
+                select.innerHTML = '<option>ابتدا بازیکن اضافه کنید</option>';
+                select.disabled = true;
+                return;
+            }
+            select.disabled = false;
+            select.innerHTML = players.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+        }
+
+        // ========== TRANSACTIONS ==========
+        function updateTransactionForm() {
+            const type = document.getElementById('transType').value;
+            const tokensInput = document.getElementById('transTokens');
+            tokensInput.style.display = (type === 'usdt' || type === 'trx') ? 'block' : 'none';
+        }
+
+        function addTransaction() {
+            const playerId = document.getElementById('transPlayer').value;
+            const type = document.getElementById('transType').value;
+            const amount = parseFloat(document.getElementById('transAmount').value);
+            const tokens = parseInt(document.getElementById('transTokens').value) || 0;
+            const date = document.getElementById('transDate').value;
+            const time = document.getElementById('transTime').value;
+
+            if (!playerId || !amount || !date || !time) {
+                showMessage('تمام فیلدها را پر کنید!', 'error');
+                return;
+            }
+
+            const player = players.find(p => p.id == playerId);
+            const farsiDate = new Date(date + 'T00:00:00').toLocaleDateString('fa-IR');
+
+            transactions.push({
+                id: Date.now(),
+                playerId: playerId,
+                playerName: player.name,
+                type: type,
+                amount: amount,
+                tokens: tokens,
+                date: farsiDate,
+                time: time,
+                adminName: admins[currentAdmin].name
+            });
+
+            saveData();
+            showMessage('✅ تراکنش ثبت شد!', 'success');
+            document.getElementById('transAmount').value = '';
+            document.getElementById('transTokens').value = '0';
+            displayToday();
+            displayPlayers();
+        }
+
+        function deleteTransaction(id) {
+            if (confirm('حذف این تراکنش؟')) {
+                transactions = transactions.filter(t => t.id !== id);
+                saveData();
+                displayToday();
+                displayPlayers();
+                showMessage('✅ تراکنش حذف شد!', 'success');
+            }
+        }
+
+        // ========== TODAY ==========
         function getTodayDate() {
             return new Date().toLocaleDateString('fa-IR');
         }
 
+        function displayToday() {
+            const today = getTodayDate();
+            document.getElementById('todayTitle').textContent = '📅 تراکنش‌های ' + today;
+            
+            const todayTrans = transactions.filter(t => t.date === today).sort((a, b) => b.id - a.id);
+            const tbody = document.getElementById('todayTransactions');
+            
+            if (todayTrans.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">تراکنشی برای امروز ثبت نشده</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = todayTrans.map((t, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td>${t.playerName}</td>
+                    <td>${t.type}</td>
+                    <td>${t.amount.toLocaleString()}</td>
+                    <td>${t.tokens}</td>
+                    <td>${t.time}</td>
+                    <td>${t.adminName}</td>
+                    <td><button class="btn-small" onclick="deleteTransaction(${t.id})">🗑️</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // ========== REPORTS ==========
         function getWeekRange() {
             const today = new Date();
             const day = today.getDay();
@@ -319,148 +474,77 @@
         }
 
         function filterTransactions(startDate, endDate) {
-            return transactions.filter(t => {
-                const tDate = t.date || '';
-                return tDate >= startDate && tDate <= endDate;
-            });
-        }
-
-        function showMessage(msg, type) {
-            const el = document.getElementById('message');
-            el.textContent = msg;
-            el.className = 'message ' + type;
-            setTimeout(() => el.className = 'message', 3000);
+            return transactions.filter(t => t.date >= startDate && t.date <= endDate).sort((a, b) => b.id - a.id);
         }
 
         function createExcel(filtered, title, fileName) {
             if (filtered.length === 0) {
-                showMessage('❌ هیچ تراکنشی برای این دوره یافت نشد!', 'error');
+                showMessage('تراکنشی برای این دوره یافت نشد!', 'error');
                 return;
             }
 
-            // دسته‌بندی
-            const usdt = filtered.filter(t => t.type === 'usdt-bep20' || t.type === 'usdt-trc20');
-            const trx = filtered.filter(t => t.type === 'trx');
-            const rial = filtered.filter(t => t.type === 'rial');
-            const debt = filtered.filter(t => t.type === 'debt');
-            const card = filtered.filter(t => t.type === 'card');
-            const payment = filtered.filter(t => t.type === 'payment');
-            const cashout = filtered.filter(t => t.type === 'cashout-rial' || t.type === 'cashout-wallet');
-
-            const wb = XLSX.utils.book_new();
-            const admin = admins[currentAdmin];
-
-            // خلاصه
-            const summary = [
-                [admin.name + ' - ' + title],
+            const data = [
+                [admins[currentAdmin].name + ' - ' + title],
                 [''],
-                ['نوع تراکنش', 'تعداد', 'کل مبلغ', 'کل ژتون'],
-                ['تتر (USDT)', usdt.length, usdt.reduce((s, t) => s + (t.amount || 0), 0), usdt.reduce((s, t) => s + (t.tokens || 0), 0)],
-                ['ترون (TRX)', trx.length, trx.reduce((s, t) => s + (t.amount || 0), 0), trx.reduce((s, t) => s + (t.tokens || 0), 0)],
-                ['ریالی', rial.length, rial.reduce((s, t) => s + (t.amount || 0), 0), 0],
-                ['بدهی', debt.length, debt.reduce((s, t) => s + (t.amount || 0), 0), 0],
-                ['کارت', card.length, card.reduce((s, t) => s + (t.amount || 0), 0), card.reduce((s, t) => s + (t.tokens || 0), 0)],
-                ['پرداخت', payment.length, payment.reduce((s, t) => s + (t.amount || 0), 0), 0],
-                ['کشاوت', cashout.length, cashout.reduce((s, t) => s + (t.amount || 0), 0), 0],
-                [''],
-                ['کل', filtered.length, filtered.reduce((s, t) => s + (t.amount || 0), 0), filtered.reduce((s, t) => s + (t.tokens || 0), 0)]
+                ['ردیف', 'بازیکن', 'نوع', 'مبلغ', 'ژتون', 'تاریخ', 'ساعت', 'ادمین']
             ];
 
-            const summarySheet = XLSX.utils.aoa_to_sheet(summary);
-            summarySheet['!cols'] = [{ wch: 15 }, { wch: 10 }, { wch: 15 }, { wch: 12 }];
-            XLSX.utils.book_append_sheet(wb, summarySheet, 'خلاصه');
+            filtered.forEach((t, i) => {
+                data.push([i+1, t.playerName, t.type, t.amount, t.tokens, t.date, t.time, t.adminName]);
+            });
 
-            // تتر
-            if (usdt.length > 0) {
-                const data = [['لیست USDT'], [''], ['ردیف', 'نام بازیکن', 'مبلغ', 'ژتون', 'تاریخ', 'ساعت', 'ادمین']];
-                usdt.forEach((t, i) => data.push([i+1, t.player, t.amount, t.tokens||0, t.date, t.time||'', t.adminName]));
-                const sheet = XLSX.utils.aoa_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, sheet, 'تتر');
-            }
+            data.push(['']);
+            data.push(['کل تراکنش‌ها:', filtered.length]);
+            data.push(['کل مبلغ:', filtered.reduce((s, t) => s + t.amount, 0)]);
+            data.push(['کل ژتون:', filtered.reduce((s, t) => s + t.tokens, 0)]);
 
-            // ترون
-            if (trx.length > 0) {
-                const data = [['لیست TRX'], [''], ['ردیف', 'نام بازیکن', 'مبلغ', 'ژتون', 'تاریخ', 'ساعت', 'ادمین']];
-                trx.forEach((t, i) => data.push([i+1, t.player, t.amount, t.tokens||0, t.date, t.time||'', t.adminName]));
-                const sheet = XLSX.utils.aoa_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, sheet, 'ترون');
-            }
-
-            // ریالی
-            if (rial.length > 0) {
-                const data = [['لیست ریالی'], [''], ['ردیف', 'نام بازیکن', 'مبلغ', 'سفارش', 'تاریخ', 'ساعت', 'ادمین']];
-                rial.forEach((t, i) => data.push([i+1, t.player, t.amount, t.wallet||'', t.date, t.time||'', t.adminName]));
-                const sheet = XLSX.utils.aoa_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, sheet, 'ریالی');
-            }
-
-            // بدهی
-            if (debt.length > 0) {
-                const data = [['لیست بدهی'], [''], ['ردیف', 'نام بازیکن', 'مبلغ', 'تاریخ', 'ساعت', 'ادمین']];
-                debt.forEach((t, i) => data.push([i+1, t.player, t.amount, t.date, t.time||'', t.adminName]));
-                const sheet = XLSX.utils.aoa_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, sheet, 'بدهی');
-            }
-
-            // کارت
-            if (card.length > 0) {
-                const data = [['لیست کارت'], [''], ['ردیف', 'نام بازیکن', 'مبلغ', 'ژتون', 'تاریخ', 'ساعت', 'ادمین']];
-                card.forEach((t, i) => data.push([i+1, t.player, t.amount, t.tokens||0, t.date, t.time||'', t.adminName]));
-                const sheet = XLSX.utils.aoa_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, sheet, 'کارت');
-            }
-
-            // پرداخت
-            if (payment.length > 0) {
-                const data = [['لیست پرداخت'], [''], ['ردیف', 'نام بازیکن', 'مبلغ', 'تاریخ', 'ساعت', 'ادمین']];
-                payment.forEach((t, i) => data.push([i+1, t.player, t.amount, t.date, t.time||'', t.adminName]));
-                const sheet = XLSX.utils.aoa_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, sheet, 'پرداخت');
-            }
-
-            // کشاوت
-            if (cashout.length > 0) {
-                const data = [['لیست کشاوت'], [''], ['ردیف', 'نام بازیکن', 'مبلغ', 'نوع', 'کارت/والت', 'تاریخ', 'ساعت', 'ادمین']];
-                cashout.forEach((t, i) => data.push([i+1, t.player, t.amount, t.type==='cashout-rial'?'ریالی':'والت', t.wallet||'', t.date, t.time||'', t.adminName]));
-                const sheet = XLSX.utils.aoa_to_sheet(data);
-                XLSX.utils.book_append_sheet(wb, sheet, 'کشاوت');
-            }
-
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            ws['!cols'] = [{ wch: 6 }, { wch: 14 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 10 }, { wch: 8 }, { wch: 10 }];
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'گزارش');
             XLSX.writeFile(wb, fileName);
-            showMessage('✅ ' + title + ' با موفقیت دانلود شد!', 'success');
+            showMessage('✅ ' + title + ' دانلود شد!', 'success');
         }
 
         function downloadDailyReport() {
             const today = getTodayDate();
             const filtered = filterTransactions(today, today);
-            createExcel(filtered, 'گزارش روزانه', `گزارش_روزانه_${today}.xlsx`);
+            createExcel(filtered, 'گزارش روزانه', `report_daily_${today.replace(/\//g, '-')}.xlsx`);
         }
 
         function downloadWeeklyReport() {
             const { start, end } = getWeekRange();
             const filtered = filterTransactions(start, end);
-            createExcel(filtered, 'گزارش هفتگی', `گزارش_هفتگی_${start}.xlsx`);
+            createExcel(filtered, 'گزارش هفتگی', `report_weekly_${start.replace(/\//g, '-')}.xlsx`);
         }
 
         function downloadMonthlyReport() {
             const { start, end } = getMonthRange();
             const filtered = filterTransactions(start, end);
-            createExcel(filtered, 'گزارش ماهانه', `گزارش_ماهانه_${start}.xlsx`);
+            createExcel(filtered, 'گزارش ماهانه', `report_monthly_${start.replace(/\//g, '-')}.xlsx`);
         }
 
-        // شروع
+        // ========== UI ==========
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showMessage(msg, type) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.className = 'message ' + type + ' show';
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        // ========== INIT ==========
         loadData();
-
-        // داده نمونه
-        if (transactions.length === 0) {
-            const today = getTodayDate();
-            transactions = [
-                { id: 1, type: 'usdt-bep20', date: today, time: '14:30', player: 'آرش', amount: 500, tokens: 5, wallet: 'TAddr1', adminName: 'شهاب' },
-                { id: 2, type: 'trx', date: today, time: '15:45', player: 'تیام', amount: 300, tokens: 3, wallet: 'TAddr2', adminName: 'تیام' },
-                { id: 3, type: 'rial', date: today, time: '16:20', player: 'تبسم', amount: 1000, tokens: 0, wallet: 'order123', adminName: 'تبسم' },
-            ];
-            saveData();
-        }
+        document.getElementById('transDate').valueAsDate = new Date();
+        updatePlayerSelect();
+        updateTransactionForm();
     </script>
 </body>
 </html>
