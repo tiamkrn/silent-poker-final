@@ -8,28 +8,23 @@
     <style>
         :root {
             --primary: #c0c0c0;
-            --primary-dark: #a8a8a8;
             --accent: #e8e8e8;
             --dark-bg: #1a1a1a;
             --card-bg: #252525;
             --text-primary: #ffffff;
             --text-secondary: #b0b0b0;
             --border: #404040;
-            --success: #4caf50;
-            --danger: #f44336;
-            --warning: #ff9800;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif; background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); color: var(--text-primary); min-height: 100vh; }
 
-        /* LOGIN */
         .login-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
         .login-box { background: var(--card-bg); padding: 50px; border-radius: 15px; border: 2px solid var(--primary); width: 100%; max-width: 450px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
         h1 { text-align: center; color: var(--primary); margin-bottom: 10px; font-size: 36px; }
         .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 30px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary); }
-        input, select { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: inherit; margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, select { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); margin-bottom: 15px; }
         input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(192,192,192,0.3); }
 
         .admin-btn { padding: 12px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 8px; color: var(--text-primary); cursor: pointer; font-weight: 600; margin-bottom: 10px; width: 100%; }
@@ -40,9 +35,9 @@
         .dashboard { display: none; min-height: 100vh; }
         .dashboard.active { display: block; }
 
-        .navbar { background: linear-gradient(135deg, var(--card-bg) 0%, #2a2a2a 100%); border-bottom: 2px solid var(--primary); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar { background: linear-gradient(135deg, var(--card-bg) 0%, #2a2a2a 100%); border-bottom: 2px solid var(--primary); padding: 20px 30px; display: flex; justify-content: space-between; }
         .navbar h2 { color: var(--primary); }
-        .btn-logout { padding: 10px 20px; background: #ff6b6b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-logout { padding: 10px 20px; background: #ff6b6b; color: white; border: none; border-radius: 8px; cursor: pointer; }
 
         .content { max-width: 1400px; margin: 20px auto; padding: 20px; }
 
@@ -53,11 +48,11 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 20px; }
         .card h3 { color: var(--primary); margin-bottom: 15px; }
 
         .search-box { margin-bottom: 20px; }
-        .search-box input { width: 100%; padding: 12px; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; }
+        .search-box input { width: 100%; }
 
         .player-item { background: var(--card-bg); border: 2px solid var(--border); border-radius: 10px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .player-item:hover { border-color: var(--primary); }
@@ -81,7 +76,7 @@
 
         .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         .modal.show { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card-bg); border-radius: 15px; padding: 30px; max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); }
+        .modal-content { background: var(--card-bg); border-radius: 15px; padding: 30px; max-width: 1000px; width: 95%; max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
         .modal-header h2 { color: var(--primary); }
         .btn-close { background: none; border: none; color: var(--text-secondary); font-size: 24px; cursor: pointer; }
@@ -106,6 +101,10 @@
 
         .file-input { position: relative; display: inline-block; }
         .file-input input[type="file"] { display: none; }
+
+        .price-loader { font-size: 12px; color: var(--text-secondary); margin-top: 5px; }
+        .price-loader.loading::after { content: ' ...'; animation: dots 1.5s steps(3, end) infinite; }
+        @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60%, 100% { content: '...'; } }
     </style>
 </head>
 <body>
@@ -219,8 +218,8 @@
             <!-- INFO TAB -->
             <div id="modalInfo" class="modal-tab-content active">
                 <label style="color: var(--text-secondary); font-size: 12px;">احراز درگاه:</label>
-                <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--dark-bg); border-radius: 6px; cursor: pointer; user-select: none; margin-bottom: 20px;" onclick="toggleVerification()">
-                    <div class="toggle-switch" id="verificationToggle" style="width: 40px; height: 24px; background: var(--border); border-radius: 12px; position: relative;"></div>
+                <div style="display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--dark-bg); border-radius: 6px; cursor: pointer; margin-bottom: 20px;" onclick="toggleVerification()">
+                    <div class="toggle-switch" id="verificationToggle" style="width: 40px; height: 24px; background: var(--border); border-radius: 12px; position: relative; transition: all 0.3s;"></div>
                     <span id="verificationText">تایید نشده</span>
                 </div>
 
@@ -228,10 +227,6 @@
                     <div style="background: var(--dark-bg); padding: 15px; border-radius: 8px;">
                         <div style="font-size: 12px; color: var(--text-secondary);">کل شارژ</div>
                         <div style="font-size: 20px; color: var(--primary); font-weight: 700;" id="totalChargeModal">0</div>
-                    </div>
-                    <div style="background: var(--dark-bg); padding: 15px; border-radius: 8px;">
-                        <div style="font-size: 12px; color: var(--text-secondary);">کل بدهی</div>
-                        <div style="font-size: 20px; color: #f44336; font-weight: 700;" id="totalDebtModal">0</div>
                     </div>
                 </div>
             </div>
@@ -279,7 +274,9 @@
                         </div>
                         <div>
                             <label id="priceLabel">قیمت دلار (تومان):</label>
-                            <input type="number" id="chargePrice" placeholder="193000" onchange="calculateCharge()">
+                            <input type="number" id="chargePrice" placeholder="0" onchange="calculateCharge()">
+                            <div class="price-loader" id="priceLoader"></div>
+                            <button type="button" class="btn-small" onclick="fetchExchangeRate()" style="margin-top: 10px; margin-left: 0;">🔄 بروزرسانی</button>
                         </div>
                     </div>
                     <div style="margin-bottom: 15px;">
@@ -389,6 +386,7 @@
             displayToday();
             document.getElementById('chargeDate').valueAsDate = new Date();
             document.getElementById('chargeTime').value = new Date().toTimeString().slice(0, 5);
+            fetchExchangeRate();
         }
 
         function logout() {
@@ -396,6 +394,27 @@
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('dashboard').classList.remove('active');
             document.getElementById('password').value = '';
+        }
+
+        function fetchExchangeRate() {
+            const loader = document.getElementById('priceLoader');
+            loader.classList.add('loading');
+            loader.textContent = 'در حال بروزرسانی';
+
+            fetch('https://api.exchangerate-api.com/v4/latest/USD')
+                .then(res => res.json())
+                .then(data => {
+                    const irr = data.rates.IRR;
+                    document.getElementById('chargePrice').value = Math.round(irr);
+                    calculateCharge();
+                    loader.classList.remove('loading');
+                    loader.textContent = `✅ آپدیت شد: ${Math.round(irr).toLocaleString()} تومان`;
+                })
+                .catch(err => {
+                    loader.classList.remove('loading');
+                    loader.textContent = '❌ خطا در دریافت قیمت';
+                    console.log(err);
+                });
         }
 
         function importExcel(event) {
@@ -500,11 +519,9 @@
             const toggle = document.getElementById('verificationToggle');
             const text = document.getElementById('verificationText');
             if (verified) {
-                toggle.classList.add('active');
                 toggle.style.background = 'var(--primary)';
                 text.textContent = 'احراز شده';
             } else {
-                toggle.classList.remove('active');
                 toggle.style.background = 'var(--border)';
                 text.textContent = 'احراز نشده';
             }
@@ -527,7 +544,7 @@
                         <td>${c.total.toLocaleString()}</td>
                         <td>${c.date}</td>
                         <td>${c.time}</td>
-                        <td><span style="background: rgba(192,192,192,0.2); color: var(--primary); padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">${c.adminName}</span></td>
+                        <td><span style="background: rgba(192,192,192,0.2); color: var(--primary); padding: 3px 8px; border-radius: 4px; font-size: 11px;">${c.adminName}</span></td>
                     </tr>
                 `).join('');
             }
@@ -552,11 +569,9 @@
                 const toggle = document.getElementById('verificationToggle');
                 const text = document.getElementById('verificationText');
                 if (player.verified) {
-                    toggle.classList.add('active');
                     toggle.style.background = 'var(--primary)';
                     text.textContent = 'احراز شده';
                 } else {
-                    toggle.classList.remove('active');
                     toggle.style.background = 'var(--border)';
                     text.textContent = 'احراز نشده';
                 }
@@ -602,8 +617,8 @@
 
         function calculateRialCharge() {
             const amount = parseFloat(document.getElementById('chargeRialAmount').value) || 0;
-            const bonus = amount * 0.1;
-            const total = amount + bonus;
+            const bonus = 0;
+            const total = amount;
 
             document.getElementById('previewAmount').textContent = amount.toLocaleString();
             document.getElementById('previewBonus').textContent = bonus.toLocaleString();
@@ -616,9 +631,8 @@
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     currentChargeImage = e.target.result;
-                    const preview = document.getElementById('imagePreview');
-                    preview.src = currentChargeImage;
-                    preview.style.display = 'block';
+                    document.getElementById('imagePreview').src = currentChargeImage;
+                    document.getElementById('imagePreview').style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }
@@ -639,6 +653,8 @@
                     showMessage('تمام فیلدها را پر کنید!', 'error');
                     return;
                 }
+                bonus = 0;
+                total = amount;
             } else {
                 amount = parseFloat(document.getElementById('chargeAmount').value);
                 const price = parseFloat(document.getElementById('chargePrice').value);
@@ -648,10 +664,9 @@
                     return;
                 }
                 amount = amount * price;
+                bonus = amount * 0.1;
+                total = amount + bonus;
             }
-
-            bonus = amount * 0.1;
-            total = amount + bonus;
 
             charges.push({
                 id: Date.now(),
@@ -707,7 +722,7 @@
                     <td>${c.total.toLocaleString()}</td>
                     <td>${c.date}</td>
                     <td>${c.time}</td>
-                    <td><span style="background: rgba(192,192,192,0.2); color: var(--primary); padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">${c.adminName}</span></td>
+                    <td><span style="background: rgba(192,192,192,0.2); color: var(--primary); padding: 3px 8px; border-radius: 4px; font-size: 11px;">${c.adminName}</span></td>
                 </tr>
             `).join('');
         }
